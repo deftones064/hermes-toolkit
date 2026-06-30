@@ -570,3 +570,41 @@ select {
   color: var(--accent);
   margin-bottom: 10px;
 }
+
+/* Theme switcher polish */
+.theme-switcher {
+  margin-top: 28px;
+  padding: 14px 10px 0 10px;
+}
+
+.theme-switcher .label {
+  margin-bottom: 10px;
+}
+
+.theme-switcher button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-start;
+  margin: 6px 0 0 0;
+  padding: 9px 11px;
+  border-radius: 10px;
+  font-size: 13px;
+  background: transparent;
+}
+
+.theme-switcher button span {
+  color: var(--accent);
+  font-weight: 900;
+}
+
+.theme-switcher button:hover {
+  background: var(--button-hover);
+}
+
+.theme-switcher button.active {
+  background: linear-gradient(90deg, var(--accent-soft), transparent);
+  border-color: var(--accent);
+  color: var(--text);
+}
