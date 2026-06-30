@@ -1,0 +1,15 @@
+[Unit]
+Description=Hermes Toolkit Web Dashboard
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/hermes-toolkit web --host 0.0.0.0 --port 8088
+Restart=always
+RestartSec=5
+User=root
+WorkingDirectory=/root
+
+[Install]
+WantedBy=multi-user.target
