@@ -487,3 +487,65 @@ html[data-theme="dark"] .card {
     0 1px 2px rgba(0,0,0,.4),
     0 14px 34px rgba(0,0,0,.28);
 }
+
+/* Typography pass */
+body {
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3 {
+  color: var(--text);
+}
+
+h1 {
+  font-weight: 900;
+}
+
+h2 {
+  font-weight: 850;
+}
+
+.subtitle {
+  max-width: 760px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.value {
+  font-variant-numeric: tabular-nums;
+}
+
+code {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+td {
+  font-variant-numeric: tabular-nums;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.brand-title {
+  letter-spacing: -0.03em;
+}
+
+.brand-subtitle {
+  letter-spacing: .02em;
+}
