@@ -295,3 +295,61 @@ html[data-theme="light"] code {
 html[data-theme="light"] table tr:hover {
   background: #f8fafc;
 }
+
+
+/* Sidebar redesign */
+.sidebar {
+  padding: 24px 12px;
+}
+
+.brand {
+  padding: 0 8px 4px 8px;
+}
+
+.nav {
+  gap: 7px;
+}
+
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  transition: background .15s ease, color .15s ease, border-color .15s ease, transform .15s ease;
+}
+
+.nav a:hover:not(.disabled) {
+  background: var(--button-hover);
+  color: var(--text);
+  transform: translateX(2px);
+}
+
+.nav a.active {
+  color: var(--text);
+  border-color: var(--border);
+  background: var(--nav-active);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.nav a.disabled {
+  opacity: .42;
+}
+
+.theme-switcher {
+  margin-top: 28px;
+}
+
+.theme-switcher .label {
+  margin-bottom: 6px;
+}
+
+.theme-switcher button {
+  border-color: var(--border);
+}
+
+.theme-switcher button.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}

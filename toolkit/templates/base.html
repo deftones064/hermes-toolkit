@@ -4,6 +4,14 @@
   <meta charset="utf-8">
   <title>{% block title %}Hermes Toolkit{% endblock %}</title>
   {% block refresh %}{% endblock %}
+  <script>
+    (function () {
+      const saved = localStorage.getItem("hermes-theme") || "system";
+      if (saved === "dark" || saved === "light") {
+        document.documentElement.dataset.theme = saved;
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="/static/css/main.css">
   {% block head %}{% endblock %}
 </head>
@@ -30,6 +38,13 @@
       <a class="disabled" href="#">◌ Memory</a>
       <a class="disabled" href="#">ⓘ About</a>
     </nav>
+
+    <div class="theme-switcher">
+      <div class="label">Theme</div>
+      <button type="button" data-theme-button="system">Auto</button>
+      <button type="button" data-theme-button="dark">Dark</button>
+      <button type="button" data-theme-button="light">Light</button>
+    </div>
   </aside>
 
   <main class="main">
@@ -37,5 +52,7 @@
   </main>
 
   {% block scripts %}{% endblock %}
+
+  <script src="/static/js/theme.js"></script>
 </body>
 </html>
