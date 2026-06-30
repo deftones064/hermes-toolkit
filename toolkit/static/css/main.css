@@ -608,3 +608,92 @@ select {
   border-color: var(--accent);
   color: var(--text);
 }
+
+/* Final UX polish pass */
+.brand-version {
+  margin-top: 6px;
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  border-radius: 999px;
+  padding: 2px 7px;
+}
+
+.live-pill {
+  flex-direction: row;
+  font-weight: 700;
+}
+
+.metric-icon {
+  opacity: .95;
+}
+
+.grid .card {
+  min-height: 140px;
+}
+
+.card .value + div {
+  margin-top: 4px;
+}
+
+form label {
+  margin-top: 16px;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+form button {
+  min-width: 120px;
+}
+
+input:focus,
+select:focus,
+button:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+select option {
+  background: var(--card);
+  color: var(--text);
+}
+
+.form-help {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.form-section-title {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.status-detail {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+html[data-theme="light"] .brand-version {
+  background: rgba(176,137,32,.10);
+}
+
+html[data-theme="light"] .card::before {
+  opacity: .72;
+}
+
+html[data-theme="light"] input:focus,
+html[data-theme="light"] select:focus,
+html[data-theme="light"] button:focus {
+  outline-color: #b08920;
+}

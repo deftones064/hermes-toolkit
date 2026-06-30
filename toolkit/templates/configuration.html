@@ -44,23 +44,34 @@
   <div class="card">
     <h2>Core Settings</h2>
     <form method="post" action="/configuration/settings">
+      <div class="form-section-title">Conversation</div>
+
       <label>Max turns</label>
       <input name="max_turns" type="number" value="{{ data.settings.max_turns }}">
+      <div class="form-help">Maximum agent iterations before stopping.</div>
 
       <label>Max live sessions</label>
       <input name="max_live_sessions" type="number" value="{{ data.settings.max_live_sessions }}">
 
+      <div class="form-section-title">File Limits</div>
+
       <label>Context file max chars</label>
       <input name="context_file_max_chars" type="number" value="{{ data.settings.context_file_max_chars }}">
+      <div class="form-help">Maximum characters loaded from context files.</div>
 
       <label>File read max chars</label>
       <input name="file_read_max_chars" type="number" value="{{ data.settings.file_read_max_chars }}">
 
+      <div class="form-section-title">Compression</div>
+
       <label>Protected recent messages</label>
       <input name="protect_last_n" type="number" value="{{ data.settings.protect_last_n }}">
+      <div class="form-help">Recent messages preserved during compression.</div>
 
       <label>Resume exchanges</label>
       <input name="resume_exchanges" type="number" value="{{ data.settings.resume_exchanges }}">
+
+      <div class="form-section-title">Session Reset</div>
 
       <label>Session reset mode</label>
       <select name="session_reset_mode">

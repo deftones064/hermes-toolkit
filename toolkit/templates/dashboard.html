@@ -16,24 +16,28 @@
     <div class="label">Health</div>
     <div class="value {{ data.health_class }}">{{ data.health_score }} / 100</div>
     <div class="{{ data.health_class }}">{{ data.health_status }}</div>
+    <div class="status-detail">No critical issues detected</div>
   </div>
 
   <div class="card">
     <div class="metric-icon">◈</div>
     <div class="label">Provider</div>
     <div class="value">{{ data.provider_label }}</div>
+    <div class="status-detail">Active provider</div>
   </div>
 
   <div class="card">
     <div class="metric-icon">⚡</div>
     <div class="label">Model</div>
     <div class="value">{{ data.model.default }}</div>
+    <div class="status-detail">Current default model</div>
   </div>
 
   <div class="card">
     <div class="metric-icon">◌</div>
     <div class="label">Cache Health</div>
     <div class="value {{ data.cache_class }}">{{ data.cache_status }}</div>
+    <div class="status-detail">{{ "{:.1f}%".format(data.avg_cache) }} cache hit rate</div>
     <div class="bar"><div class="bar-fill {{ data.cache_class }}" style="width: {{ data.avg_cache }}%;"></div></div>
   </div>
 </div>
