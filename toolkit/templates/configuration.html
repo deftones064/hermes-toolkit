@@ -1,134 +1,78 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Hermes Toolkit - Configuration</title>
-  <style>
-    :root {
-      --bg:#0f1117; --sidebar:#0b0d12; --card:#181b24; --border:#2a2f3a;
-      --text:#e6e6e6; --muted:#9aa4b2; --good:#4ade80; --warn:#facc15;
-    }
-    * { box-sizing:border-box; }
-    body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; display:flex; min-height:100vh; }
-    .sidebar { width:260px; background:var(--sidebar); border-right:1px solid var(--border); padding:22px 14px; position:fixed; inset:0 auto 0 0; }
-    .brand { display:flex; align-items:center; gap:14px; margin-bottom:30px; padding:0 4px; }
-    .brand-logo { width:60px; height:60px; border-radius:50%; object-fit:cover; border:1px solid var(--border); }
-    .brand-title { font-size:19px; font-weight:900; line-height:1.05; }
-    .brand-subtitle { font-size:12px; color:var(--muted); margin-top:4px; }
-    .nav { display:flex; flex-direction:column; gap:6px; }
-    .nav a { text-decoration:none; color:var(--muted); padding:12px; border-radius:10px; display:block; font-weight:700; }
-    .nav a.active { background:#1c202b; color:var(--text); border:1px solid var(--border); }
-    .nav a.disabled { opacity:.45; cursor:not-allowed; }
-    .main { margin-left:260px; padding:28px; width:calc(100% - 260px); }
-    h1 { margin:0 0 6px 0; font-size:30px; }
-    .subtitle { color:var(--muted); margin-bottom:22px; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:16px; }
-    .card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px; box-shadow:0 8px 24px rgba(0,0,0,.25); }
-    label { display:block; color:var(--muted); font-size:13px; text-transform:uppercase; letter-spacing:.08em; margin-top:14px; }
-    input, select { width:100%; margin-top:6px; padding:10px; border-radius:8px; border:1px solid var(--border); background:#11141c; color:var(--text); }
-    button { margin-top:18px; padding:10px 14px; border:1px solid var(--border); border-radius:10px; background:#1c202b; color:var(--text); font-weight:800; cursor:pointer; }
-    button:hover { background:#262b39; }
-    .notice { background:#102418; border:1px solid #255f38; color:var(--good); padding:12px; border-radius:10px; margin-bottom:16px; }
-    code { background:#11141c; padding:2px 6px; border-radius:6px; }
-  </style>
-</head>
-<body>
-  <aside class="sidebar">
-    <div class="brand">
-      <img class="brand-logo" src="/static/logo.png" alt="Hermes Toolkit logo">
-      <div>
-        <div class="brand-title">Hermes Toolkit</div>
-        <div class="brand-subtitle">Control. Optimize. Evolve.</div>
-      </div>
-    </div>
-    <nav class="nav">
-      <a href="/">⌂ Dashboard</a>
-      <a href="/analytics">↗ Analytics</a>
-      <a class="disabled" href="#">$ Cost</a>
-      <a class="disabled" href="#">✚ Doctor</a>
-      <a class="active" href="/configuration">⚙ Configuration</a>
-      <a class="disabled" href="#">◎ Models</a>
-      <a class="disabled" href="#">◉ Sessions</a>
-      <a class="disabled" href="#">☰ Logs</a>
-      <a class="disabled" href="#">◇ Skills</a>
-      <a class="disabled" href="#">◌ Memory</a>
-      <a class="disabled" href="#">ⓘ About</a>
-    </nav>
-  </aside>
+{% extends "base.html" %}
+{% set active_page = "configuration" %}
+{% block title %}Hermes Toolkit - Configuration{% endblock %}
 
-  <main class="main">
-    <h1>Configuration</h1>
-    <div class="subtitle">Update Hermes Agent settings without editing YAML.</div>
+{% block content %}
+<h1>Configuration</h1>
+<div class="subtitle">Update Hermes Agent settings without editing YAML.</div>
 
-    {% if request.query_params.get("saved") %}
-      <div class="notice">Configuration saved. Restart Hermes Agent/gateway if the setting requires reload.</div>
-    {% endif %}
+{% if request.query_params.get("saved") %}
+  <div class="notice">Configuration saved. Restart Hermes Agent/gateway if the setting requires reload.</div>
+{% endif %}
 
-    <div class="grid">
-      <div class="card">
-        <h2>Model</h2>
-        <p>Current: <code>{{ data.provider_label }} / {{ data.model.default }}</code></p>
-        <form method="post" action="/configuration/model">
-          <label>Switch model</label>
-          <select name="model">
-            <option value="gpt">GPT-5.5 via ChatGPT Plus Codex</option>
-            <option value="qwen">Qwen Coder via OpenRouter</option>
-            <option value="gemini">Gemini 2.5 Pro via OpenRouter</option>
-          </select>
-          <button type="submit">Switch Model</button>
-        </form>
-      </div>
+<div class="grid-wide">
+  <div class="card">
+    <h2>Model</h2>
+    <p>Current: <code>{{ data.provider_label }} / {{ data.model.default }}</code></p>
+    <form method="post" action="/configuration/model">
+      <label>Switch model</label>
+      <select name="model">
+        <option value="gpt">GPT-5.5 via ChatGPT Plus Codex</option>
+        <option value="qwen">Qwen Coder via OpenRouter</option>
+        <option value="gemini">Gemini 2.5 Pro via OpenRouter</option>
+      </select>
+      <button type="submit">Switch Model</button>
+    </form>
+  </div>
 
-      <div class="card">
-        <h2>Profile</h2>
-        <form method="post" action="/configuration/profile">
-          <label>Apply profile</label>
-          <select name="profile">
-            <option value="low-cost">Low Cost</option>
-            <option value="balanced">Balanced</option>
-            <option value="premium">Premium</option>
-          </select>
-          <button type="submit">Apply Profile</button>
-        </form>
-      </div>
+  <div class="card">
+    <h2>Profile</h2>
+    <form method="post" action="/configuration/profile">
+      <label>Apply profile</label>
+      <select name="profile">
+        <option value="low-cost">Low Cost</option>
+        <option value="balanced">Balanced</option>
+        <option value="premium">Premium</option>
+      </select>
+      <button type="submit">Apply Profile</button>
+    </form>
+  </div>
 
-      <div class="card">
-        <h2>Core Settings</h2>
-        <form method="post" action="/configuration/settings">
-          <label>Max turns</label>
-          <input name="max_turns" type="number" value="{{ data.settings.max_turns }}">
+  <div class="card">
+    <h2>Core Settings</h2>
+    <form method="post" action="/configuration/settings">
+      <label>Max turns</label>
+      <input name="max_turns" type="number" value="{{ data.settings.max_turns }}">
 
-          <label>Max live sessions</label>
-          <input name="max_live_sessions" type="number" value="{{ data.settings.max_live_sessions }}">
+      <label>Max live sessions</label>
+      <input name="max_live_sessions" type="number" value="{{ data.settings.max_live_sessions }}">
 
-          <label>Context file max chars</label>
-          <input name="context_file_max_chars" type="number" value="{{ data.settings.context_file_max_chars }}">
+      <label>Context file max chars</label>
+      <input name="context_file_max_chars" type="number" value="{{ data.settings.context_file_max_chars }}">
 
-          <label>File read max chars</label>
-          <input name="file_read_max_chars" type="number" value="{{ data.settings.file_read_max_chars }}">
+      <label>File read max chars</label>
+      <input name="file_read_max_chars" type="number" value="{{ data.settings.file_read_max_chars }}">
 
-          <label>Protected recent messages</label>
-          <input name="protect_last_n" type="number" value="{{ data.settings.protect_last_n }}">
+      <label>Protected recent messages</label>
+      <input name="protect_last_n" type="number" value="{{ data.settings.protect_last_n }}">
 
-          <label>Resume exchanges</label>
-          <input name="resume_exchanges" type="number" value="{{ data.settings.resume_exchanges }}">
+      <label>Resume exchanges</label>
+      <input name="resume_exchanges" type="number" value="{{ data.settings.resume_exchanges }}">
 
-          <label>Session reset mode</label>
-          <select name="session_reset_mode">
-            <option value="idle" {% if data.session_reset_mode == "idle" %}selected{% endif %}>Idle</option>
-            <option value="none" {% if data.session_reset_mode == "none" %}selected{% endif %}>None</option>
-          </select>
+      <label>Session reset mode</label>
+      <select name="session_reset_mode">
+        <option value="idle" {% if data.session_reset_mode == "idle" %}selected{% endif %}>Idle</option>
+        <option value="none" {% if data.session_reset_mode == "none" %}selected{% endif %}>None</option>
+      </select>
 
-          <label>Idle reset minutes</label>
-          <input name="session_reset_idle_minutes" type="number" value="{{ data.session_reset_idle }}">
+      <label>Idle reset minutes</label>
+      <input name="session_reset_idle_minutes" type="number" value="{{ data.session_reset_idle }}">
 
-          <label>Daily reset hour</label>
-          <input name="session_reset_at_hour" type="number" value="{{ data.session_reset_hour }}">
+      <label>Daily reset hour</label>
+      <input name="session_reset_at_hour" type="number" value="{{ data.session_reset_hour }}">
 
-          <button type="submit">Save Settings</button>
-        </form>
-      </div>
-    </div>
-  </main>
-</body>
-</html>
+      <button type="submit">Save Settings</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
