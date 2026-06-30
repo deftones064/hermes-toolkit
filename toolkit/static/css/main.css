@@ -723,3 +723,19 @@ html[data-theme="light"] button:focus {
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: var(--accent);
 }
+
+/* Lucide icon polish */
+.nav-icon {
+  width: 19px;
+  height: 19px;
+  stroke-width: 2.1;
+}
+
+.nav a.active .nav-icon {
+  color: var(--accent);
+}
+
+.metric-icon svg,
+.metric-icon {
+  color: var(--accent);
+}
