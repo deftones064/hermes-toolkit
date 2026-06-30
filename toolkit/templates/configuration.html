@@ -8,12 +8,28 @@
 {% endblock %}
 
 {% block content %}
-
 {% if request.query_params.get("saved") %}
   <div class="notice">Configuration saved. Restart Hermes Agent/gateway if the setting requires reload.</div>
 {% endif %}
 
 <div class="grid-wide">
+  <div class="card">
+    <h2>Provider</h2>
+    <p class="form-help">Current provider</p>
+    <div class="provider-current">
+      <div class="provider-name">{{ data.provider_label }}</div>
+      <code>{{ data.model.provider }}</code>
+    </div>
+
+    <div class="provider-list">
+      <div class="provider-chip active">OpenAI Codex</div>
+      <div class="provider-chip">OpenRouter</div>
+      <div class="provider-chip disabled">Anthropic</div>
+      <div class="provider-chip disabled">Ollama</div>
+      <div class="provider-chip disabled">LM Studio</div>
+    </div>
+  </div>
+
   <div class="card">
     <h2>Model</h2>
     <p>Current: <code>{{ data.provider_label }} / {{ data.model.default }}</code></p>
@@ -30,6 +46,7 @@
 
   <div class="card">
     <h2>Profile</h2>
+    <p class="form-help">Apply a known-good configuration profile.</p>
     <form method="post" action="/configuration/profile">
       <label>Apply profile</label>
       <select name="profile">
@@ -40,20 +57,32 @@
       <button type="submit">Apply Profile</button>
     </form>
   </div>
+</div>
 
-  <div class="card">
-    <h2>Core Settings</h2>
-    <form method="post" action="/configuration/settings">
-      <div class="form-section-title">Conversation</div>
+<form method="post" action="/configuration/settings">
+  <div class="grid-wide section">
+    <div class="card">
+      <h2>Conversation</h2>
 
       <label>Max turns</label>
       <input name="max_turns" type="number" value="{{ data.settings.max_turns }}">
       <div class="form-help">Maximum agent iterations before stopping.</div>
 
+      <label>Resume exchanges</label>
+      <input name="resume_exchanges" type="number" value="{{ data.settings.resume_exchanges }}">
+      <div class="form-help">How much previous conversation is shown when resuming.</div>
+    </div>
+
+    <div class="card">
+      <h2>Performance</h2>
+
       <label>Max live sessions</label>
       <input name="max_live_sessions" type="number" value="{{ data.settings.max_live_sessions }}">
+      <div class="form-help">Maximum active sessions kept live.</div>
+    </div>
 
-      <div class="form-section-title">File Limits</div>
+    <div class="card">
+      <h2>File Limits</h2>
 
       <label>Context file max chars</label>
       <input name="context_file_max_chars" type="number" value="{{ data.settings.context_file_max_chars }}">
@@ -61,17 +90,19 @@
 
       <label>File read max chars</label>
       <input name="file_read_max_chars" type="number" value="{{ data.settings.file_read_max_chars }}">
+      <div class="form-help">Maximum characters read from any single file.</div>
+    </div>
 
-      <div class="form-section-title">Compression</div>
+    <div class="card">
+      <h2>Compression</h2>
 
       <label>Protected recent messages</label>
       <input name="protect_last_n" type="number" value="{{ data.settings.protect_last_n }}">
       <div class="form-help">Recent messages preserved during compression.</div>
+    </div>
 
-      <label>Resume exchanges</label>
-      <input name="resume_exchanges" type="number" value="{{ data.settings.resume_exchanges }}">
-
-      <div class="form-section-title">Session Reset</div>
+    <div class="card">
+      <h2>Session Reset</h2>
 
       <label>Session reset mode</label>
       <select name="session_reset_mode">
@@ -84,9 +115,13 @@
 
       <label>Daily reset hour</label>
       <input name="session_reset_at_hour" type="number" value="{{ data.session_reset_hour }}">
+    </div>
 
+    <div class="card save-card">
+      <h2>Save Changes</h2>
+      <p class="form-help">Hermes Toolkit will create a config backup before saving.</p>
       <button type="submit">Save Settings</button>
-    </form>
+    </div>
   </div>
-</div>
+</form>
 {% endblock %}
