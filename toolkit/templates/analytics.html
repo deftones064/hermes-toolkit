@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Hermes Toolkit - Analytics</title>
+  <meta http-equiv="refresh" content="15">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { margin:0; background:#0f1117; color:#e6e6e6; font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; display:flex; min-height:100vh; }
+    .sidebar { width:260px; background:#0b0d12; border-right:1px solid #2a2f3a; padding:22px 14px; position:fixed; inset:0 auto 0 0; }
+    .brand { display:flex; align-items:center; gap:14px; margin-bottom:30px; padding:0 4px; }
+    .brand-logo { width:60px; height:60px; border-radius:50%; object-fit:cover; border:1px solid #2a2f3a; }
+    .brand-title { font-size:19px; font-weight:900; line-height:1.05; }
+    .brand-subtitle { font-size:12px; color:#9aa4b2; margin-top:4px; }
+    .nav { display:flex; flex-direction:column; gap:6px; }
+    .nav a { text-decoration:none; color:#9aa4b2; padding:12px; border-radius:10px; display:block; font-weight:700; }
+    .nav a.active { background:#1c202b; color:#e6e6e6; border:1px solid #2a2f3a; }
+    .nav a.disabled { opacity:.45; cursor:not-allowed; }
+    .main { margin-left:260px; padding:28px; width:calc(100% - 260px); }
+    h1 { margin:0 0 6px 0; font-size:30px; }
+    .subtitle { color:#9aa4b2; margin-bottom:22px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(420px,1fr)); gap:16px; }
+    .card { background:#181b24; border:1px solid #2a2f3a; border-radius:14px; padding:18px; box-shadow:0 8px 24px rgba(0,0,0,.25); }
+    canvas { width:100%; height:320px; }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <img class="brand-logo" src="/static/logo.png" alt="Hermes Toolkit logo">
+      <div>
+        <div class="brand-title">Hermes Toolkit</div>
+        <div class="brand-subtitle">Control. Optimize. Evolve.</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="/">⌂ Dashboard</a>
+      <a class="active" href="/analytics">↗ Analytics</a>
+      <a class="disabled" href="#">$ Cost</a>
+      <a class="disabled" href="#">✚ Doctor</a>
+      <a class="disabled" href="#">⚙ Configuration</a>
+      <a class="disabled" href="#">◎ Models</a>
+      <a class="disabled" href="#">◉ Sessions</a>
+      <a class="disabled" href="#">☰ Logs</a>
+      <a class="disabled" href="#">◇ Skills</a>
+      <a class="disabled" href="#">◌ Memory</a>
+      <a class="disabled" href="#">ⓘ About</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <h1>Analytics</h1>
+    <div class="subtitle">Recent token usage and cache behavior.</div>
+
+    <div class="grid">
+      <div class="card"><canvas id="tokensChart"></canvas></div>
+      <div class="card"><canvas id="cacheChart"></canvas></div>
+    </div>
+  </main>
+
+  <script>
+    const calls = {{ data.calls | tojson }};
+    const labels = calls.map((c, i) => "#" + c.num);
+    const inputTokens = calls.map(c => c.in);
+    const outputTokens = calls.map(c => c.out);
+    const cachePct = calls.map(c => c.pct);
+
+    Chart.defaults.color = "#e6e6e6";
+    Chart.defaults.borderColor = "#2a2f3a";
+
+    new Chart(document.getElementById("tokensChart"), {
+      type: "line",
+      data: {
+        labels,
+        datasets: [
+          { label: "Input Tokens", data: inputTokens, tension: .35 },
+          { label: "Output Tokens", data: outputTokens, tension: .35 }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { title: { display: true, text: "Token Usage" } }
+      }
+    });
+
+    new Chart(document.getElementById("cacheChart"), {
+      type: "line",
+      data: {
+        labels,
+        datasets: [
+          { label: "Cache Hit %", data: cachePct, tension: .35 }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { title: { display: true, text: "Cache Hit Rate" } },
+        scales: { y: { min: 0, max: 100 } }
+      }
+    });
+  </script>
+</body>
+</html>

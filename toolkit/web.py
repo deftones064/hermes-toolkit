@@ -121,6 +121,18 @@ def build_dashboard_data():
     }
 
 
+@app.get("/analytics", response_class=HTMLResponse)
+async def analytics(request: Request):
+    data = build_dashboard_data()
+    return templates.TemplateResponse(
+        "analytics.html",
+        {
+            "request": request,
+            "data": data,
+        },
+    )
+
+
 @app.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request):
     return templates.TemplateResponse(
