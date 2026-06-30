@@ -1,4 +1,4 @@
-# Hermes Settings Manager
+# Hermes Toolkit
 
 A utility for managing Hermes Agent settings without manually editing ~/.hermes/config.yaml.
 
