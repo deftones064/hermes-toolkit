@@ -947,3 +947,138 @@ html[data-theme="light"] button:focus {
   color: var(--accent);
   flex: 0 0 22px;
 }
+
+/* Doctor v1.1 compact diagnostics */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.card-header-row,
+.doctor-category-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.doctor-category-header svg {
+  width: 22px;
+  height: 22px;
+  opacity: 0.72;
+}
+
+.section-muted {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.doctor-category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.doctor-category-card {
+  min-width: 0;
+}
+
+.compact-check-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.compact-check-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card-soft);
+}
+
+.compact-check-status svg {
+  width: 18px;
+  height: 18px;
+}
+
+.compact-check-row.good .compact-check-status,
+.recommendation-item.good svg {
+  color: var(--good);
+}
+
+.compact-check-row.warn .compact-check-status,
+.recommendation-item.warn svg {
+  color: var(--warn);
+}
+
+.compact-check-row.bad .compact-check-status,
+.recommendation-item.bad svg {
+  color: var(--bad);
+}
+
+.compact-check-main {
+  min-width: 0;
+}
+
+.compact-check-title {
+  font-weight: 700;
+}
+
+.compact-check-detail {
+  margin-top: 0.15rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compact-check-meta {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.compact-check-meta span {
+  display: block;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.compact-check-meta small {
+  display: block;
+  color: var(--muted);
+  margin-top: 0.12rem;
+}
+
+.recommendation-item span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.recommendation-item small {
+  color: var(--muted);
+}
+
+@media (max-width: 900px) {
+  .doctor-category-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .compact-check-row {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .compact-check-meta {
+    grid-column: 2;
+    text-align: left;
+  }
+}

@@ -4,7 +4,15 @@
 {% block page_title %}Doctor{% endblock %}
 {% block page_subtitle %}Diagnostics, health checks, and recommendations for Hermes Agent.{% endblock %}
 {% block header_actions %}
-<div class="live-pill"><span class="dot"></span><span><strong>Diagnostics</strong><small>Live config check</small></span></div>
+<div class="header-actions">
+  <form method="post" action="/doctor/run">
+    <button class="button secondary" type="submit">
+      <i data-lucide="activity"></i>
+      Run Full Diagnostic
+    </button>
+  </form>
+  <div class="live-pill"><span class="dot"></span><span><strong>Diagnostics</strong><small>Non-destructive</small></span></div>
+</div>
 {% endblock %}
 
 {% block content %}
@@ -31,25 +39,73 @@
   </div>
 
   <div class="card">
-    <h2>Provider</h2>
-    <p><span class="label">Active</span><br>{{ data.provider_label }}</p>
-    <p><span class="label">Model</span><br><code>{{ data.model.default }}</code></p>
+    <h2>Diagnostic Summary</h2>
+    <p><span class="label">Healthy</span><br>{{ data.doctor_summary.good }} checks</p>
+    <p><span class="label">Warnings</span><br>{{ data.doctor_summary.warn }} checks</p>
+    <p><span class="label">Critical</span><br>{{ data.doctor_summary.bad }} checks</p>
   </div>
 
   <div class="card">
-    <h2>Usage Summary</h2>
-    <p><span class="label">Avg input</span><br>{{ "{:,.0f}".format(data.avg_in) }} tokens</p>
-    <p><span class="label">Avg cache</span><br>{{ "{:.1f}%".format(data.avg_cache) }}</p>
+    <h2>Provider</h2>
+    <p><span class="label">Active</span><br>{{ data.provider_label or "Not configured" }}</p>
+    <p><span class="label">Model</span><br><code>{{ data.model.default or "Not configured" }}</code></p>
   </div>
 </div>
 
 <div class="grid-wide section">
   <div class="card">
-    <h2>Checks</h2>
-    <div class="check-list">
-      {% for check in data.doctor_checks %}
-      <div class="check-item {{ check.severity }}">
-        <div class="check-icon">
+    <div class="card-header-row">
+      <div>
+        <h2>Recommendations</h2>
+        <p class="section-muted">Generated from the current diagnostic state.</p>
+      </div>
+    </div>
+
+    <div class="recommendation-list">
+      {% for item in data.recommendations %}
+      <div class="recommendation-item {{ item.severity }}">
+        {% if item.severity == "good" %}
+          <i data-lucide="check-circle"></i>
+        {% elif item.severity == "warn" %}
+          <i data-lucide="alert-triangle"></i>
+        {% else %}
+          <i data-lucide="x-circle"></i>
+        {% endif %}
+        <span>
+          <strong>{{ item.title }}</strong>
+          <small>{{ item.detail }}</small>
+        </span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section doctor-category-grid">
+  {% for category in data.doctor_categories %}
+  <div class="card doctor-category-card">
+    <div class="doctor-category-header">
+      <div>
+        <h2>{{ category.title }}</h2>
+        <p class="section-muted">{{ category.checks | length }} checks</p>
+      </div>
+      {% if category.id == "environment" %}
+        <i data-lucide="server"></i>
+      {% elif category.id == "configuration" %}
+        <i data-lucide="settings"></i>
+      {% elif category.id == "runtime" %}
+        <i data-lucide="activity"></i>
+      {% elif category.id == "connectivity" %}
+        <i data-lucide="wifi"></i>
+      {% else %}
+        <i data-lucide="bar-chart-3"></i>
+      {% endif %}
+    </div>
+
+    <div class="compact-check-list">
+      {% for check in category.checks %}
+      <div class="compact-check-row {{ check.severity }}">
+        <div class="compact-check-status">
           {% if check.severity == "good" %}
             <i data-lucide="check-circle"></i>
           {% elif check.severity == "warn" %}
@@ -58,25 +114,26 @@
             <i data-lucide="x-circle"></i>
           {% endif %}
         </div>
-        <div>
-          <div class="check-title">{{ check.name }} <span>{{ check.status }}</span></div>
-          <div class="check-detail">{{ check.detail }}</div>
+
+        <div class="compact-check-main">
+          <div class="compact-check-title">{{ check.name }}</div>
+          <div class="compact-check-detail">{{ check.detail }}</div>
+        </div>
+
+        <div class="compact-check-meta">
+          <span>{{ check.status }}</span>
+          <small>{{ check.value }}</small>
         </div>
       </div>
       {% endfor %}
     </div>
   </div>
+  {% endfor %}
+</div>
 
+<div class="grid-wide section">
   <div class="card">
-    <h2>Recommendations</h2>
-    <div class="recommendation-list">
-      {% for item in data.recommendations %}
-      <div class="recommendation-item">
-        <i data-lucide="sparkles"></i>
-        <span>{{ item }}</span>
-      </div>
-      {% endfor %}
-    </div>
+    <p class="section-muted">Last diagnostic generation: {{ data.diagnostic_generated_at }}</p>
   </div>
 </div>
 {% endblock %}
