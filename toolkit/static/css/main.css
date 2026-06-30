@@ -1,6 +1,81 @@
 :root {
-  --bg:#0f1117; --sidebar:#0b0d12; --card:#181b24; --border:#2a2f3a;
-  --text:#e6e6e6; --muted:#9aa4b2; --good:#4ade80; --warn:#facc15; --bad:#f87171;
+  color-scheme: dark light;
+
+  --bg:#0f1117;
+  --sidebar:#0b0d12;
+  --card:#181b24;
+  --border:#2a2f3a;
+  --text:#e6e6e6;
+  --muted:#9aa4b2;
+  --good:#4ade80;
+  --warn:#facc15;
+  --bad:#f87171;
+  --input:#11141c;
+  --nav-active:#1c202b;
+  --button-hover:#262b39;
+  --shadow:0 8px 24px rgba(0,0,0,.25);
+  --accent:#c9a227;
+  --accent-soft:rgba(201,162,39,.16);
+  --progress-track:#11141c;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:#eef2f7;
+    --sidebar:#f8fafc;
+    --card:#ffffff;
+    --border:#cfd8e6;
+    --text:#0f172a;
+    --muted:#526176;
+    --good:#15803d;
+    --warn:#a16207;
+    --bad:#b91c1c;
+    --input:#f8fafc;
+    --nav-active:#ffffff;
+    --button-hover:#edf2f7;
+    --shadow:0 18px 42px rgba(15,23,42,.14);
+    --accent:#b08920;
+    --accent-soft:rgba(176,137,32,.16);
+    --progress-track:#dde5ef;
+  }
+}
+
+html[data-theme="dark"] {
+  --bg:#0f1117;
+  --sidebar:#0b0d12;
+  --card:#181b24;
+  --border:#2a2f3a;
+  --text:#e6e6e6;
+  --muted:#9aa4b2;
+  --good:#4ade80;
+  --warn:#facc15;
+  --bad:#f87171;
+  --input:#11141c;
+  --nav-active:#1c202b;
+  --button-hover:#262b39;
+  --shadow:0 8px 24px rgba(0,0,0,.25);
+  --accent:#c9a227;
+  --accent-soft:rgba(201,162,39,.16);
+  --progress-track:#11141c;
+}
+
+html[data-theme="light"] {
+  --bg:#eef2f7;
+  --sidebar:#f8fafc;
+  --card:#ffffff;
+  --border:#cfd8e6;
+  --text:#0f172a;
+  --muted:#526176;
+  --good:#15803d;
+  --warn:#a16207;
+  --bad:#b91c1c;
+  --input:#f8fafc;
+  --nav-active:#ffffff;
+  --button-hover:#edf2f7;
+  --shadow:0 18px 42px rgba(15,23,42,.14);
+  --accent:#b08920;
+  --accent-soft:rgba(176,137,32,.16);
+  --progress-track:#dde5ef;
 }
 
 * { box-sizing:border-box; }
@@ -23,7 +98,7 @@ body {
 
 .nav { display:flex; flex-direction:column; gap:6px; }
 .nav a { text-decoration:none; color:var(--muted); padding:12px; border-radius:10px; display:block; font-weight:700; }
-.nav a.active { background:#1c202b; color:var(--text); border:1px solid var(--border); }
+.nav a.active { background:var(--nav-active); color:var(--text); border:1px solid var(--border); }
 .nav a.disabled { opacity:.45; cursor:not-allowed; }
 
 .main { margin-left:260px; padding:28px; width:calc(100% - 260px); }
@@ -35,7 +110,7 @@ h1 { margin:0 0 6px 0; font-size:30px; }
 
 .card {
   background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px;
-  box-shadow:0 8px 24px rgba(0,0,0,.25);
+  box-shadow:var(--shadow);
 }
 
 .label { color:var(--muted); font-size:13px; text-transform:uppercase; letter-spacing:.08em; }
@@ -51,27 +126,27 @@ table { width:100%; border-collapse:collapse; margin-top:12px; font-size:14px; }
 th,td { border-bottom:1px solid var(--border); padding:8px; text-align:left; }
 th { color:var(--muted); }
 
-code { background:#11141c; padding:2px 6px; border-radius:6px; }
+code { background:var(--input); padding:2px 6px; border-radius:6px; }
 
 input, select {
   width:100%; margin-top:6px; padding:10px; border-radius:8px;
-  border:1px solid var(--border); background:#11141c; color:var(--text);
+  border:1px solid var(--border); background:var(--input); color:var(--text);
 }
 
 button {
   margin-top:18px; padding:10px 14px; border:1px solid var(--border);
-  border-radius:10px; background:#1c202b; color:var(--text); font-weight:800; cursor:pointer;
+  border-radius:10px; background:var(--nav-active); color:var(--text); font-weight:800; cursor:pointer;
 }
 
-button:hover { background:#262b39; }
+button:hover { background:var(--button-hover); }
 
 .notice {
-  background:#102418; border:1px solid #255f38; color:var(--good);
+  background:var(--accent-soft); border:1px solid var(--accent); color:var(--good);
   padding:12px; border-radius:10px; margin-bottom:16px;
 }
 
 .bar {
-  height:9px; background:#11141c; border-radius:999px; margin-top:10px;
+  height:9px; background:var(--input); border-radius:999px; margin-top:10px;
   overflow:hidden; border:1px solid var(--border);
 }
 
@@ -107,4 +182,116 @@ canvas { width:100%; height:320px; }
   body { display:block; }
   .sidebar { position:static; width:100%; border-right:0; border-bottom:1px solid var(--border); }
   .main { margin-left:0; width:100%; }
+}
+
+
+.theme-switcher {
+  margin-top: 24px;
+  padding: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.theme-switcher button {
+  margin-top: 8px;
+  margin-right: 4px;
+  padding: 7px 9px;
+  font-size: 12px;
+}
+
+.theme-switcher button.active {
+  background: var(--nav-active);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+
+/* Theme polish */
+.nav a.active {
+  position: relative;
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.theme-switcher button.active {
+  background: var(--accent-soft);
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.brand-logo {
+  box-shadow: 0 0 0 2px var(--card), 0 10px 24px rgba(0,0,0,.18);
+}
+
+html[data-theme="light"] .brand-logo {
+  box-shadow: 0 0 0 2px #ffffff, 0 10px 24px rgba(15,23,42,.16);
+}
+
+html[data-theme="light"] .sidebar {
+  box-shadow: 8px 0 24px rgba(15,23,42,.05);
+}
+
+html[data-theme="light"] .card {
+  border-color: #dbe3ef;
+}
+
+html[data-theme="light"] .live-pill {
+  background: #ffffff;
+}
+
+html[data-theme="light"] table tr:hover {
+  background: #f8fafc;
+}
+
+html[data-theme="dark"] table tr:hover {
+  background: #151923;
+}
+
+
+/* Light theme redesign */
+html[data-theme="light"] body {
+  background:
+    radial-gradient(circle at top right, rgba(176,137,32,.08), transparent 28rem),
+    var(--bg);
+}
+
+html[data-theme="light"] .sidebar {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 10px 0 28px rgba(15,23,42,.08);
+}
+
+html[data-theme="light"] .card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+html[data-theme="light"] .main {
+  background: transparent;
+}
+
+html[data-theme="light"] .nav a.active {
+  background: #ffffff;
+  box-shadow:
+    inset 3px 0 0 var(--accent),
+    0 8px 18px rgba(15,23,42,.08);
+}
+
+html[data-theme="light"] .live-pill {
+  background: #ffffff;
+  border-color: var(--border);
+  box-shadow: 0 8px 20px rgba(15,23,42,.08);
+}
+
+html[data-theme="light"] input,
+html[data-theme="light"] select {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+
+html[data-theme="light"] code {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+html[data-theme="light"] table tr:hover {
+  background: #f8fafc;
 }
