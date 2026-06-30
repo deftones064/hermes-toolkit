@@ -1,230 +1,31 @@
 #!/usr/bin/env python3
-import sys, re, shutil, subprocess
-from pathlib import Path
-from datetime import datetime
-import yaml
+import sys
 
-CONFIG = Path("/root/.hermes/config.yaml")
-LOG = Path("/root/.hermes/logs/agent.log")
-
-MODELS = {
-    "qwen": ("openrouter", "qwen/qwen3-coder"),
-    "gemini": ("openrouter", "google/gemini-2.5-pro"),
-    "gpt": ("openai-codex", "gpt-5.5"),
-}
-
-PROFILES = {
-    "low-cost": {
-        ("agent", "max_turns"): 30,
-        ("context_file_max_chars",): 40000,
-        ("file_read_max_chars",): 30000,
-        ("compression", "protect_last_n"): 10,
-        ("display", "resume_exchanges"): 5,
-        ("session_reset", "mode"): "idle",
-        ("session_reset", "idle_minutes"): 120,
-        ("max_live_sessions",): 8,
-    },
-    "balanced": {
-        ("agent", "max_turns"): 50,
-        ("context_file_max_chars",): 80000,
-        ("file_read_max_chars",): 60000,
-        ("compression", "protect_last_n"): 15,
-        ("display", "resume_exchanges"): 8,
-        ("session_reset", "mode"): "idle",
-        ("session_reset", "idle_minutes"): 240,
-        ("max_live_sessions",): 12,
-    },
-    "premium": {
-        ("agent", "max_turns"): 100,
-        ("context_file_max_chars",): None,
-        ("file_read_max_chars",): 100000,
-        ("compression", "protect_last_n"): 20,
-        ("display", "resume_exchanges"): 10,
-        ("session_reset", "mode"): "none",
-        ("max_live_sessions",): 16,
-    },
-}
-
-def die(msg):
-    print(f"ERROR: {msg}", file=sys.stderr)
-    sys.exit(1)
+from toolkit.config import load_config, save_config, set_path, parse_value
+from toolkit.status import show, status
+from toolkit.logs import print_logs
+from toolkit.doctor import doctor
+from toolkit.profiles import apply_profile
+from toolkit.models import apply_model
 
 def usage():
     print("""Usage:
   hermes-settings show
   hermes-settings status
   hermes-settings logs
+  hermes-settings doctor
   hermes-settings profile low-cost|balanced|premium
   hermes-settings model qwen|gemini|gpt
-  hermes-settings doctor
+  hermes-settings set key value
 """)
     sys.exit(1)
-
-def load():
-    if not CONFIG.exists():
-        die(f"Config not found: {CONFIG}")
-    return yaml.safe_load(CONFIG.read_text())
-
-def backup():
-    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    dst = CONFIG.with_name(f"config.yaml.bak.hermes-settings.{ts}")
-    shutil.copy2(CONFIG, dst)
-    return dst
-
-def save(cfg):
-    cfg.get("session_reset", {}).pop("idle", None)
-    dst = backup()
-    CONFIG.write_text(yaml.safe_dump(cfg, sort_keys=False))
-    print(f"Saved config. Backup: {dst}")
-
-def set_path(cfg, path, value):
-    node = cfg
-    for key in path[:-1]:
-        node = node.setdefault(key, {})
-    old = node.get(path[-1])
-    node[path[-1]] = value
-    print(f"{'.'.join(path)}: {old!r} -> {value!r}")
-
-def get_path(cfg, path, default=None):
-    node = cfg
-    for key in path:
-        if not isinstance(node, dict) or key not in node:
-            return default
-        node = node[key]
-    return node
-
-def parse_recent_api_calls(limit=80):
-    if not LOG.exists():
-        return []
-
-    lines = LOG.read_text(errors="ignore").splitlines()[-2000:]
-    calls = []
-
-    pat = re.compile(
-        r"API call #(?P<num>\d+): model=(?P<model>\S+) provider=(?P<provider>\S+) "
-        r"in=(?P<in>\d+) out=(?P<out>\d+) total=(?P<total>\d+).*?cache=(?P<cache>\d+)/(?P<cache_total>\d+) \((?P<pct>\d+)%\)"
-    )
-
-    for line in lines:
-        m = pat.search(line)
-        if m:
-            d = m.groupdict()
-            for k in ["num", "in", "out", "total", "cache", "cache_total", "pct"]:
-                d[k] = int(d[k])
-            calls.append(d)
-
-    return calls[-limit:]
-
-def show(cfg):
-    print("Model:", cfg.get("model"))
-    print("Max turns:", get_path(cfg, ("agent", "max_turns")))
-    print("max_live_sessions:", cfg.get("max_live_sessions"))
-    print("context_file_max_chars:", cfg.get("context_file_max_chars"))
-    print("file_read_max_chars:", cfg.get("file_read_max_chars"))
-    print("compression.protect_last_n:", get_path(cfg, ("compression", "protect_last_n")))
-    print("display.resume_exchanges:", get_path(cfg, ("display", "resume_exchanges")))
-    print("session_reset:", cfg.get("session_reset"))
-
-def status(cfg):
-    show(cfg)
-    print()
-
-    calls = parse_recent_api_calls()
-    if not calls:
-        print("No recent API call stats found.")
-        return
-
-    avg_in = sum(c["in"] for c in calls) / len(calls)
-    avg_out = sum(c["out"] for c in calls) / len(calls)
-    avg_cache = sum(c["pct"] for c in calls) / len(calls)
-    latest = calls[-1]
-
-    print("Recent API usage:")
-    print(f"  Calls analyzed: {len(calls)}")
-    print(f"  Latest model: {latest['provider']} / {latest['model']}")
-    print(f"  Latest tokens: in={latest['in']} out={latest['out']} total={latest['total']}")
-    print(f"  Latest cache: {latest['pct']}%")
-    print(f"  Avg input tokens: {avg_in:,.0f}")
-    print(f"  Avg output tokens: {avg_out:,.0f}")
-    print(f"  Avg cache hit: {avg_cache:.1f}%")
-    print()
-
-    if avg_in > 100000:
-        print("Status: 🔴 High prompt usage")
-    elif avg_in > 60000:
-        print("Status: 🟡 Moderate prompt usage")
-    else:
-        print("Status: 🟢 Prompt usage looks controlled")
-
-    if avg_cache < 50:
-        print("Cache: 🔴 Low cache hit rate")
-    elif avg_cache < 85:
-        print("Cache: 🟡 Cache could be better")
-    else:
-        print("Cache: 🟢 Cache hit rate looks good")
-
-def logs():
-    calls = parse_recent_api_calls(20)
-    if not calls:
-        print("No recent API calls found.")
-        return
-
-    for c in calls:
-        print(
-            f"#{c['num']:>2} {c['provider']}/{c['model']} "
-            f"in={c['in']:,} out={c['out']:,} total={c['total']:,} cache={c['pct']}%"
-        )
-
-def doctor(cfg):
-    issues = []
-
-    if get_path(cfg, ("agent", "max_turns"), 999) > 50:
-        issues.append("agent.max_turns is high")
-    if cfg.get("context_file_max_chars") is None:
-        issues.append("context_file_max_chars is unlimited")
-    if cfg.get("file_read_max_chars", 999999) > 60000:
-        issues.append("file_read_max_chars is high")
-    if get_path(cfg, ("compression", "protect_last_n"), 999) > 15:
-        issues.append("compression.protect_last_n is high")
-    if get_path(cfg, ("session_reset", "mode")) == "none":
-        issues.append("session_reset is disabled")
-    if "idle" in cfg.get("session_reset", {}):
-        issues.append("stray session_reset.idle key exists")
-
-    if not issues:
-        print("Hermes settings look good.")
-    else:
-        print("Potential issues:")
-        for i in issues:
-            print(f"  - {i}")
-
-    print()
-    status(cfg)
-
-def parse_value(raw):
-    low = raw.lower()
-    if low in ("true", "yes", "on"):
-        return True
-    if low in ("false", "no", "off"):
-        return False
-    if low in ("none", "null"):
-        return None
-    try:
-        return int(raw)
-    except ValueError:
-        pass
-    try:
-        return float(raw)
-    except ValueError:
-        pass
-    return raw
 
 def main():
     if len(sys.argv) < 2:
         usage()
 
     cmd = sys.argv[1]
-    cfg = load()
+    cfg = load_config()
 
     if cmd == "show":
         show(cfg)
@@ -233,34 +34,24 @@ def main():
         status(cfg)
 
     elif cmd == "logs":
-        logs()
+        print_logs()
 
     elif cmd == "doctor":
         doctor(cfg)
 
     elif cmd == "profile" and len(sys.argv) == 3:
-        name = sys.argv[2]
-        if name not in PROFILES:
-            usage()
-        for path, value in PROFILES[name].items():
-            set_path(cfg, path, value)
-        save(cfg)
+        apply_profile(cfg, sys.argv[2], set_path)
+        save_config(cfg)
 
     elif cmd == "model" and len(sys.argv) == 3:
-        name = sys.argv[2]
-        if name not in MODELS:
-            usage()
-        provider, model = MODELS[name]
-        set_path(cfg, ("model", "provider"), provider)
-        set_path(cfg, ("model", "default"), model)
-        save(cfg)
+        apply_model(cfg, sys.argv[2], set_path)
+        save_config(cfg)
 
     elif cmd == "set" and len(sys.argv) == 4:
-        key = sys.argv[2]
+        path = tuple(sys.argv[2].split("."))
         value = parse_value(sys.argv[3])
-        path = tuple(key.split("."))
         set_path(cfg, path, value)
-        save(cfg)
+        save_config(cfg)
 
     else:
         usage()
