@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Hermes Toolkit</title>
+  <meta http-equiv="refresh" content="10">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f1117;
+      color: #e6e6e6;
+      margin: 0;
+      padding: 24px;
+    }
+    h1 { margin-top: 0; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: #181b24;
+      border: 1px solid #2a2f3a;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+    .label {
+      color: #9aa4b2;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .value {
+      font-size: 24px;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+    .good { color: #4ade80; }
+    .warn { color: #facc15; }
+    .bad { color: #f87171; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+    th, td {
+      border-bottom: 1px solid #2a2f3a;
+      padding: 8px;
+      text-align: left;
+    }
+    th { color: #9aa4b2; }
+    code {
+      background: #11141c;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hermes Toolkit</h1>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Provider</div>
+      <div class="value">{{ data.model.provider }}</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Model</div>
+      <div class="value">{{ data.model.default }}</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Prompt Usage</div>
+      <div class="value {{ data.prompt_class }}">{{ data.prompt_status }}</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Cache Health</div>
+      <div class="value {{ data.cache_class }}">{{ data.cache_status }}</div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top: 16px;">
+    <div class="card">
+      <h2>Token Averages</h2>
+      <p><span class="label">Input</span><br>{{ "{:,.0f}".format(data.avg_in) }}</p>
+      <p><span class="label">Output</span><br>{{ "{:,.0f}".format(data.avg_out) }}</p>
+      <p><span class="label">Cache Hit</span><br>{{ "{:.1f}%".format(data.avg_cache) }}</p>
+    </div>
+
+    <div class="card">
+      <h2>Settings</h2>
+      <p>Max turns: <code>{{ data.settings.max_turns }}</code></p>
+      <p>Max live sessions: <code>{{ data.settings.max_live_sessions }}</code></p>
+      <p>Context file max chars: <code>{{ data.settings.context_file_max_chars }}</code></p>
+      <p>File read max chars: <code>{{ data.settings.file_read_max_chars }}</code></p>
+      <p>Protected recent messages: <code>{{ data.settings.protect_last_n }}</code></p>
+      <p>Resume exchanges: <code>{{ data.settings.resume_exchanges }}</code></p>
+      <p>Session reset: <code>{{ data.settings.session_reset }}</code></p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 16px;">
+    <h2>Recent API Calls</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Provider</th>
+          <th>Model</th>
+          <th>Input</th>
+          <th>Output</th>
+          <th>Total</th>
+          <th>Cache</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in data.calls %}
+        <tr>
+          <td>{{ c.num }}</td>
+          <td>{{ c.provider }}</td>
+          <td>{{ c.model }}</td>
+          <td>{{ "{:,}".format(c.in) }}</td>
+          <td>{{ "{:,}".format(c.out) }}</td>
+          <td>{{ "{:,}".format(c.total) }}</td>
+          <td>{{ c.pct }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

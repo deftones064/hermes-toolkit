@@ -29,6 +29,10 @@ def build_parser():
     sub.add_parser("logs", help="Show recent API token usage logs")
     sub.add_parser("doctor", help="Check configuration for common issues")
 
+    web = sub.add_parser("web", help="Run local web dashboard")
+    web.add_argument("--host", default="127.0.0.1")
+    web.add_argument("--port", type=int, default=8088)
+
     profile = sub.add_parser("profile", help="Apply a settings profile")
     profile.add_argument("name", choices=["low-cost", "balanced", "premium"])
 
@@ -58,6 +62,10 @@ def main():
 
     elif args.command == "doctor":
         doctor(cfg)
+
+    elif args.command == "web":
+        import uvicorn
+        uvicorn.run("toolkit.web:app", host=args.host, port=args.port, reload=False)
 
     elif args.command == "profile":
         apply_profile(cfg, args.name, set_path)
