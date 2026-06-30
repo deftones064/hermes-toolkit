@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% set active_page = "doctor" %}
+{% block title %}Hermes Toolkit - Doctor{% endblock %}
+{% block page_title %}Doctor{% endblock %}
+{% block page_subtitle %}Diagnostics, health checks, and recommendations for Hermes Agent.{% endblock %}
+{% block header_actions %}
+<div class="live-pill"><span class="dot"></span><span><strong>Diagnostics</strong><small>Live config check</small></span></div>
+{% endblock %}
+
+{% block content %}
+<div class="grid">
+  <div class="card health-card">
+    <div class="health-header">
+      <div>
+        <div class="label">Overall Health</div>
+        <div class="value {{ data.health_class }}">{{ data.health_score }}%</div>
+      </div>
+      <div class="health-badge {{ data.health_class }}">
+        <i data-lucide="stethoscope"></i>
+      </div>
+    </div>
+
+    <div class="health-bar">
+      <div class="health-bar-fill {{ data.health_class }}" style="width: {{ data.health_score }}%;"></div>
+    </div>
+
+    <div class="health-footer">
+      <span class="{{ data.health_class }}">{{ data.health_status }}</span>
+      <span>{{ data.doctor_checks | length }} checks</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Provider</h2>
+    <p><span class="label">Active</span><br>{{ data.provider_label }}</p>
+    <p><span class="label">Model</span><br><code>{{ data.model.default }}</code></p>
+  </div>
+
+  <div class="card">
+    <h2>Usage Summary</h2>
+    <p><span class="label">Avg input</span><br>{{ "{:,.0f}".format(data.avg_in) }} tokens</p>
+    <p><span class="label">Avg cache</span><br>{{ "{:.1f}%".format(data.avg_cache) }}</p>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <h2>Checks</h2>
+    <div class="check-list">
+      {% for check in data.doctor_checks %}
+      <div class="check-item {{ check.severity }}">
+        <div class="check-icon">
+          {% if check.severity == "good" %}
+            <i data-lucide="check-circle"></i>
+          {% elif check.severity == "warn" %}
+            <i data-lucide="alert-triangle"></i>
+          {% else %}
+            <i data-lucide="x-circle"></i>
+          {% endif %}
+        </div>
+        <div>
+          <div class="check-title">{{ check.name }} <span>{{ check.status }}</span></div>
+          <div class="check-detail">{{ check.detail }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Recommendations</h2>
+    <div class="recommendation-list">
+      {% for item in data.recommendations %}
+      <div class="recommendation-item">
+        <i data-lucide="sparkles"></i>
+        <span>{{ item }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -896,3 +896,54 @@ html[data-theme="light"] button:focus {
 .provider-chip:not(.disabled) {
   cursor: default;
 }
+
+/* Doctor page */
+.check-list,
+.recommendation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.check-item,
+.recommendation-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--input);
+}
+
+.check-icon svg,
+.recommendation-item svg {
+  width: 22px;
+  height: 22px;
+}
+
+.check-item.good .check-icon { color: var(--good); }
+.check-item.warn .check-icon { color: var(--warn); }
+.check-item.bad .check-icon { color: var(--bad); }
+
+.check-title {
+  font-weight: 900;
+}
+
+.check-title span {
+  margin-left: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.check-detail {
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.recommendation-item svg {
+  color: var(--accent);
+  flex: 0 0 22px;
+}

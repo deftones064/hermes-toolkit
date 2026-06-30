@@ -121,6 +121,62 @@ def build_dashboard_data():
     }
 
 
+def build_doctor_data():
+    data = build_dashboard_data()
+    checks = []
+
+    def add(name, status, detail, severity="good"):
+        checks.append({
+            "name": name,
+            "status": status,
+            "detail": detail,
+            "severity": severity,
+        })
+
+    if data["avg_cache"] >= 85:
+        add("Cache efficiency", "Healthy", f'{data["avg_cache"]:.1f}% average cache hit rate.', "good")
+    elif data["avg_cache"] >= 50:
+        add("Cache efficiency", "Needs attention", f'{data["avg_cache"]:.1f}% average cache hit rate.', "warn")
+    else:
+        add("Cache efficiency", "Poor", f'{data["avg_cache"]:.1f}% average cache hit rate.', "bad")
+
+    if data["avg_in"] <= 60000:
+        add("Prompt size", "Controlled", f'{data["avg_in"]:,.0f} average input tokens.', "good")
+    elif data["avg_in"] <= 100000:
+        add("Prompt size", "Moderate", f'{data["avg_in"]:,.0f} average input tokens.', "warn")
+    else:
+        add("Prompt size", "High", f'{data["avg_in"]:,.0f} average input tokens.', "bad")
+
+    if data["session_reset_mode"] == "idle":
+        add("Session reset", "Enabled", f'Idle reset after {data["session_reset_idle"]} minutes.', "good")
+    else:
+        add("Session reset", "Disabled", "Sessions will not reset automatically.", "warn")
+
+    if data["settings"]["max_live_sessions"] <= 8:
+        add("Live sessions", "Optimized", f'{data["settings"]["max_live_sessions"]} max live sessions.', "good")
+    else:
+        add("Live sessions", "Review", f'{data["settings"]["max_live_sessions"]} max live sessions may retain extra context.', "warn")
+
+    if data["settings"]["file_read_max_chars"] <= 60000:
+        add("File read limit", "Controlled", f'{data["settings"]["file_read_max_chars"]:,} characters per file.', "good")
+    else:
+        add("File read limit", "High", f'{data["settings"]["file_read_max_chars"]:,} characters per file.', "warn")
+
+    recommendations = []
+    for check in checks:
+        if check["severity"] == "warn":
+            recommendations.append(f'Review: {check["name"]} - {check["detail"]}')
+        if check["severity"] == "bad":
+            recommendations.append(f'Fix soon: {check["name"]} - {check["detail"]}')
+
+    if not recommendations:
+        recommendations.append("No immediate action needed. Hermes Toolkit considers this configuration healthy.")
+
+    data["doctor_checks"] = checks
+    data["recommendations"] = recommendations
+    return data
+
+
 @app.get("/analytics", response_class=HTMLResponse)
 async def analytics(request: Request):
     data = build_dashboard_data()
@@ -148,6 +204,17 @@ from fastapi.responses import RedirectResponse
 from toolkit.config import save_config, set_path
 from toolkit.profiles import apply_profile
 from toolkit.models import apply_model
+
+
+@app.get("/doctor", response_class=HTMLResponse)
+async def doctor_page(request: Request):
+    return templates.TemplateResponse(
+        "doctor.html",
+        {
+            "request": request,
+            "data": build_doctor_data(),
+        },
+    )
 
 
 @app.get("/configuration", response_class=HTMLResponse)
