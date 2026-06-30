@@ -880,3 +880,19 @@ html[data-theme="light"] button:focus {
   width: 100%;
   padding: 13px 16px;
 }
+
+.provider-chip span {
+  margin-left: 6px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+
+.provider-chip.active span {
+  color: var(--accent);
+}
+
+.provider-chip:not(.disabled) {
+  cursor: default;
+}
