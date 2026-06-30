@@ -12,7 +12,7 @@ A utility for managing Hermes Agent settings without manually editing ~/.hermes/
 - Modify individual settings
 
 ## Commands
-
+```
 hermes-settings show
 hermes-settings status
 hermes-settings logs
@@ -27,8 +27,10 @@ hermes-settings model gemini
 hermes-settings model gpt
 
 hermes-settings set agent.max_turns 30
+```
 
 ## Installation
-
+```
 cp hermes-settings /usr/local/bin/hermes-settings
 chmod +x /usr/local/bin/hermes-settings
+```
