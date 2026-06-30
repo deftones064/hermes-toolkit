@@ -30,7 +30,7 @@
     <nav class="nav">
       <a class="{% if active_page == 'dashboard' %}active{% endif %}" href="/"><i data-lucide="layout-dashboard" class="nav-icon"></i><span>Dashboard</span></a>
       <a class="{% if active_page == 'analytics' %}active{% endif %}" href="/analytics"><i data-lucide="chart-line" class="nav-icon"></i><span>Analytics</span></a>
-      <a class="disabled" href="#"><i data-lucide="circle-dollar-sign" class="nav-icon"></i><span>Cost</span></a>
+      <a class="{% if active_page == 'cost' %}active{% endif %}" href="/cost"><i data-lucide="circle-dollar-sign" class="nav-icon"></i><span>Cost</span></a>
       <a class="{% if active_page == 'doctor' %}active{% endif %}" href="/doctor"><i data-lucide="stethoscope" class="nav-icon"></i><span>Doctor</span></a>
       <a class="{% if active_page == 'configuration' %}active{% endif %}" href="/configuration"><i data-lucide="settings" class="nav-icon"></i><span>Configuration</span></a>
       <a class="disabled" href="#"><i data-lucide="bot" class="nav-icon"></i><span>Models</span></a>

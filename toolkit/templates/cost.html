@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% set active_page = "cost" %}
+{% block title %}Hermes Toolkit - Cost{% endblock %}
+{% block page_title %}Cost{% endblock %}
+{% block page_subtitle %}Estimated token cost, cache savings, and recent model usage.{% endblock %}
+{% block header_actions %}
+<div class="live-pill"><span class="dot"></span><span><strong>Estimated</strong><small>From recent logs</small></span></div>
+{% endblock %}
+
+{% block content %}
+<div class="grid">
+  <div class="card health-card">
+    <div class="health-header">
+      <div>
+        <div class="label">Estimated Cost</div>
+        <div class="value {{ data.cost.cost_class }}">${{ "%.4f"|format(data.cost.total_cost) }}</div>
+      </div>
+      <div class="health-badge {{ data.cost.cost_class }}">
+        <i data-lucide="circle-dollar-sign"></i>
+      </div>
+    </div>
+
+    <div class="health-bar">
+      <div class="health-bar-fill {{ data.cost.cost_class }}" style="width: {{ [100, data.cost.total_cost * 100] | min }}%;"></div>
+    </div>
+
+    <div class="health-footer">
+      <span class="{{ data.cost.cost_class }}">{{ data.cost.cost_status }}</span>
+      <span>{{ data.cost.call_count }} calls</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Cache Savings</h2>
+    <p><span class="label">Estimated saved</span><br>${{ "%.4f"|format(data.cost.total_savings) }}</p>
+    <p><span class="label">Status</span><br><span class="{{ data.cost.savings_class }}">{{ data.cost.savings_status }}</span></p>
+  </div>
+
+  <div class="card">
+    <h2>Token Usage</h2>
+    <p><span class="label">Input</span><br>{{ "{:,.0f}".format(data.cost.total_input_tokens) }} tokens</p>
+    <p><span class="label">Output</span><br>{{ "{:,.0f}".format(data.cost.total_output_tokens) }} tokens</p>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h2>Cached Tokens</h2>
+    <p><span class="label">Cached input</span><br>{{ "{:,.0f}".format(data.cost.total_cached_tokens) }} tokens</p>
+    <p><span class="label">Average cache</span><br>{{ "%.1f"|format(data.cost.avg_cache) }}%</p>
+  </div>
+
+  <div class="card">
+    <h2>Average Call</h2>
+    <p><span class="label">Estimated cost</span><br>${{ "%.5f"|format(data.cost.avg_cost) }}</p>
+    <p><span class="label">Window</span><br>Last {{ data.cost.call_count }} parsed calls</p>
+  </div>
+
+  <div class="card">
+    <h2>Pricing Mode</h2>
+    <p><span class="label">Source</span><br>Internal estimate table</p>
+    <p><span class="label">Confidence</span><br>Approximate</p>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Recent Estimated Calls</h2>
+        <p class="section-muted">{{ data.cost.pricing_note }}</p>
+      </div>
+    </div>
+
+    {% if data.cost.calls %}
+    <div class="cost-table-wrap">
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Call</th>
+            <th>Provider</th>
+            <th>Model</th>
+            <th>Input</th>
+            <th>Output</th>
+            <th>Cache</th>
+            <th>Estimated</th>
+            <th>Saved</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for call in data.cost.calls %}
+          <tr>
+            <td>#{{ call.num }}</td>
+            <td>{{ call.provider }}</td>
+            <td><code>{{ call.model }}</code></td>
+            <td>{{ "{:,.0f}".format(call["in"]) }}</td>
+            <td>{{ "{:,.0f}".format(call.out) }}</td>
+            <td>{{ call.pct }}%</td>
+            <td>${{ "%.5f"|format(call.estimated_cost) }}</td>
+            <td>${{ "%.5f"|format(call.estimated_savings) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i data-lucide="circle-dollar-sign"></i>
+      <strong>No recent API usage found</strong>
+      <span>Cost estimates will appear after Hermes API calls are parsed from the log.</span>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
