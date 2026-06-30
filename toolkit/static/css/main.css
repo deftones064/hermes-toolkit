@@ -739,3 +739,91 @@ html[data-theme="light"] button:focus {
 .metric-icon {
   color: var(--accent);
 }
+
+/* Health card redesign */
+.health-card {
+  min-height: 168px;
+}
+
+.health-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.health-badge {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.health-badge svg {
+  width: 24px;
+  height: 24px;
+}
+
+.health-bar {
+  margin-top: 18px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--progress-track);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.health-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--good);
+}
+
+.health-bar-fill.warn {
+  background: var(--warn);
+}
+
+.health-bar-fill.bad {
+  background: var(--bad);
+}
+
+.health-footer {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.health-footer span:first-child {
+  font-weight: 900;
+}
+
+/* Status pill polish */
+.live-pill {
+  min-width: 168px;
+  padding: 9px 13px;
+  align-items: center;
+}
+
+.live-pill span:not(.dot) {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.live-pill strong {
+  color: var(--text);
+  font-size: 13px;
+}
+
+.live-pill small {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 3px;
+}

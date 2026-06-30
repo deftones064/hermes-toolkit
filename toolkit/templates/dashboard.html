@@ -5,18 +5,31 @@
 {% block page_title %}Dashboard{% endblock %}
 {% block page_subtitle %}Hermes Agent status, usage, and configuration overview.{% endblock %}
 {% block header_actions %}
-<div class="live-pill"><span class="dot"></span> Connected · Auto-refresh 10s</div>
+<div class="live-pill"><span class="dot"></span><span><strong>Connected</strong><small>Auto-refresh 10s</small></span></div>
 {% endblock %}
 
 {% block content %}
 
 <div class="grid">
-  <div class="card">
-    <div class="metric-icon">♥</div>
-    <div class="label">Health</div>
-    <div class="value {{ data.health_class }}">{{ data.health_score }} / 100</div>
-    <div class="{{ data.health_class }}">{{ data.health_status }}</div>
-    <div class="status-detail">No critical issues detected</div>
+  <div class="card health-card">
+    <div class="health-header">
+      <div>
+        <div class="label">System Health</div>
+        <div class="value {{ data.health_class }}">{{ data.health_score }}%</div>
+      </div>
+      <div class="health-badge {{ data.health_class }}">
+        <i data-lucide="activity"></i>
+      </div>
+    </div>
+
+    <div class="health-bar">
+      <div class="health-bar-fill {{ data.health_class }}" style="width: {{ data.health_score }}%;"></div>
+    </div>
+
+    <div class="health-footer">
+      <span class="{{ data.health_class }}">{{ data.health_status }}</span>
+      <span>No critical issues detected</span>
+    </div>
   </div>
 
   <div class="card">
