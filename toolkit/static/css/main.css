@@ -353,3 +353,49 @@ html[data-theme="light"] table tr:hover {
   background: var(--accent-soft);
   border-color: var(--accent);
 }
+
+
+/* Hermes brand accent */
+a {
+  color: var(--accent);
+}
+
+button {
+  border-color: var(--border);
+}
+
+button:hover {
+  border-color: var(--accent);
+}
+
+.nav a.active {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+
+.label {
+  color: var(--muted);
+}
+
+.card h2::after {
+  content: "";
+  display: block;
+  width: 34px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 999px;
+  margin-top: 8px;
+}
+
+html[data-theme="light"] .nav a.active {
+  background:
+    linear-gradient(90deg, var(--accent-soft), #ffffff 45%);
+}
+
+html[data-theme="dark"] .nav a.active {
+  background:
+    linear-gradient(90deg, var(--accent-soft), var(--nav-active) 50%);
+}
+
+.theme-switcher button.active {
+  box-shadow: 0 0 0 1px var(--accent);
+}
