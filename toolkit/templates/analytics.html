@@ -19,38 +19,7 @@
 
 {% block scripts %}
 <script>
-const calls = {{ data.calls | tojson }};
-const labels = calls.map((c, i) => "Request " + (i + 1));
-const inputTokens = calls.map(c => c.in);
-const outputTokens = calls.map(c => c.out);
-const cachePct = calls.map(c => c.pct);
-
-Chart.defaults.color = "#e6e6e6";
-Chart.defaults.borderColor = "#2a2f3a";
-
-new Chart(document.getElementById("tokensChart"), {
-  type: "line",
-  data: {
-    labels,
-    datasets: [
-      { label: "Input Tokens", data: inputTokens, tension: .35 },
-      { label: "Output Tokens", data: outputTokens, tension: .35 }
-    ]
-  },
-  options: { responsive:true, plugins:{ title:{ display:true, text:"Token Usage" } } }
-});
-
-new Chart(document.getElementById("cacheChart"), {
-  type: "line",
-  data: {
-    labels,
-    datasets: [{ label: "Cache Hit %", data: cachePct, tension: .35 }]
-  },
-  options: {
-    responsive:true,
-    plugins:{ title:{ display:true, text:"Cache Hit Rate" } },
-    scales:{ y:{ min:0, max:100 } }
-  }
-});
+  window.HERMES_CALLS = {{ data.calls | tojson }};
 </script>
+<script src="/static/js/analytics.js"></script>
 {% endblock %}
