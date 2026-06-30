@@ -5,132 +5,305 @@
   <title>Hermes Toolkit</title>
   <meta http-equiv="refresh" content="10">
   <style>
+    :root {
+      --bg: #0f1117;
+      --sidebar: #0b0d12;
+      --card: #181b24;
+      --border: #2a2f3a;
+      --text: #e6e6e6;
+      --muted: #9aa4b2;
+      --good: #4ade80;
+      --warn: #facc15;
+      --bad: #f87171;
+      --accent: #c0c4cc;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #0f1117;
-      color: #e6e6e6;
+      background: var(--bg);
+      color: var(--text);
       margin: 0;
-      padding: 24px;
+      display: flex;
+      min-height: 100vh;
     }
-    h1 { margin-top: 0; }
+
+    .sidebar {
+      width: 260px;
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      padding: 24px 18px;
+      position: fixed;
+      inset: 0 auto 0 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #e5e7eb, #6b7280);
+      color: #050505;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 20px;
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: var(--muted);
+      padding: 11px 12px;
+      border-radius: 10px;
+      display: block;
+      font-weight: 600;
+    }
+
+    .nav a.active {
+      background: #1c202b;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .nav a.disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    .main {
+      margin-left: 260px;
+      padding: 28px;
+      width: calc(100% - 260px);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .pill {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 16px;
     }
+
     .card {
-      background: #181b24;
-      border: 1px solid #2a2f3a;
+      background: var(--card);
+      border: 1px solid var(--border);
       border-radius: 14px;
       padding: 18px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.25);
     }
+
     .label {
-      color: #9aa4b2;
+      color: var(--muted);
       font-size: 13px;
       text-transform: uppercase;
       letter-spacing: .08em;
     }
+
     .value {
       font-size: 24px;
-      font-weight: 700;
+      font-weight: 800;
       margin-top: 6px;
     }
-    .good { color: #4ade80; }
-    .warn { color: #facc15; }
-    .bad { color: #f87171; }
+
+    .good { color: var(--good); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--bad); }
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 12px;
       font-size: 14px;
     }
+
     th, td {
-      border-bottom: 1px solid #2a2f3a;
+      border-bottom: 1px solid var(--border);
       padding: 8px;
       text-align: left;
     }
-    th { color: #9aa4b2; }
+
+    th { color: var(--muted); }
+
     code {
       background: #11141c;
       padding: 2px 6px;
       border-radius: 6px;
     }
+
+    .section {
+      margin-top: 16px;
+    }
+
+    @media (max-width: 820px) {
+      body { display: block; }
+      .sidebar {
+        position: static;
+        width: 100%;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .main {
+        margin-left: 0;
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>Hermes Toolkit</h1>
-
-  <div class="grid">
-    <div class="card">
-      <div class="label">Provider</div>
-      <div class="value">{{ data.model.provider }}</div>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">H</div>
+      <div>
+        <div class="brand-title">Hermes Toolkit</div>
+        <div class="brand-subtitle">Control. Optimize. Evolve.</div>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="label">Model</div>
-      <div class="value">{{ data.model.default }}</div>
+    <nav class="nav">
+      <a class="active" href="/">Dashboard</a>
+      <a class="disabled" href="#">Analytics</a>
+      <a class="disabled" href="#">Cost</a>
+      <a class="disabled" href="#">Doctor</a>
+      <a class="disabled" href="#">Configuration</a>
+      <a class="disabled" href="#">Models</a>
+      <a class="disabled" href="#">Sessions</a>
+      <a class="disabled" href="#">Logs</a>
+      <a class="disabled" href="#">Skills</a>
+      <a class="disabled" href="#">Memory</a>
+      <a class="disabled" href="#">About</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h1>Dashboard</h1>
+        <div class="subtitle">Hermes Agent status, usage, and configuration overview.</div>
+      </div>
+      <div class="pill">Auto-refresh: 10s</div>
     </div>
 
-    <div class="card">
-      <div class="label">Prompt Usage</div>
-      <div class="value {{ data.prompt_class }}">{{ data.prompt_status }}</div>
+    <div class="grid">
+      <div class="card">
+        <div class="label">Provider</div>
+        <div class="value">{{ data.model.provider }}</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Model</div>
+        <div class="value">{{ data.model.default }}</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Prompt Usage</div>
+        <div class="value {{ data.prompt_class }}">{{ data.prompt_status }}</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Cache Health</div>
+        <div class="value {{ data.cache_class }}">{{ data.cache_status }}</div>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="label">Cache Health</div>
-      <div class="value {{ data.cache_class }}">{{ data.cache_status }}</div>
-    </div>
-  </div>
+    <div class="grid section">
+      <div class="card">
+        <h2>Token Averages</h2>
+        <p><span class="label">Input</span><br>{{ "{:,.0f}".format(data.avg_in) }}</p>
+        <p><span class="label">Output</span><br>{{ "{:,.0f}".format(data.avg_out) }}</p>
+        <p><span class="label">Cache Hit</span><br>{{ "{:.1f}%".format(data.avg_cache) }}</p>
+      </div>
 
-  <div class="grid" style="margin-top: 16px;">
-    <div class="card">
-      <h2>Token Averages</h2>
-      <p><span class="label">Input</span><br>{{ "{:,.0f}".format(data.avg_in) }}</p>
-      <p><span class="label">Output</span><br>{{ "{:,.0f}".format(data.avg_out) }}</p>
-      <p><span class="label">Cache Hit</span><br>{{ "{:.1f}%".format(data.avg_cache) }}</p>
+      <div class="card">
+        <h2>Settings</h2>
+        <p>Max turns: <code>{{ data.settings.max_turns }}</code></p>
+        <p>Max live sessions: <code>{{ data.settings.max_live_sessions }}</code></p>
+        <p>Context file max chars: <code>{{ data.settings.context_file_max_chars }}</code></p>
+        <p>File read max chars: <code>{{ data.settings.file_read_max_chars }}</code></p>
+        <p>Protected recent messages: <code>{{ data.settings.protect_last_n }}</code></p>
+        <p>Resume exchanges: <code>{{ data.settings.resume_exchanges }}</code></p>
+        <p>Session reset: <code>{{ data.settings.session_reset }}</code></p>
+      </div>
     </div>
 
-    <div class="card">
-      <h2>Settings</h2>
-      <p>Max turns: <code>{{ data.settings.max_turns }}</code></p>
-      <p>Max live sessions: <code>{{ data.settings.max_live_sessions }}</code></p>
-      <p>Context file max chars: <code>{{ data.settings.context_file_max_chars }}</code></p>
-      <p>File read max chars: <code>{{ data.settings.file_read_max_chars }}</code></p>
-      <p>Protected recent messages: <code>{{ data.settings.protect_last_n }}</code></p>
-      <p>Resume exchanges: <code>{{ data.settings.resume_exchanges }}</code></p>
-      <p>Session reset: <code>{{ data.settings.session_reset }}</code></p>
+    <div class="card section">
+      <h2>Recent API Calls</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Provider</th>
+            <th>Model</th>
+            <th>Input</th>
+            <th>Output</th>
+            <th>Total</th>
+            <th>Cache</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in data.calls %}
+          <tr>
+            <td>{{ c.num }}</td>
+            <td>{{ c.provider }}</td>
+            <td>{{ c.model }}</td>
+            <td>{{ "{:,}".format(c.in) }}</td>
+            <td>{{ "{:,}".format(c.out) }}</td>
+            <td>{{ "{:,}".format(c.total) }}</td>
+            <td>{{ c.pct }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
-  </div>
-
-  <div class="card" style="margin-top: 16px;">
-    <h2>Recent API Calls</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Provider</th>
-          <th>Model</th>
-          <th>Input</th>
-          <th>Output</th>
-          <th>Total</th>
-          <th>Cache</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for c in data.calls %}
-        <tr>
-          <td>{{ c.num }}</td>
-          <td>{{ c.provider }}</td>
-          <td>{{ c.model }}</td>
-          <td>{{ "{:,}".format(c.in) }}</td>
-          <td>{{ "{:,}".format(c.out) }}</td>
-          <td>{{ "{:,}".format(c.total) }}</td>
-          <td>{{ c.pct }}%</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+  </main>
 </body>
 </html>
