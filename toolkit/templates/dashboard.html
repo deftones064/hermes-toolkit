@@ -2,15 +2,13 @@
 {% set active_page = "dashboard" %}
 {% block title %}Hermes Toolkit - Dashboard{% endblock %}
 {% block refresh %}<meta http-equiv="refresh" content="10">{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_subtitle %}Hermes Agent status, usage, and configuration overview.{% endblock %}
+{% block header_actions %}
+<div class="live-pill"><span class="dot"></span> Connected · Auto-refresh 10s</div>
+{% endblock %}
 
 {% block content %}
-<div class="topbar">
-  <div>
-    <h1>Dashboard</h1>
-    <div class="subtitle">Hermes Agent status, usage, and configuration overview.</div>
-  </div>
-  <div class="live-pill"><span class="dot"></span> Connected · Auto-refresh 10s</div>
-</div>
 
 <div class="grid">
   <div class="card">

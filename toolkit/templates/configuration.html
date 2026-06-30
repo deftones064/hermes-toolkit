@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 {% set active_page = "configuration" %}
 {% block title %}Hermes Toolkit - Configuration{% endblock %}
+{% block page_title %}Configuration{% endblock %}
+{% block page_subtitle %}Update Hermes Agent settings without editing YAML.{% endblock %}
+{% block header_actions %}
+<div class="live-pill"><span class="dot"></span> Ready to save changes</div>
+{% endblock %}
 
 {% block content %}
-<h1>Configuration</h1>
-<div class="subtitle">Update Hermes Agent settings without editing YAML.</div>
 
 {% if request.query_params.get("saved") %}
   <div class="notice">Configuration saved. Restart Hermes Agent/gateway if the setting requires reload.</div>

@@ -3,10 +3,13 @@
 {% block title %}Hermes Toolkit - Analytics{% endblock %}
 {% block refresh %}<meta http-equiv="refresh" content="15">{% endblock %}
 {% block head %}<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>{% endblock %}
+{% block page_title %}Analytics{% endblock %}
+{% block page_subtitle %}Recent token usage and cache behavior.{% endblock %}
+{% block header_actions %}
+<div class="live-pill"><span class="dot"></span> Connected · Auto-refresh 15s</div>
+{% endblock %}
 
 {% block content %}
-<h1>Analytics</h1>
-<div class="subtitle">Recent token usage and cache behavior.</div>
 
 <div class="grid-wide">
   <div class="card"><canvas id="tokensChart"></canvas></div>

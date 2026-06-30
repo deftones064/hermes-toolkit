@@ -48,11 +48,22 @@
   </aside>
 
   <main class="main">
+    <header class="page-header">
+      <div>
+        <h1>{% block page_title %}{% endblock %}</h1>
+        <div class="subtitle">{% block page_subtitle %}{% endblock %}</div>
+      </div>
+      <div class="header-actions">
+        {% block header_actions %}
+        <div class="live-pill"><span class="dot"></span> Connected</div>
+        {% endblock %}
+      </div>
+    </header>
+
     {% block content %}{% endblock %}
   </main>
 
   {% block scripts %}{% endblock %}
-
   <script src="/static/js/theme.js"></script>
 </body>
 </html>

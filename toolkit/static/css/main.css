@@ -399,3 +399,39 @@ html[data-theme="dark"] .nav a.active {
 .theme-switcher button.active {
   box-shadow: 0 0 0 1px var(--accent);
 }
+
+/* Top header polish */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 26px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.page-header .subtitle {
+  margin-top: 8px;
+  margin-bottom: 0;
+  font-size: 15px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+html[data-theme="light"] .page-header {
+  border-bottom-color: #d9e2ef;
+}
