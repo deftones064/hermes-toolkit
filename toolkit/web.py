@@ -142,3 +142,64 @@ async def dashboard(request: Request):
             "data": build_dashboard_data(),
         },
     )
+
+from fastapi import Form
+from fastapi.responses import RedirectResponse
+from toolkit.config import save_config, set_path
+from toolkit.profiles import apply_profile
+from toolkit.models import apply_model
+
+
+@app.get("/configuration", response_class=HTMLResponse)
+async def configuration(request: Request):
+    return templates.TemplateResponse(
+        "configuration.html",
+        {
+            "request": request,
+            "data": build_dashboard_data(),
+        },
+    )
+
+
+@app.post("/configuration/profile")
+async def configuration_profile(profile: str = Form(...)):
+    cfg = load_config()
+    apply_profile(cfg, profile, set_path)
+    save_config(cfg)
+    return RedirectResponse("/configuration?saved=1", status_code=303)
+
+
+@app.post("/configuration/model")
+async def configuration_model(model: str = Form(...)):
+    cfg = load_config()
+    apply_model(cfg, model, set_path)
+    save_config(cfg)
+    return RedirectResponse("/configuration?saved=1", status_code=303)
+
+
+@app.post("/configuration/settings")
+async def configuration_settings(
+    max_turns: int = Form(...),
+    max_live_sessions: int = Form(...),
+    context_file_max_chars: int = Form(...),
+    file_read_max_chars: int = Form(...),
+    protect_last_n: int = Form(...),
+    resume_exchanges: int = Form(...),
+    session_reset_mode: str = Form(...),
+    session_reset_idle_minutes: int = Form(...),
+    session_reset_at_hour: int = Form(...),
+):
+    cfg = load_config()
+
+    set_path(cfg, ("agent", "max_turns"), max_turns)
+    set_path(cfg, ("max_live_sessions",), max_live_sessions)
+    set_path(cfg, ("context_file_max_chars",), context_file_max_chars)
+    set_path(cfg, ("file_read_max_chars",), file_read_max_chars)
+    set_path(cfg, ("compression", "protect_last_n"), protect_last_n)
+    set_path(cfg, ("display", "resume_exchanges"), resume_exchanges)
+    set_path(cfg, ("session_reset", "mode"), session_reset_mode)
+    set_path(cfg, ("session_reset", "idle_minutes"), session_reset_idle_minutes)
+    set_path(cfg, ("session_reset", "at_hour"), session_reset_at_hour)
+
+    save_config(cfg)
+    return RedirectResponse("/configuration?saved=1", status_code=303)
