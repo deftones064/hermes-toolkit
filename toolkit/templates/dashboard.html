@@ -12,22 +12,26 @@
 
 <div class="grid">
   <div class="card">
+    <div class="metric-icon">♥</div>
     <div class="label">Health</div>
     <div class="value {{ data.health_class }}">{{ data.health_score }} / 100</div>
     <div class="{{ data.health_class }}">{{ data.health_status }}</div>
   </div>
 
   <div class="card">
+    <div class="metric-icon">◈</div>
     <div class="label">Provider</div>
     <div class="value">{{ data.provider_label }}</div>
   </div>
 
   <div class="card">
+    <div class="metric-icon">⚡</div>
     <div class="label">Model</div>
     <div class="value">{{ data.model.default }}</div>
   </div>
 
   <div class="card">
+    <div class="metric-icon">◌</div>
     <div class="label">Cache Health</div>
     <div class="value {{ data.cache_class }}">{{ data.cache_status }}</div>
     <div class="bar"><div class="bar-fill {{ data.cache_class }}" style="width: {{ data.avg_cache }}%;"></div></div>

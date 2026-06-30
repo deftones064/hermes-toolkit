@@ -549,3 +549,24 @@ select {
 .brand-subtitle {
   letter-spacing: .02em;
 }
+
+/* Icons */
+.nav-icon {
+  width: 22px;
+  height: 22px;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 22px;
+  color: var(--accent);
+  font-weight: 900;
+}
+
+.nav a.disabled .nav-icon {
+  color: var(--muted);
+}
+
+.metric-icon {
+  font-size: 20px;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
