@@ -15,6 +15,19 @@ from toolkit.config import CONFIG, LOG
 
 
 
+
+
+@dataclass(frozen=True)
+class SystemServiceFact:
+    """A read-only service inventory placeholder that does not query services."""
+
+    name: str
+    value: str
+    summary: str
+    status: str
+    icon: str
+
+
 @dataclass(frozen=True)
 class SystemRepositoryFact:
     """A read-only repository inventory placeholder that does not query Git."""
@@ -88,6 +101,42 @@ SAFETY_NOTE = (
 
 
 
+
+
+
+def build_system_service_facts() -> list[SystemServiceFact]:
+    """Return service inventory placeholders without querying service state."""
+
+    return [
+        SystemServiceFact(
+            name="Web App Process",
+            value="planned",
+            summary="Web application process inventory is planned but no process list is queried.",
+            status="planned",
+            icon="panel-top",
+        ),
+        SystemServiceFact(
+            name="Scheduler / Future Worker",
+            value="planned",
+            summary="Scheduler or worker inventory is planned but no service manager is queried.",
+            status="planned",
+            icon="calendar-clock",
+        ),
+        SystemServiceFact(
+            name="Local Model Runtime",
+            value="planned",
+            summary="Local model runtime inventory is planned but no runtime endpoint is probed.",
+            status="planned",
+            icon="brain-circuit",
+        ),
+        SystemServiceFact(
+            name="Notification Channel",
+            value="planned",
+            summary="Notification channel inventory is planned but no delivery channel is contacted.",
+            status="planned",
+            icon="send",
+        ),
+    ]
 
 
 def build_system_repository_facts() -> list[SystemRepositoryFact]:
@@ -314,6 +363,7 @@ def build_system_page_data() -> dict[str, object]:
     runtime_facts = build_system_runtime_facts()
     config_facts = build_system_config_facts()
     repository_facts = build_system_repository_facts()
+    service_facts = build_system_service_facts()
 
     return {
         "title": "System Inventory",
@@ -328,4 +378,5 @@ def build_system_page_data() -> dict[str, object]:
         "runtime_facts": runtime_facts,
         "config_facts": config_facts,
         "repository_facts": repository_facts,
+        "service_facts": service_facts,
     }

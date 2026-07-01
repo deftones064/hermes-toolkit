@@ -9,6 +9,7 @@ from toolkit.system_page import (
     SystemReadinessItem,
     SystemRepositoryFact,
     SystemRuntimeFact,
+    SystemServiceFact,
     build_system_config_facts,
     build_system_page_data,
     build_system_page_summary,
@@ -16,6 +17,7 @@ from toolkit.system_page import (
     build_system_readiness_items,
     build_system_repository_facts,
     build_system_runtime_facts,
+    build_system_service_facts,
 )
 
 
@@ -128,6 +130,42 @@ def test_system_readiness_items_are_read_only():
 
 
 
+
+
+
+def test_system_service_facts_are_static_placeholders():
+    facts = build_system_service_facts()
+
+    assert facts == [
+        SystemServiceFact(
+            name="Web App Process",
+            value="planned",
+            summary="Web application process inventory is planned but no process list is queried.",
+            status="planned",
+            icon="panel-top",
+        ),
+        SystemServiceFact(
+            name="Scheduler / Future Worker",
+            value="planned",
+            summary="Scheduler or worker inventory is planned but no service manager is queried.",
+            status="planned",
+            icon="calendar-clock",
+        ),
+        SystemServiceFact(
+            name="Local Model Runtime",
+            value="planned",
+            summary="Local model runtime inventory is planned but no runtime endpoint is probed.",
+            status="planned",
+            icon="brain-circuit",
+        ),
+        SystemServiceFact(
+            name="Notification Channel",
+            value="planned",
+            summary="Notification channel inventory is planned but no delivery channel is contacted.",
+            status="planned",
+            icon="send",
+        ),
+    ]
 
 
 def test_system_repository_facts_are_static_placeholders():
@@ -266,6 +304,7 @@ def test_system_page_data_includes_safety_note_and_sections():
     assert data["runtime_facts"] == build_system_runtime_facts()
     assert data["config_facts"] == build_system_config_facts()
     assert data["repository_facts"] == build_system_repository_facts()
+    assert data["service_facts"] == build_system_service_facts()
 
 
 def test_safety_note_blocks_mutating_system_behavior():
