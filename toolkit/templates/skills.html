@@ -88,6 +88,38 @@
   <div class="card">
     <div class="card-header-row">
       <div>
+        <h2>Skill Registry Foundation</h2>
+        <p class="section-muted">Read-only readiness for a future formal skill registry.</p>
+      </div>
+      <span class="filter-count">
+        {{ data.skills_page.available_skill_registry_count }} of {{ data.skills_page.skill_registry_count }} available
+      </span>
+    </div>
+
+    <div class="skill-grid">
+      {% for item in data.skills_page.skill_registry_items %}
+      <div class="skill-card planned">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="{{ item.icon }}"></i>
+            <div>
+              <div class="skill-title">{{ item.name }}</div>
+              <div class="skill-subtitle">{{ item.summary }}</div>
+              <div class="skill-subtitle">{{ item.detail }}</div>
+            </div>
+          </div>
+          <span class="model-pill {% if item.status == 'available' %}active{% endif %}">{{ item.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
         <h2>Planned Skill Areas</h2>
         <p class="section-muted">Roadmap placeholders for the future Skills engine.</p>
       </div>
