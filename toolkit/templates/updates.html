@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% set active_page = "updates" %}
+{% block title %}Hermes Toolkit - Updates{% endblock %}
+{% block page_title %}Updates{% endblock %}
+{% block page_subtitle %}Read-only foundation for version sources, update channels, pending changes, and update guardrails.{% endblock %}
+{% block header_actions %}
+<div class="live-pill"><span class="dot"></span><span><strong>Updates</strong><small>Read-only</small></span></div>
+{% endblock %}
+
+{% block content %}
+<div class="grid">
+  <div class="card health-card">
+    <div class="health-header">
+      <div>
+        <div class="label">Update Manager Foundation</div>
+        <div class="value {{ data.update_page.status_class }}">{{ data.update_page.status }}</div>
+      </div>
+      <div class="health-badge {{ data.update_page.status_class }}">
+        <i data-lucide="download-cloud"></i>
+      </div>
+    </div>
+
+    <div class="health-bar">
+      <div class="health-bar-fill {{ data.update_page.status_class }}" style="width: 25%;"></div>
+    </div>
+
+    <div class="health-footer">
+      <span class="{{ data.update_page.status_class }}">{{ data.update_page.detail }}</span>
+      <span>{{ data.update_page.available_readiness_count }} of {{ data.update_page.readiness_count }} ready</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Mode</h2>
+    <p><span class="label">Access</span><br>Read-only</p>
+    <p><span class="label">Actions</span><br>No package, Git, process, service, or config changes</p>
+  </div>
+
+  <div class="card">
+    <h2>Scope</h2>
+    <p><span class="label">Current source</span><br>Planning and readiness data</p>
+    <p><span class="label">Future source</span><br>Release metadata and guarded update previews</p>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Safety Guardrails</h2>
+        <p class="section-muted">{{ data.update_page.note }}</p>
+      </div>
+      <span class="filter-count">Mutation disabled</span>
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Update Manager Readiness</h2>
+        <p class="section-muted">Read-only readiness placeholders for future guarded update workflows.</p>
+      </div>
+      <span class="filter-count">{{ data.update_page.available_readiness_count }} of {{ data.update_page.readiness_count }} available</span>
+    </div>
+
+    <div class="skill-grid">
+      {% for item in data.readiness_items %}
+      <div class="skill-card planned">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="{{ item.icon }}"></i>
+            <div>
+              <div class="skill-title">{{ item.name }}</div>
+              <div class="skill-subtitle">{{ item.summary }}</div>
+              <div class="skill-subtitle">{{ item.detail }}</div>
+            </div>
+          </div>
+          <span class="model-pill {% if item.status == 'available' %}active{% endif %}">{{ item.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Planned Update Areas</h2>
+        <p class="section-muted">Roadmap placeholders only. No update commands or repository operations are executed from this page.</p>
+      </div>
+    </div>
+
+    <div class="skill-grid">
+      {% for area in data.planned_areas %}
+      <div class="skill-card planned">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="{{ area.icon }}"></i>
+            <div>
+              <div class="skill-title">{{ area.name }}</div>
+              <div class="skill-subtitle">{{ area.description }}</div>
+            </div>
+          </div>
+          <span class="model-pill">{{ area.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

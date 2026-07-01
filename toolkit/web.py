@@ -22,6 +22,7 @@ from toolkit.jobs_page import build_jobs_data as build_jobs_report
 from toolkit.sessions import build_sessions_data as build_sessions_report
 from toolkit.skills_page import build_skills_data as build_skills_report
 from toolkit.telegram_page import build_telegram_data as build_telegram_report
+from toolkit.update_page import build_update_page_data as build_update_report
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "toolkit" / "templates"))
@@ -94,6 +95,10 @@ def build_jobs_data():
 
 def build_backup_data():
     return build_backup_report()
+
+
+def build_update_data():
+    return build_update_report()
 
 def build_memory_data():
     from toolkit.config import LOG
@@ -251,6 +256,18 @@ async def backup_page(request: Request):
         {
             "request": request,
             "data": build_backup_data(),
+        },
+    )
+
+
+
+@app.get("/updates", response_class=HTMLResponse)
+async def updates_page(request: Request):
+    return templates.TemplateResponse(
+        "updates.html",
+        {
+            "request": request,
+            "data": build_update_data(),
         },
     )
 
