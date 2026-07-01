@@ -304,6 +304,7 @@ v0.4 development in progress:
 - [x] Add Sessions activity filtering
 - [x] Extract Cost data builder
 - [x] Add configurable estimated pricing
+- [x] Extract Models page data builder
 - [ ] Add session browser
 - [x] Add log filtering/search
 - [x] Add log export
