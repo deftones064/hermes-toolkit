@@ -367,6 +367,8 @@ The System page is currently a read-only planning surface. It inventories planne
 
 Its backend follows the shared foundation-page readiness shape used by the other read-only integration pages, including summary status, readiness counts, item summaries, statuses, and icons.
 
+The System page also displays in-process runtime facts for Python version, platform, system, machine architecture, and Hermes Toolkit package version without executing subprocess commands or external probes.
+
 This foundation is intentionally non-mutating:
 
 - No subprocess commands are executed.
