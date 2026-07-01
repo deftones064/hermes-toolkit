@@ -59,6 +59,36 @@
   <div class="card">
     <div class="card-header-row">
       <div>
+        <h2>Service Inventory</h2>
+        <p class="section-muted">Static planning placeholders only. No service state, process list, container runtime, or endpoint is queried.</p>
+      </div>
+      <span class="filter-count">{{ data.service_facts | length }} planned</span>
+    </div>
+
+    <div class="skill-grid">
+      {% for fact in data.service_facts %}
+      <div class="skill-card planned">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="{{ fact.icon }}"></i>
+            <div>
+              <div class="skill-title">{{ fact.name }}</div>
+              <div class="skill-subtitle">{{ fact.summary }}</div>
+              <div class="skill-subtitle">{{ fact.value }}</div>
+            </div>
+          </div>
+          <span class="model-pill">{{ fact.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
         <h2>Repository Inventory</h2>
         <p class="section-muted">Static planning placeholders only. No Git commands are executed and no repository metadata is read.</p>
       </div>
