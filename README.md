@@ -302,7 +302,7 @@ v0.4 development in progress:
 - [ ] Add broader live provider connectivity checks
 - [ ] Add session browser
 - [x] Add log filtering/search
-- [ ] Add log export
+- [x] Add log export
 - [ ] Add formal skill registry
 - [ ] Add memory inventory
 - [ ] Add Jobs / Tasks page

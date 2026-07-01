@@ -20,7 +20,8 @@ All notable changes to Hermes Toolkit will be documented in this file.
 - Added Doctor diagnostic mode labels for static, config, live, and pending checks.
 - Added read-only Logs page filtering by severity.
 - Added read-only Logs page text search over recent raw log entries.
-- Added Logs page tests for filter state and unknown severity fallback.
+- Added read-only Logs export route for currently filtered raw log entries.
+- Added Logs page tests for filter state, unknown severity fallback, and plain-text export.
 - Added Doctor backend tests for diagnostic data shape, missing-provider warnings, provider validation, and Ollama reachability behavior.
 
 ### Notes
