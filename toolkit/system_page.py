@@ -3,8 +3,21 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import platform
 
 from toolkit import __version__
+
+
+
+
+@dataclass(frozen=True)
+class SystemRuntimeFact:
+    """A read-only runtime fact gathered from the current Python process."""
+
+    name: str
+    value: str
+    summary: str
+    icon: str
 
 
 @dataclass(frozen=True)
@@ -46,6 +59,44 @@ SAFETY_NOTE = (
     "No files are overwritten. No packages are installed, updated, or removed. "
     "No Git operations are executed. No configuration is modified."
 )
+
+
+
+def build_system_runtime_facts() -> list[SystemRuntimeFact]:
+    """Return in-process runtime facts without executing external commands."""
+
+    return [
+        SystemRuntimeFact(
+            name="Python Version",
+            value=platform.python_version(),
+            summary="Runtime Python version reported by the current process.",
+            icon="code-2",
+        ),
+        SystemRuntimeFact(
+            name="Platform",
+            value=platform.platform(),
+            summary="Platform string reported by the current process.",
+            icon="monitor-cog",
+        ),
+        SystemRuntimeFact(
+            name="System",
+            value=platform.system(),
+            summary="Operating system family reported by the current process.",
+            icon="server",
+        ),
+        SystemRuntimeFact(
+            name="Machine",
+            value=platform.machine(),
+            summary="Machine architecture reported by the current process.",
+            icon="cpu",
+        ),
+        SystemRuntimeFact(
+            name="Package Version",
+            value=__version__,
+            summary="Hermes Toolkit package version imported in-process.",
+            icon="badge-info",
+        ),
+    ]
 
 
 def build_system_planned_areas() -> list[SystemPlannedArea]:
@@ -178,6 +229,7 @@ def build_system_page_data() -> dict[str, object]:
 
     readiness_items = build_system_readiness_items()
     planned_areas = build_system_planned_areas()
+    runtime_facts = build_system_runtime_facts()
 
     return {
         "title": "System Inventory",
@@ -189,4 +241,5 @@ def build_system_page_data() -> dict[str, object]:
         "system_page": build_system_page_summary(readiness_items),
         "planned_areas": planned_areas,
         "readiness_items": readiness_items,
+        "runtime_facts": runtime_facts,
     }

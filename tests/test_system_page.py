@@ -1,13 +1,16 @@
+import platform
 from toolkit import __version__
 from toolkit.system_page import (
     SAFETY_NOTE,
     SystemPageSummary,
     SystemPlannedArea,
     SystemReadinessItem,
+    SystemRuntimeFact,
     build_system_page_data,
     build_system_page_summary,
     build_system_planned_areas,
     build_system_readiness_items,
+    build_system_runtime_facts,
 )
 
 
@@ -119,6 +122,44 @@ def test_system_readiness_items_are_read_only():
     ]
 
 
+
+def test_system_runtime_facts_are_in_process_metadata():
+    facts = build_system_runtime_facts()
+
+    assert facts == [
+        SystemRuntimeFact(
+            name="Python Version",
+            value=platform.python_version(),
+            summary="Runtime Python version reported by the current process.",
+            icon="code-2",
+        ),
+        SystemRuntimeFact(
+            name="Platform",
+            value=platform.platform(),
+            summary="Platform string reported by the current process.",
+            icon="monitor-cog",
+        ),
+        SystemRuntimeFact(
+            name="System",
+            value=platform.system(),
+            summary="Operating system family reported by the current process.",
+            icon="server",
+        ),
+        SystemRuntimeFact(
+            name="Machine",
+            value=platform.machine(),
+            summary="Machine architecture reported by the current process.",
+            icon="cpu",
+        ),
+        SystemRuntimeFact(
+            name="Package Version",
+            value=__version__,
+            summary="Hermes Toolkit package version imported in-process.",
+            icon="badge-info",
+        ),
+    ]
+
+
 def test_system_page_summary_counts_available_readiness_items():
     items = [
         SystemReadinessItem(
@@ -161,6 +202,7 @@ def test_system_page_data_includes_safety_note_and_sections():
     )
     assert data["planned_areas"] == build_system_planned_areas()
     assert data["readiness_items"] == build_system_readiness_items()
+    assert data["runtime_facts"] == build_system_runtime_facts()
 
 
 def test_safety_note_blocks_mutating_system_behavior():
