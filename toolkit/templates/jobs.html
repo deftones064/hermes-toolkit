@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% set active_page = "jobs" %}
+{% block title %}Hermes Toolkit - Jobs{% endblock %}
+{% block page_title %}Jobs{% endblock %}
+{% block page_subtitle %}Read-only foundation for scheduled jobs, background tasks, and automation hooks.{% endblock %}
+{% block header_actions %}
+<div class="live-pill"><span class="dot"></span><span><strong>Jobs</strong><small>Read-only</small></span></div>
+{% endblock %}
+
+{% block content %}
+<div class="grid">
+  <div class="card health-card">
+    <div class="health-header">
+      <div>
+        <div class="label">Jobs Foundation</div>
+        <div class="value {{ data.jobs_page.status_class }}">{{ data.jobs_page.status }}</div>
+      </div>
+      <div class="health-badge {{ data.jobs_page.status_class }}">
+        <i data-lucide="calendar-clock"></i>
+      </div>
+    </div>
+
+    <div class="health-bar">
+      <div class="health-bar-fill {{ data.jobs_page.status_class }}" style="width: 50%;"></div>
+    </div>
+
+    <div class="health-footer">
+      <span class="{{ data.jobs_page.status_class }}">{{ data.jobs_page.detail }}</span>
+      <span>{{ data.jobs_page.available_readiness_count }} of {{ data.jobs_page.readiness_count }} ready</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Mode</h2>
+    <p><span class="label">Access</span><br>Read-only</p>
+    <p><span class="label">Actions</span><br>No start/stop/retry/delete</p>
+  </div>
+
+  <div class="card">
+    <h2>Scope</h2>
+    <p><span class="label">Current source</span><br>Planning and readiness data</p>
+    <p><span class="label">Future source</span><br>Formal job registry</p>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Jobs Readiness</h2>
+        <p class="section-muted">{{ data.jobs_page.note }}</p>
+      </div>
+      <span class="filter-count">
+        {{ data.jobs_page.available_readiness_count }} of {{ data.jobs_page.readiness_count }} available
+      </span>
+    </div>
+
+    <div class="skill-grid">
+      {% for item in data.jobs_page.readiness_items %}
+      <div class="skill-card planned">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="{{ item.icon }}"></i>
+            <div>
+              <div class="skill-title">{{ item.name }}</div>
+              <div class="skill-subtitle">{{ item.summary }}</div>
+              <div class="skill-subtitle">{{ item.detail }}</div>
+            </div>
+          </div>
+          <span class="model-pill {% if item.status == 'available' %}active{% endif %}">{{ item.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Planned Job Areas</h2>
+        <p class="section-muted">Roadmap placeholders for a future Jobs / Tasks engine.</p>
+      </div>
+    </div>
+
+    <div class="skill-grid">
+      {% for area in data.jobs_page.planned_areas %}
+      <div class="skill-card planned">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="{{ area.icon }}"></i>
+            <div>
+              <div class="skill-title">{{ area.name }}</div>
+              <div class="skill-subtitle">{{ area.description }}</div>
+            </div>
+          </div>
+          <span class="model-pill">{{ area.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
