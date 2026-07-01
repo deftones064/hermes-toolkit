@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
 from toolkit.about_page import build_about_data as build_about_report
+from toolkit.backup_page import build_backup_page_data as build_backup_report
 from toolkit.config import load_config, save_config, set_path
 from toolkit.logs import parse_recent_api_calls
 from toolkit.logs_page import build_logs_data as build_logs_report
@@ -89,6 +90,10 @@ def build_jobs_data():
     cfg = load_config()
     return build_jobs_report(data, cfg)
 
+
+
+def build_backup_data():
+    return build_backup_report()
 
 def build_memory_data():
     from toolkit.config import LOG
@@ -236,6 +241,18 @@ async def jobs_page(request: Request):
         },
     )
 
+
+
+
+@app.get("/backup", response_class=HTMLResponse)
+async def backup_page(request: Request):
+    return templates.TemplateResponse(
+        "backup.html",
+        {
+            "request": request,
+            "data": build_backup_data(),
+        },
+    )
 
 
 @app.get("/memory", response_class=HTMLResponse)

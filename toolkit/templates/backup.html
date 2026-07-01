@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% set active_page = "backup" %}
+{% block title %}Hermes Toolkit - Backup / Restore{% endblock %}
+{% block page_title %}Backup / Restore{% endblock %}
+{% block page_subtitle %}Read-only foundation for backup source planning, destination inventory, restore points, and restore guardrails.{% endblock %}
+{% block header_actions %}
+<div class="live-pill"><span class="dot"></span><span><strong>Backup / Restore</strong><small>Read-only</small></span></div>
+{% endblock %}
+
+{% block content %}
+<div class="grid">
+  <div class="card health-card">
+    <div class="health-header">
+      <div>
+        <div class="label">Backup / Restore Foundation</div>
+        <div class="value warning">Planned</div>
+      </div>
+      <div class="health-badge warning">
+        <i data-lucide="archive-restore"></i>
+      </div>
+    </div>
+
+    <div class="health-bar">
+      <div class="health-bar-fill warning" style="width: 25%;"></div>
+    </div>
+
+    <div class="health-footer">
+      <span class="warning">Read-only planning surface</span>
+      <span>{{ data.readiness_items | length }} readiness items</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Mode</h2>
+    <p><span class="label">Access</span><br>Read-only</p>
+    <p><span class="label">Actions</span><br>No backup or restore execution</p>
+  </div>
+
+  <div class="card">
+    <h2>Scope</h2>
+    <p><span class="label">Current source</span><br>Planning and readiness data</p>
+    <p><span class="label">Future source</span><br>Explicit backup registry and restore metadata</p>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Safety Guardrails</h2>
+        <p class="section-muted">{{ data.safety_note }}</p>
+      </div>
+      <span class="filter-count">Mutation disabled</span>
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Backup / Restore Readiness</h2>
+        <p class="section-muted">Read-only readiness placeholders for future backup and restore workflows.</p>
+      </div>
+      <span class="filter-count">{{ data.readiness_items | length }} planned</span>
+    </div>
+
+    <div class="skill-grid">
+      {% for item in data.readiness_items %}
+      <div class="skill-card planned">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="shield-check"></i>
+            <div>
+              <div class="skill-title">{{ item.name }}</div>
+              <div class="skill-subtitle">{{ item.detail }}</div>
+            </div>
+          </div>
+          <span class="model-pill {% if item.status == 'available' %}active{% endif %}">{{ item.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Planned Backup / Restore Areas</h2>
+        <p class="section-muted">Roadmap placeholders only. No backup archives are created or restored from this page.</p>
+      </div>
+    </div>
+
+    <div class="skill-grid">
+      {% for area in data.planned_areas %}
+      <div class="skill-card planned">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="archive"></i>
+            <div>
+              <div class="skill-title">{{ area.name }}</div>
+              <div class="skill-subtitle">{{ area.description }}</div>
+            </div>
+          </div>
+          <span class="model-pill">planned</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
