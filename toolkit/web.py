@@ -1,5 +1,5 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, PlainTextResponse
+from fastapi import FastAPI, Form, Request
+from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
@@ -102,10 +102,6 @@ async def dashboard(request: Request):
             "data": build_dashboard_data(),
         },
     )
-
-from fastapi import Form
-from fastapi.responses import RedirectResponse
-
 
 
 @app.get("/cost", response_class=HTMLResponse)
