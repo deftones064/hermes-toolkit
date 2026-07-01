@@ -113,6 +113,38 @@
   <div class="card">
     <div class="card-header-row">
       <div>
+        <h2>Memory Inventory Foundation</h2>
+        <p class="section-muted">Read-only inventory readiness based on configuration and log-derived signals.</p>
+      </div>
+      <span class="filter-count">
+        {{ data.memory_page.available_inventory_count }} of {{ data.memory_page.inventory_count }} available
+      </span>
+    </div>
+
+    <div class="skill-grid">
+      {% for item in data.memory_page.inventory_items %}
+      <div class="skill-card planned">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="{{ item.icon }}"></i>
+            <div>
+              <div class="skill-title">{{ item.name }}</div>
+              <div class="skill-subtitle">{{ item.summary }}</div>
+              <div class="skill-subtitle">{{ item.detail }}</div>
+            </div>
+          </div>
+          <span class="model-pill {% if item.status == 'available' %}active{% endif %}">{{ item.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
         <h2>Planned Memory Areas</h2>
         <p class="section-muted">Roadmap placeholders for a future Memory engine.</p>
       </div>
