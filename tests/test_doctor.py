@@ -313,3 +313,38 @@ def test_provider_connectivity_dispatcher_keeps_unknown_external_provider_config
         "severity": "good",
         "mode": "config",
     }
+
+
+def test_doctor_network_diagnostics_wording_reflects_partial_checks():
+    dashboard_data = {
+        "model": {
+            "provider": "anthropic",
+            "default": "claude-sonnet",
+        },
+        "provider_label": "Anthropic",
+        "settings": {
+            "max_turns": 30,
+            "max_live_sessions": 4,
+            "context_file_max_chars": 60000,
+            "file_read_max_chars": 50000,
+            "protect_last_n": 8,
+            "resume_exchanges": 6,
+        },
+        "session_reset_mode": "idle",
+        "session_reset_idle": 30,
+        "avg_cache": 90.0,
+        "avg_in": 25000.0,
+    }
+
+    data = build_doctor_data(dashboard_data, {})
+
+    network_check = next(
+        check for check in data["doctor_checks"]
+        if check["name"] == "Network Diagnostics"
+    )
+
+    assert network_check["status"] == "Partial"
+    assert network_check["value"] == "Provider-specific checks active"
+    assert "Ollama/OpenRouter endpoint checks are available" in network_check["detail"]
+    assert network_check["severity"] == "warn"
+    assert network_check["mode"] == "static"

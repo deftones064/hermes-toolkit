@@ -492,11 +492,11 @@ def _build_connectivity_checks(data, context, checks, categories):
         categories,
         "connectivity",
         "Network Diagnostics",
-        "Pending",
-        "Not checked",
-        "DNS and endpoint checks are reserved for a future diagnostic engine pass.",
+        "Partial",
+        "Provider-specific checks active",
+        "Ollama/OpenRouter endpoint checks are available when configured. Broader DNS and authenticated provider checks remain intentionally conservative.",
         "warn",
-        "pending",
+        "static",
     )
 
 
