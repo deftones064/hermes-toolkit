@@ -101,6 +101,57 @@
   <div class="card">
     <div class="card-header-row">
       <div>
+        <h2>Provider Activity Summary</h2>
+        <p class="section-muted">Grouped read-only activity summary from the current Sessions filters.</p>
+      </div>
+      <span class="filter-count">
+        {{ data.sessions_page.provider_summary_count }} providers
+      </span>
+    </div>
+
+    {% if data.sessions_page.provider_summaries %}
+    <div class="cost-table-wrap">
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Provider</th>
+            <th>Calls</th>
+            <th>Last Model</th>
+            <th>Input</th>
+            <th>Output</th>
+            <th>Total</th>
+            <th>Avg Cache</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for provider in data.sessions_page.provider_summaries %}
+          <tr>
+            <td>{{ provider.provider }}</td>
+            <td>{{ provider.call_count }}</td>
+            <td><code>{{ provider.most_recent_model }}</code></td>
+            <td>{{ "{:,.0f}".format(provider.input_tokens) }}</td>
+            <td>{{ "{:,.0f}".format(provider.output_tokens) }}</td>
+            <td>{{ "{:,.0f}".format(provider.total_tokens) }}</td>
+            <td>{{ "%.1f"|format(provider.avg_cache) }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i data-lucide="messages-square"></i>
+      <strong>No provider activity found</strong>
+      <span>Provider summaries will appear after matching API calls are parsed from the log.</span>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
         <h2>Recent Activity Proxy</h2>
         <p class="section-muted">Recent API calls are shown as a temporary proxy until full session indexing is available.</p>
       </div>
