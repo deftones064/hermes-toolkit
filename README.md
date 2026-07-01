@@ -309,6 +309,7 @@ v0.4 development in progress:
 - [x] Add log filtering/search
 - [x] Add log export
 - [x] Extract Logs page data builder
+- [x] Extract Skills page data builder
 - [ ] Add formal skill registry
 - [ ] Add memory inventory
 - [ ] Add Jobs / Tasks page
