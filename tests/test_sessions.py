@@ -1,4 +1,4 @@
-from toolkit.sessions import build_provider_activity_summaries, build_sessions_data
+from toolkit.sessions import build_provider_activity_summaries, build_session_activity_rows, build_sessions_data
 
 
 def _dashboard_data():
@@ -250,4 +250,79 @@ def test_build_sessions_data_includes_provider_activity_summaries():
     assert sessions_page["provider_summary_count"] == 1
     assert sessions_page["provider_summaries"][0]["provider"] == "openrouter"
     assert sessions_page["provider_summaries"][0]["call_count"] == 1
+
+
+def test_build_session_activity_rows_normalizes_raw_calls():
+    calls = [
+        {
+            "num": "7",
+            "provider": "openrouter",
+            "model": "qwen/qwen3-coder",
+            "in": "1000",
+            "out": "200",
+            "total": "1200",
+            "pct": "90",
+        },
+        {
+            "num": None,
+            "provider": "",
+            "model": "",
+            "in": None,
+            "out": None,
+            "total": None,
+            "pct": None,
+        },
+    ]
+
+    rows = build_session_activity_rows(calls)
+
+    assert rows[0] == {
+        "call_num": 7,
+        "provider": "openrouter",
+        "model": "qwen/qwen3-coder",
+        "input_tokens": 1000,
+        "output_tokens": 200,
+        "total_tokens": 1200,
+        "cache_percent": 90,
+    }
+    assert rows[1] == {
+        "call_num": 0,
+        "provider": "unknown",
+        "model": "unknown",
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0,
+        "cache_percent": 0,
+    }
+
+
+def test_build_sessions_data_includes_normalized_activity_rows():
+    calls = [
+        {
+            "num": 1,
+            "provider": "openrouter",
+            "model": "qwen/qwen3-coder",
+            "in": 1000,
+            "out": 100,
+            "total": 1100,
+            "pct": 90,
+        },
+        {
+            "num": 2,
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "in": 2000,
+            "out": 200,
+            "total": 2200,
+            "pct": 80,
+        },
+    ]
+
+    data = build_sessions_data(_dashboard_data(), {}, calls, query="gpt")
+    sessions_page = data["sessions_page"]
+
+    assert sessions_page["activity_row_count"] == 1
+    assert sessions_page["activity_rows"][0]["call_num"] == 2
+    assert sessions_page["activity_rows"][0]["provider"] == "openai-codex"
+    assert sessions_page["activity_rows"][0]["input_tokens"] == 2000
 

@@ -7,6 +7,25 @@ def _safe_int(value, default=0):
         return default
 
 
+def build_session_activity_rows(calls):
+    rows = []
+
+    for call in calls:
+        rows.append(
+            {
+                "call_num": _safe_int(call.get("num")),
+                "provider": call.get("provider") or "unknown",
+                "model": call.get("model") or "unknown",
+                "input_tokens": _safe_int(call.get("in")),
+                "output_tokens": _safe_int(call.get("out")),
+                "total_tokens": _safe_int(call.get("total")),
+                "cache_percent": _safe_int(call.get("pct")),
+            }
+        )
+
+    return rows
+
+
 def build_provider_activity_summaries(calls):
     summaries = {}
 
@@ -99,6 +118,7 @@ def build_sessions_data(dashboard_data, cfg, calls, provider="all", query=""):
         ]
 
     recent_calls = list(reversed(filtered_calls[-12:]))
+    activity_rows = list(reversed(build_session_activity_rows(filtered_calls)[-12:]))
     provider_summaries = build_provider_activity_summaries(filtered_calls)
 
     cards = []
@@ -254,6 +274,8 @@ def build_sessions_data(dashboard_data, cfg, calls, provider="all", query=""):
         "recent_calls": recent_calls,
         "recent_call_count": len(recent_calls),
         "recent_total_count": len(calls),
+        "activity_rows": activity_rows,
+        "activity_row_count": len(activity_rows),
         "provider_summaries": provider_summaries,
         "provider_summary_count": len(provider_summaries),
         "provider_options": provider_options,
