@@ -38,6 +38,7 @@ def test_build_doctor_data_shape():
     assert data["diagnostic_generated_at"]
 
     assert set(data["doctor_summary"]) == {"good", "warn", "bad"}
+    assert all("mode" in check for check in data["doctor_checks"])
 
     category_ids = [category["id"] for category in data["doctor_categories"]]
     assert category_ids == [
@@ -141,6 +142,7 @@ def test_build_doctor_data_checks_ollama_reachability(monkeypatch):
         check["name"] == "Ollama Reachability"
         and check["status"] == "Reachable"
         and check["severity"] == "good"
+        and check["mode"] == "live"
         for check in data["doctor_checks"]
     )
 
@@ -180,6 +182,7 @@ def test_build_doctor_data_warns_when_ollama_unreachable(monkeypatch):
         check["name"] == "Ollama Reachability"
         and check["status"] == "Not reachable"
         and check["severity"] == "warn"
+        and check["mode"] == "live"
         for check in data["doctor_checks"]
     )
 
@@ -201,6 +204,7 @@ def test_provider_connectivity_dispatcher_reports_configured_external_provider()
         "value": "OpenRouter / qwen/qwen3-coder",
         "detail": "Provider and default model are configured. Live external API checks are intentionally not performed yet.",
         "severity": "good",
+        "mode": "config",
     }
 
 
@@ -221,6 +225,7 @@ def test_provider_connectivity_dispatcher_reports_incomplete_external_provider()
         "value": "OpenRouter / no default model",
         "detail": "Provider is selected, but no default model is configured.",
         "severity": "warn",
+        "mode": "config",
     }
 
 
@@ -238,4 +243,5 @@ def test_provider_connectivity_dispatcher_reports_missing_provider():
         "value": "No provider",
         "detail": "Connectivity cannot be evaluated until a provider is selected.",
         "severity": "bad",
+        "mode": "config",
     }

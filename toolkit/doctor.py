@@ -51,7 +51,17 @@ def _safe_int(value, default=0):
         return default
 
 
-def _add_check(checks, categories, category, name, status_text, value, detail, severity="good"):
+def _add_check(
+    checks,
+    categories,
+    category,
+    name,
+    status_text,
+    value,
+    detail,
+    severity="good",
+    mode="static",
+):
     check = {
         "category": category,
         "name": name,
@@ -59,6 +69,7 @@ def _add_check(checks, categories, category, name, status_text, value, detail, s
         "value": value,
         "detail": detail,
         "severity": severity,
+        "mode": mode,
     }
     checks.append(check)
     categories[category].append(check)
@@ -364,6 +375,7 @@ def _check_provider_connectivity(data, context):
                 "value": result["status"],
                 "detail": result["detail"],
                 "severity": "good",
+                "mode": "live",
             }
 
         return {
@@ -372,6 +384,7 @@ def _check_provider_connectivity(data, context):
             "value": result["status"],
             "detail": result["detail"],
             "severity": "warn",
+            "mode": "live",
         }
 
     if provider:
@@ -385,6 +398,7 @@ def _check_provider_connectivity(data, context):
                 "value": f"{provider_label} / {default_model}",
                 "detail": "Provider and default model are configured. Live external API checks are intentionally not performed yet.",
                 "severity": "good",
+                "mode": "config",
             }
 
         return {
@@ -393,6 +407,7 @@ def _check_provider_connectivity(data, context):
             "value": f"{provider_label} / no default model",
             "detail": "Provider is selected, but no default model is configured.",
             "severity": "warn",
+            "mode": "config",
         }
 
     return {
@@ -401,6 +416,7 @@ def _check_provider_connectivity(data, context):
         "value": "No provider",
         "detail": "Connectivity cannot be evaluated until a provider is selected.",
         "severity": "bad",
+        "mode": "config",
     }
 
 
@@ -416,6 +432,7 @@ def _build_connectivity_checks(data, context, checks, categories):
         provider_check["value"],
         provider_check["detail"],
         provider_check["severity"],
+        provider_check.get("mode", "static"),
     )
 
     _add_check(
@@ -427,6 +444,7 @@ def _build_connectivity_checks(data, context, checks, categories):
         "Not checked",
         "DNS and endpoint checks are reserved for a future diagnostic engine pass.",
         "warn",
+        "pending",
     )
 
 

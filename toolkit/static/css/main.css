@@ -1058,6 +1058,37 @@ html[data-theme="light"] button:focus {
   margin-top: 0.12rem;
 }
 
+.diagnostic-mode {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.28rem;
+  padding: 0.12rem 0.42rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.64rem;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.diagnostic-mode.live {
+  border-color: rgba(74, 222, 128, 0.45);
+  color: var(--good);
+}
+
+.diagnostic-mode.config {
+  border-color: rgba(250, 204, 21, 0.45);
+  color: var(--warn);
+}
+
+.diagnostic-mode.pending {
+  border-color: var(--border);
+  color: var(--muted);
+}
+
 .recommendation-item span {
   display: flex;
   flex-direction: column;

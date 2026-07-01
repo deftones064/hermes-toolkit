@@ -123,6 +123,7 @@
         <div class="compact-check-meta">
           <span>{{ check.status }}</span>
           <small>{{ check.value }}</small>
+          <em class="diagnostic-mode {{ check.mode | default('static') }}">{{ check.mode | default('static') }}</em>
         </div>
       </div>
       {% endfor %}
