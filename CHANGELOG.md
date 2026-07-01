@@ -8,6 +8,13 @@ All notable changes to Hermes Toolkit will be documented in this file.
 
 ### Added
 
+- Nothing yet.
+
+
+## v0.5.0-alpha
+
+### Added
+
 - Added Sessions provider activity summaries as a backend foundation for the future full session browser.
 - Added a read-only Sessions provider activity summary table using the existing dashboard table style.
 - Added normalized Sessions activity rows as a backend foundation for future session browser views.
@@ -19,6 +26,12 @@ All notable changes to Hermes Toolkit will be documented in this file.
 - Added a read-only Telegram backend foundation and dashboard page for bot configuration readiness, chat targets, notification routing, and command hooks.
 - Added a read-only Skills registry foundation and page section for future registry sources, skill directories, manifests, and action safety.
 - Added a read-only Sessions browser foundation and page section using normalized activity rows, provider buckets, model buckets, and browser safety status.
+
+### Notes
+
+- Package version updated to `0.5.0-alpha`.
+- The new Jobs, Home Assistant, Telegram, Skills registry, Memory inventory, and Sessions browser surfaces are read-only foundations.
+- No jobs, Home Assistant services, Telegram messages, skills, sessions, backup routines, restore routines, or update actions are executed by this release.
 
 
 ## v0.4.0-alpha
