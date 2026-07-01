@@ -1,5 +1,17 @@
+from datetime import datetime, timezone
+
 from .config import get_path
 from .status import status
+
+
+CATEGORY_ORDER = [
+    ("environment", "Environment"),
+    ("configuration", "Configuration"),
+    ("runtime", "Runtime"),
+    ("connectivity", "Connectivity"),
+    ("usage", "Usage"),
+]
+
 
 def doctor(cfg):
     issues = []
@@ -28,57 +40,52 @@ def doctor(cfg):
     status(cfg)
 
 
-def build_doctor_data(dashboard_data, cfg):
-    from datetime import datetime, timezone
-
-    data = dict(dashboard_data)
-    generated_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
-
-    category_order = [
-        ("environment", "Environment"),
-        ("configuration", "Configuration"),
-        ("runtime", "Runtime"),
-        ("connectivity", "Connectivity"),
-        ("usage", "Usage"),
-    ]
-
-    categories = {key: [] for key, _ in category_order}
-    checks = []
-
-    def safe_int(value, default=0):
-        try:
-            if value is None:
-                return default
-            return int(value)
-        except (TypeError, ValueError):
+def _safe_int(value, default=0):
+    try:
+        if value is None:
             return default
+        return int(value)
+    except (TypeError, ValueError):
+        return default
 
-    def add_check(category, name, status, value, detail, severity="good"):
-        check = {
-            "category": category,
-            "name": name,
-            "status": status,
-            "value": value,
-            "detail": detail,
-            "severity": severity,
-        }
-        checks.append(check)
-        categories[category].append(check)
 
+def _add_check(checks, categories, category, name, status_text, value, detail, severity="good"):
+    check = {
+        "category": category,
+        "name": name,
+        "status": status_text,
+        "value": value,
+        "detail": detail,
+        "severity": severity,
+    }
+    checks.append(check)
+    categories[category].append(check)
+
+
+def _doctor_context(data):
     model = data.get("model") or {}
-    provider = model.get("provider")
-    default_model = model.get("default")
     settings = data.get("settings") or {}
 
-    max_turns = safe_int(settings.get("max_turns"))
-    max_live_sessions = safe_int(settings.get("max_live_sessions"))
-    context_file_max_chars = settings.get("context_file_max_chars")
-    file_read_max_chars = safe_int(settings.get("file_read_max_chars"))
-    protect_last_n = safe_int(settings.get("protect_last_n"))
-    resume_exchanges = safe_int(settings.get("resume_exchanges"))
+    return {
+        "model": model,
+        "provider": model.get("provider"),
+        "default_model": model.get("default"),
+        "settings": settings,
+        "max_turns": _safe_int(settings.get("max_turns")),
+        "max_live_sessions": _safe_int(settings.get("max_live_sessions")),
+        "context_file_max_chars": settings.get("context_file_max_chars"),
+        "file_read_max_chars": _safe_int(settings.get("file_read_max_chars")),
+        "protect_last_n": _safe_int(settings.get("protect_last_n")),
+        "resume_exchanges": _safe_int(settings.get("resume_exchanges")),
+        "avg_cache": data.get("avg_cache") or 0,
+        "avg_in": data.get("avg_in") or 0,
+    }
 
-    # Environment
-    add_check(
+
+def _build_environment_checks(checks, categories):
+    _add_check(
+        checks,
+        categories,
         "environment",
         "Toolkit Runtime",
         "Online",
@@ -87,7 +94,9 @@ def build_doctor_data(dashboard_data, cfg):
         "good",
     )
 
-    add_check(
+    _add_check(
+        checks,
+        categories,
         "environment",
         "Configuration Loader",
         "Available",
@@ -96,7 +105,9 @@ def build_doctor_data(dashboard_data, cfg):
         "good",
     )
 
-    add_check(
+    _add_check(
+        checks,
+        categories,
         "environment",
         "Diagnostics Mode",
         "Safe",
@@ -105,9 +116,16 @@ def build_doctor_data(dashboard_data, cfg):
         "good",
     )
 
-    # Configuration
+
+def _build_configuration_checks(data, context, checks, categories):
+    provider = context["provider"]
+    default_model = context["default_model"]
+    context_file_max_chars = context["context_file_max_chars"]
+
     if provider:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "configuration",
             "Active Provider",
             "Configured",
@@ -116,7 +134,9 @@ def build_doctor_data(dashboard_data, cfg):
             "good",
         )
     else:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "configuration",
             "Active Provider",
             "Missing",
@@ -126,7 +146,9 @@ def build_doctor_data(dashboard_data, cfg):
         )
 
     if default_model:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "configuration",
             "Default Model",
             "Configured",
@@ -135,7 +157,9 @@ def build_doctor_data(dashboard_data, cfg):
             "good",
         )
     else:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "configuration",
             "Default Model",
             "Review",
@@ -145,7 +169,9 @@ def build_doctor_data(dashboard_data, cfg):
         )
 
     if data.get("session_reset_mode") == "idle":
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "configuration",
             "Session Reset",
             "Enabled",
@@ -154,7 +180,9 @@ def build_doctor_data(dashboard_data, cfg):
             "good",
         )
     else:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "configuration",
             "Session Reset",
             "Disabled",
@@ -164,7 +192,9 @@ def build_doctor_data(dashboard_data, cfg):
         )
 
     if context_file_max_chars is None:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "configuration",
             "Context File Limit",
             "Missing",
@@ -173,18 +203,27 @@ def build_doctor_data(dashboard_data, cfg):
             "warn",
         )
     else:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "configuration",
             "Context File Limit",
             "Configured",
-            f"{safe_int(context_file_max_chars):,} chars",
+            f"{_safe_int(context_file_max_chars):,} chars",
             "Context file character limit is configured.",
             "good",
         )
 
-    # Runtime
+
+def _build_runtime_checks(context, checks, categories):
+    max_live_sessions = context["max_live_sessions"]
+    max_turns = context["max_turns"]
+    protect_last_n = context["protect_last_n"]
+
     if max_live_sessions and max_live_sessions <= 8:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "runtime",
             "Live Sessions",
             "Optimized",
@@ -193,7 +232,9 @@ def build_doctor_data(dashboard_data, cfg):
             "good",
         )
     elif max_live_sessions:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "runtime",
             "Live Sessions",
             "Review",
@@ -202,7 +243,9 @@ def build_doctor_data(dashboard_data, cfg):
             "warn",
         )
     else:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "runtime",
             "Live Sessions",
             "Unknown",
@@ -212,7 +255,9 @@ def build_doctor_data(dashboard_data, cfg):
         )
 
     if max_turns and max_turns <= 40:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "runtime",
             "Max Turns",
             "Controlled",
@@ -221,7 +266,9 @@ def build_doctor_data(dashboard_data, cfg):
             "good",
         )
     elif max_turns:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "runtime",
             "Max Turns",
             "High",
@@ -230,7 +277,9 @@ def build_doctor_data(dashboard_data, cfg):
             "warn",
         )
     else:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "runtime",
             "Max Turns",
             "Unknown",
@@ -240,7 +289,9 @@ def build_doctor_data(dashboard_data, cfg):
         )
 
     if protect_last_n:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "runtime",
             "Protected Context",
             "Configured",
@@ -249,7 +300,9 @@ def build_doctor_data(dashboard_data, cfg):
             "good",
         )
     else:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "runtime",
             "Protected Context",
             "Review",
@@ -258,9 +311,14 @@ def build_doctor_data(dashboard_data, cfg):
             "warn",
         )
 
-    # Connectivity
+
+def _build_connectivity_checks(data, context, checks, categories):
+    provider = context["provider"]
+
     if provider == "ollama":
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "connectivity",
             "Ollama Provider",
             "Configured",
@@ -269,7 +327,9 @@ def build_doctor_data(dashboard_data, cfg):
             "warn",
         )
     elif provider:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "connectivity",
             "Provider Connectivity",
             "Configured",
@@ -278,7 +338,9 @@ def build_doctor_data(dashboard_data, cfg):
             "good",
         )
     else:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "connectivity",
             "Provider Connectivity",
             "Blocked",
@@ -287,7 +349,9 @@ def build_doctor_data(dashboard_data, cfg):
             "bad",
         )
 
-    add_check(
+    _add_check(
+        checks,
+        categories,
         "connectivity",
         "Network Diagnostics",
         "Pending",
@@ -296,12 +360,17 @@ def build_doctor_data(dashboard_data, cfg):
         "warn",
     )
 
-    # Usage
-    avg_cache = data.get("avg_cache") or 0
-    avg_in = data.get("avg_in") or 0
+
+def _build_usage_checks(context, checks, categories):
+    avg_cache = context["avg_cache"]
+    avg_in = context["avg_in"]
+    file_read_max_chars = context["file_read_max_chars"]
+    resume_exchanges = context["resume_exchanges"]
 
     if avg_cache >= 85:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "usage",
             "Cache Efficiency",
             "Healthy",
@@ -310,7 +379,9 @@ def build_doctor_data(dashboard_data, cfg):
             "good",
         )
     elif avg_cache >= 50:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "usage",
             "Cache Efficiency",
             "Needs Attention",
@@ -319,7 +390,9 @@ def build_doctor_data(dashboard_data, cfg):
             "warn",
         )
     else:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "usage",
             "Cache Efficiency",
             "Poor",
@@ -329,7 +402,9 @@ def build_doctor_data(dashboard_data, cfg):
         )
 
     if avg_in <= 60000:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "usage",
             "Prompt Size",
             "Controlled",
@@ -338,7 +413,9 @@ def build_doctor_data(dashboard_data, cfg):
             "good",
         )
     elif avg_in <= 100000:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "usage",
             "Prompt Size",
             "Moderate",
@@ -347,7 +424,9 @@ def build_doctor_data(dashboard_data, cfg):
             "warn",
         )
     else:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "usage",
             "Prompt Size",
             "High",
@@ -357,7 +436,9 @@ def build_doctor_data(dashboard_data, cfg):
         )
 
     if file_read_max_chars and file_read_max_chars <= 60000:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "usage",
             "File Read Limit",
             "Controlled",
@@ -366,7 +447,9 @@ def build_doctor_data(dashboard_data, cfg):
             "good",
         )
     elif file_read_max_chars:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "usage",
             "File Read Limit",
             "High",
@@ -375,7 +458,9 @@ def build_doctor_data(dashboard_data, cfg):
             "warn",
         )
     else:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "usage",
             "File Read Limit",
             "Unknown",
@@ -385,7 +470,9 @@ def build_doctor_data(dashboard_data, cfg):
         )
 
     if resume_exchanges:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "usage",
             "Resume Exchanges",
             "Configured",
@@ -394,7 +481,9 @@ def build_doctor_data(dashboard_data, cfg):
             "good",
         )
     else:
-        add_check(
+        _add_check(
+            checks,
+            categories,
             "usage",
             "Resume Exchanges",
             "Review",
@@ -403,6 +492,8 @@ def build_doctor_data(dashboard_data, cfg):
             "warn",
         )
 
+
+def _build_doctor_summary(checks):
     summary = {
         "good": sum(1 for check in checks if check["severity"] == "good"),
         "warn": sum(1 for check in checks if check["severity"] == "warn"),
@@ -435,15 +526,33 @@ def build_doctor_data(dashboard_data, cfg):
         health_status = "Poor"
         health_class = "bad"
 
+    return {
+        "summary": summary,
+        "health_score": health_score,
+        "health_status": health_status,
+        "health_class": health_class,
+    }
+
+
+def _build_doctor_recommendations(data, context):
     recommendations = []
 
     def recommend(severity, title, detail, source):
-        recommendations.append({
-            "severity": severity,
-            "title": title,
-            "detail": detail,
-            "source": source,
-        })
+        recommendations.append(
+            {
+                "severity": severity,
+                "title": title,
+                "detail": detail,
+                "source": source,
+            }
+        )
+
+    provider = context["provider"]
+    default_model = context["default_model"]
+    avg_cache = context["avg_cache"]
+    avg_in = context["avg_in"]
+    max_live_sessions = context["max_live_sessions"]
+    file_read_max_chars = context["file_read_max_chars"]
 
     if not provider:
         recommend(
@@ -509,9 +618,33 @@ def build_doctor_data(dashboard_data, cfg):
             "Doctor",
         )
 
-    data["health_score"] = health_score
-    data["health_status"] = health_status
-    data["health_class"] = health_class
+    return recommendations
+
+
+def build_doctor_data(dashboard_data, cfg):
+    # cfg is accepted for the public backend API and future live diagnostics.
+    # The current v0.4 cleanup preserves the existing dashboard-derived behavior.
+    _ = cfg
+
+    data = dict(dashboard_data)
+    generated_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+    categories = {key: [] for key, _ in CATEGORY_ORDER}
+    checks = []
+    context = _doctor_context(data)
+
+    _build_environment_checks(checks, categories)
+    _build_configuration_checks(data, context, checks, categories)
+    _build_runtime_checks(context, checks, categories)
+    _build_connectivity_checks(data, context, checks, categories)
+    _build_usage_checks(context, checks, categories)
+
+    summary_data = _build_doctor_summary(checks)
+    recommendations = _build_doctor_recommendations(data, context)
+
+    data["health_score"] = summary_data["health_score"]
+    data["health_status"] = summary_data["health_status"]
+    data["health_class"] = summary_data["health_class"]
     data["doctor_checks"] = checks
     data["doctor_categories"] = [
         {
@@ -519,9 +652,9 @@ def build_doctor_data(dashboard_data, cfg):
             "title": label,
             "checks": categories[key],
         }
-        for key, label in category_order
+        for key, label in CATEGORY_ORDER
     ]
-    data["doctor_summary"] = summary
+    data["doctor_summary"] = summary_data["summary"]
     data["recommendations"] = recommendations
     data["diagnostic_generated_at"] = generated_at
 
