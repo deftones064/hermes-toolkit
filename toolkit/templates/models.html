@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% set active_page = "models" %}
+{% block title %}Hermes Toolkit - Models{% endblock %}
+{% block page_title %}Models{% endblock %}
+{% block page_subtitle %}Review active model settings and switch between known-good Hermes presets.{% endblock %}
+{% block header_actions %}
+<div class="live-pill"><span class="dot"></span><span><strong>Models</strong><small>Safe switching</small></span></div>
+{% endblock %}
+
+{% block content %}
+{% if request.query_params.get("saved") %}
+  <div class="notice">Model preset applied. Restart Hermes Agent/gateway if the runtime requires reload.</div>
+{% endif %}
+
+<div class="grid">
+  <div class="card health-card">
+    <div class="health-header">
+      <div>
+        <div class="label">Active Model</div>
+        <div class="value good">{{ data.models_page.active_model or "Unset" }}</div>
+      </div>
+      <div class="health-badge good">
+        <i data-lucide="bot"></i>
+      </div>
+    </div>
+
+    <div class="health-bar">
+      <div class="health-bar-fill good" style="width: 100%;"></div>
+    </div>
+
+    <div class="health-footer">
+      <span class="good">{{ data.models_page.active_provider_label or "No provider" }}</span>
+      <span>{{ data.models_page.preset_count }} presets</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Active Provider</h2>
+    <p><span class="label">Provider</span><br>{{ data.models_page.active_provider_label or "Not configured" }}</p>
+    <p><span class="label">Provider ID</span><br><code>{{ data.models_page.active_provider or "unset" }}</code></p>
+  </div>
+
+  <div class="card">
+    <h2>Switching Mode</h2>
+    <p><span class="label">Mode</span><br>{{ data.models_page.mode }}</p>
+    <p><span class="label">Behavior</span><br>Config-only update</p>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Model Presets</h2>
+        <p class="section-muted">{{ data.models_page.note }}</p>
+      </div>
+    </div>
+
+    <div class="model-preset-grid">
+      {% for preset in data.models_page.presets %}
+      <div class="model-preset-card {% if preset.is_active %}active{% endif %}">
+        <div class="model-preset-header">
+          <div>
+            <div class="model-preset-title">{{ preset.name }}</div>
+            <div class="model-preset-provider">{{ preset.provider_label }}</div>
+          </div>
+
+          {% if preset.is_active %}
+            <span class="model-pill active">Active</span>
+          {% else %}
+            <span class="model-pill">Available</span>
+          {% endif %}
+        </div>
+
+        <p>{{ preset.description }}</p>
+
+        <div class="model-meta-grid">
+          <div>
+            <span class="label">Preset</span>
+            <code>{{ preset.id }}</code>
+          </div>
+          <div>
+            <span class="label">Model</span>
+            <code>{{ preset.model }}</code>
+          </div>
+          <div>
+            <span class="label">Tier</span>
+            <span>{{ preset.tier }}</span>
+          </div>
+          <div>
+            <span class="label">Base URL</span>
+            <span>{{ preset.base_url or "Default" }}</span>
+          </div>
+        </div>
+
+        <form method="post" action="/models/apply">
+          <input type="hidden" name="model" value="{{ preset.id }}">
+          {% if preset.is_active %}
+            <button type="submit" disabled>Currently Active</button>
+          {% else %}
+            <button type="submit">Apply Model</button>
+          {% endif %}
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Providers</h2>
+        <p class="section-muted">Providers represented by the current model preset framework.</p>
+      </div>
+    </div>
+
+    <div class="provider-list models-provider-list">
+      {% for provider in data.models_page.providers %}
+      <div class="provider-chip {% if provider.is_active %}active{% endif %}">
+        {{ provider.label }}
+        <span>
+          {% if provider.is_active %}
+            Active
+          {% else %}
+            {{ provider.preset_count }} preset{% if provider.preset_count != 1 %}s{% endif %}
+          {% endif %}
+        </span>
+      </div>
+      {% endfor %}
+
+      <div class="provider-chip disabled" title="Planned future support">Anthropic <span>Planned</span></div>
+      <div class="provider-chip disabled" title="Planned future support">Ollama <span>Planned</span></div>
+      <div class="provider-chip disabled" title="Planned future support">LM Studio <span>Planned</span></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
