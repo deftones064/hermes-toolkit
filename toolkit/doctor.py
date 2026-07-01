@@ -375,12 +375,24 @@ def _check_provider_connectivity(data, context):
         }
 
     if provider:
+        provider_label = data.get("provider_label") or provider
+        default_model = context.get("default_model")
+
+        if default_model:
+            return {
+                "name": "Provider Config",
+                "status": "Configured",
+                "value": f"{provider_label} / {default_model}",
+                "detail": "Provider and default model are configured. Live external API checks are intentionally not performed yet.",
+                "severity": "good",
+            }
+
         return {
-            "name": "Provider Connectivity",
-            "status": "Configured",
-            "value": data.get("provider_label") or provider,
-            "detail": "Provider configuration exists. Live external API checks are intentionally not performed yet.",
-            "severity": "good",
+            "name": "Provider Config",
+            "status": "Incomplete",
+            "value": f"{provider_label} / no default model",
+            "detail": "Provider is selected, but no default model is configured.",
+            "severity": "warn",
         }
 
     return {

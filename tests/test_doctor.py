@@ -189,15 +189,38 @@ def test_provider_connectivity_dispatcher_reports_configured_external_provider()
 
     result = _check_provider_connectivity(
         {"provider_label": "OpenRouter"},
-        {"provider": "openrouter"},
+        {
+            "provider": "openrouter",
+            "default_model": "qwen/qwen3-coder",
+        },
     )
 
     assert result == {
-        "name": "Provider Connectivity",
+        "name": "Provider Config",
         "status": "Configured",
-        "value": "OpenRouter",
-        "detail": "Provider configuration exists. Live external API checks are intentionally not performed yet.",
+        "value": "OpenRouter / qwen/qwen3-coder",
+        "detail": "Provider and default model are configured. Live external API checks are intentionally not performed yet.",
         "severity": "good",
+    }
+
+
+def test_provider_connectivity_dispatcher_reports_incomplete_external_provider():
+    from toolkit.doctor import _check_provider_connectivity
+
+    result = _check_provider_connectivity(
+        {"provider_label": "OpenRouter"},
+        {
+            "provider": "openrouter",
+            "default_model": None,
+        },
+    )
+
+    assert result == {
+        "name": "Provider Config",
+        "status": "Incomplete",
+        "value": "OpenRouter / no default model",
+        "detail": "Provider is selected, but no default model is configured.",
+        "severity": "warn",
     }
 
 
