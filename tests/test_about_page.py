@@ -40,6 +40,7 @@ def test_build_about_data_lists_expected_pages():
     assert "Logs" in page_names
     assert "Skills" in page_names
     assert "Memory" in page_names
+    assert "System Inventory" in page_names
     assert "Backup / Restore" in page_names
     assert "Updates" in page_names
 

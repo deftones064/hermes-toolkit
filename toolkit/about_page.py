@@ -65,6 +65,12 @@ COMPLETED_PAGES = [
         "icon": "brain",
     },
     {
+        "name": "System Inventory",
+        "status": "Foundation",
+        "description": "Read-only planning surface for runtime, repository, configuration, and service inventory.",
+        "icon": "server-cog",
+    },
+    {
         "name": "Backup / Restore",
         "status": "Foundation",
         "description": "Read-only planning surface for backup sources, destinations, restore points, and restore guardrails.",
