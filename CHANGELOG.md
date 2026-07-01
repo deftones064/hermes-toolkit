@@ -9,6 +9,7 @@ All notable changes to Hermes Toolkit will be documented in this file.
 ### Added
 
 - Added Sessions provider activity summaries as a backend foundation for the future full session browser.
+- Added a read-only Sessions provider activity summary table using the existing dashboard table style.
 
 
 ## v0.4.0-alpha
