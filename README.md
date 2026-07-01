@@ -311,7 +311,7 @@ v0.4 Alpha completed:
 - [x] Add log export
 - [x] Extract Logs page data builder
 - [x] Extract Skills page data builder
-- [ ] Add formal skill registry
+- [x] Add formal skill registry foundation
 - [x] Extract Memory page data builder
 - [x] Extract About page data builder
 - [x] Extract shared Dashboard data builder

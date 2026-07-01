@@ -17,6 +17,7 @@ All notable changes to Hermes Toolkit will be documented in this file.
 - Added a read-only Jobs / Tasks backend foundation and dashboard page for planned schedulers, background tasks, maintenance actions, and automation hooks.
 - Added a read-only Home Assistant backend foundation and dashboard page for connection readiness, entity inventory planning, automation hooks, and notifications.
 - Added a read-only Telegram backend foundation and dashboard page for bot configuration readiness, chat targets, notification routing, and command hooks.
+- Added a read-only Skills registry foundation and page section for future registry sources, skill directories, manifests, and action safety.
 
 
 ## v0.4.0-alpha
