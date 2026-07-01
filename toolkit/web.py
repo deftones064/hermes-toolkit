@@ -562,11 +562,15 @@ def build_sessions_data():
     return data
 
 
-def build_logs_data():
+def build_logs_data(severity="all", query=""):
     from toolkit.config import LOG
 
     data = build_dashboard_data()
     calls = parse_recent_api_calls(120)
+
+    valid_severities = {"all", "good", "warn", "bad", "neutral"}
+    selected_severity = severity if severity in valid_severities else "all"
+    search_query = (query or "").strip()
 
     raw_lines = []
     log_exists = LOG.exists()
@@ -589,7 +593,7 @@ def build_logs_data():
 
         return "neutral"
 
-    raw_entries = [
+    all_raw_entries = [
         {
             "line": line,
             "severity": classify_line(line),
@@ -597,8 +601,22 @@ def build_logs_data():
         for line in reversed(raw_lines[-80:])
     ]
 
-    error_count = sum(1 for item in raw_entries if item["severity"] == "bad")
-    warning_count = sum(1 for item in raw_entries if item["severity"] == "warn")
+    raw_entries = all_raw_entries
+
+    if selected_severity != "all":
+        raw_entries = [
+            item for item in raw_entries
+            if item["severity"] == selected_severity
+        ]
+
+    if search_query:
+        raw_entries = [
+            item for item in raw_entries
+            if search_query.lower() in item["line"].lower()
+        ]
+
+    error_count = sum(1 for item in all_raw_entries if item["severity"] == "bad")
+    warning_count = sum(1 for item in all_raw_entries if item["severity"] == "warn")
     api_count = len(calls)
 
     if not log_exists:
@@ -632,8 +650,12 @@ def build_logs_data():
         "warning_count": warning_count,
         "api_count": api_count,
         "raw_entries": raw_entries,
+        "raw_entry_count": len(raw_entries),
+        "raw_total_count": len(all_raw_entries),
+        "selected_severity": selected_severity,
+        "search_query": search_query,
         "recent_calls": recent_calls,
-        "note": "Logs v1 is read-only. Filtering, search, export, and live tailing can be added later.",
+        "note": "Logs v1 is read-only. Filtering and search are local display filters. Export and live tailing can be added later.",
     }
 
     return data
@@ -1258,12 +1280,12 @@ async def sessions_page(request: Request):
 
 
 @app.get("/logs", response_class=HTMLResponse)
-async def logs_page(request: Request):
+async def logs_page(request: Request, severity: str = "all", q: str = ""):
     return templates.TemplateResponse(
         "logs.html",
         {
             "request": request,
-            "data": build_logs_data(),
+            "data": build_logs_data(severity=severity, query=q),
         },
     )
 

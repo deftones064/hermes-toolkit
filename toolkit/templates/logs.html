@@ -107,6 +107,35 @@
       </div>
     </div>
 
+    <form class="log-filter-form" method="get" action="/logs">
+      <label>
+        Severity
+        <select name="severity">
+          <option value="all" {% if data.logs_page.selected_severity == "all" %}selected{% endif %}>All</option>
+          <option value="good" {% if data.logs_page.selected_severity == "good" %}selected{% endif %}>API calls</option>
+          <option value="warn" {% if data.logs_page.selected_severity == "warn" %}selected{% endif %}>Warnings</option>
+          <option value="bad" {% if data.logs_page.selected_severity == "bad" %}selected{% endif %}>Errors</option>
+          <option value="neutral" {% if data.logs_page.selected_severity == "neutral" %}selected{% endif %}>Neutral</option>
+        </select>
+      </label>
+
+      <label>
+        Search
+        <input type="search" name="q" value="{{ data.logs_page.search_query }}" placeholder="Filter recent log lines">
+      </label>
+
+      <button class="button secondary" type="submit">
+        <i data-lucide="search"></i>
+        Apply
+      </button>
+
+      <a class="button ghost" href="/logs">Reset</a>
+
+      <span class="filter-count">
+        Showing {{ data.logs_page.raw_entry_count }} of {{ data.logs_page.raw_total_count }} recent lines
+      </span>
+    </form>
+
     {% if data.logs_page.raw_entries %}
     <div class="log-viewer">
       {% for entry in data.logs_page.raw_entries %}
