@@ -1,4 +1,6 @@
 from datetime import datetime, timezone
+from urllib.error import HTTPError, URLError
+from urllib.request import urlopen
 
 from .config import get_path
 from .status import status
@@ -79,6 +81,7 @@ def _doctor_context(data):
         "resume_exchanges": _safe_int(settings.get("resume_exchanges")),
         "avg_cache": data.get("avg_cache") or 0,
         "avg_in": data.get("avg_in") or 0,
+        "base_url": model.get("base_url"),
     }
 
 
@@ -312,20 +315,70 @@ def _build_runtime_checks(context, checks, categories):
         )
 
 
+def _normalize_ollama_base_url(base_url):
+    if not base_url:
+        return "http://127.0.0.1:11434"
+
+    return str(base_url).rstrip("/")
+
+
+def _check_ollama_reachability(base_url, timeout=1.5):
+    tags_url = f"{_normalize_ollama_base_url(base_url)}/api/tags"
+
+    try:
+        with urlopen(tags_url, timeout=timeout) as response:
+            status_code = getattr(response, "status", 200)
+    except HTTPError as exc:
+        return {
+            "reachable": False,
+            "url": tags_url,
+            "status": f"HTTP {exc.code}",
+            "detail": "Ollama responded with an HTTP error.",
+        }
+    except (URLError, TimeoutError, OSError) as exc:
+        return {
+            "reachable": False,
+            "url": tags_url,
+            "status": "Unavailable",
+            "detail": f"Ollama tags endpoint could not be reached: {exc.__class__.__name__}.",
+        }
+
+    return {
+        "reachable": 200 <= status_code < 500,
+        "url": tags_url,
+        "status": f"HTTP {status_code}",
+        "detail": "Ollama tags endpoint responded without launching a model.",
+    }
+
+
 def _build_connectivity_checks(data, context, checks, categories):
     provider = context["provider"]
 
     if provider == "ollama":
-        _add_check(
-            checks,
-            categories,
-            "connectivity",
-            "Ollama Provider",
-            "Configured",
-            "Local",
-            "Ollama is selected. Live reachability checks will be added in a later diagnostic engine pass.",
-            "warn",
-        )
+        result = _check_ollama_reachability(context.get("base_url"))
+
+        if result["reachable"]:
+            _add_check(
+                checks,
+                categories,
+                "connectivity",
+                "Ollama Reachability",
+                "Reachable",
+                result["status"],
+                result["detail"],
+                "good",
+            )
+        else:
+            _add_check(
+                checks,
+                categories,
+                "connectivity",
+                "Ollama Reachability",
+                "Not reachable",
+                result["status"],
+                result["detail"],
+                "warn",
+            )
     elif provider:
         _add_check(
             checks,
@@ -334,7 +387,7 @@ def _build_connectivity_checks(data, context, checks, categories):
             "Provider Connectivity",
             "Configured",
             data.get("provider_label") or provider,
-            "Provider configuration exists. Live API checks are intentionally not performed yet.",
+            "Provider configuration exists. Live external API checks are intentionally not performed yet.",
             "good",
         )
     else:
@@ -356,7 +409,7 @@ def _build_connectivity_checks(data, context, checks, categories):
         "Network Diagnostics",
         "Pending",
         "Not checked",
-        "DNS and endpoint checks are reserved for the future diagnostic engine.",
+        "DNS and endpoint checks are reserved for a future diagnostic engine pass.",
         "warn",
     )
 

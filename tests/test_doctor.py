@@ -92,3 +92,93 @@ def test_build_doctor_data_flags_missing_provider():
         item["title"] == "Select an active provider"
         for item in data["recommendations"]
     )
+
+
+def test_build_doctor_data_checks_ollama_reachability(monkeypatch):
+    class FakeResponse:
+        status = 200
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, traceback):
+            return False
+
+    called = {}
+
+    def fake_urlopen(url, timeout):
+        called["url"] = url
+        called["timeout"] = timeout
+        return FakeResponse()
+
+    monkeypatch.setattr("toolkit.doctor.urlopen", fake_urlopen)
+
+    dashboard_data = {
+        "model": {
+            "provider": "ollama",
+            "default": "llama3.1",
+            "base_url": "http://127.0.0.1:11434",
+        },
+        "provider_label": "Ollama",
+        "settings": {
+            "max_turns": 30,
+            "max_live_sessions": 4,
+            "context_file_max_chars": 60000,
+            "file_read_max_chars": 50000,
+            "protect_last_n": 8,
+            "resume_exchanges": 6,
+        },
+        "session_reset_mode": "idle",
+        "session_reset_idle": 30,
+        "avg_cache": 90.0,
+        "avg_in": 25000.0,
+    }
+
+    data = build_doctor_data(dashboard_data, {})
+
+    assert called["url"] == "http://127.0.0.1:11434/api/tags"
+    assert any(
+        check["name"] == "Ollama Reachability"
+        and check["status"] == "Reachable"
+        and check["severity"] == "good"
+        for check in data["doctor_checks"]
+    )
+
+
+def test_build_doctor_data_warns_when_ollama_unreachable(monkeypatch):
+    from urllib.error import URLError
+
+    def fake_urlopen(url, timeout):
+        raise URLError("connection refused")
+
+    monkeypatch.setattr("toolkit.doctor.urlopen", fake_urlopen)
+
+    dashboard_data = {
+        "model": {
+            "provider": "ollama",
+            "default": "llama3.1",
+            "base_url": "http://127.0.0.1:11434/",
+        },
+        "provider_label": "Ollama",
+        "settings": {
+            "max_turns": 30,
+            "max_live_sessions": 4,
+            "context_file_max_chars": 60000,
+            "file_read_max_chars": 50000,
+            "protect_last_n": 8,
+            "resume_exchanges": 6,
+        },
+        "session_reset_mode": "idle",
+        "session_reset_idle": 30,
+        "avg_cache": 90.0,
+        "avg_in": 25000.0,
+    }
+
+    data = build_doctor_data(dashboard_data, {})
+
+    assert any(
+        check["name"] == "Ollama Reachability"
+        and check["status"] == "Not reachable"
+        and check["severity"] == "warn"
+        for check in data["doctor_checks"]
+    )
