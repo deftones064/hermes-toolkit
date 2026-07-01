@@ -317,7 +317,7 @@ v0.4 Alpha completed:
 - [x] Extract shared Dashboard data builder
 - [x] Complete v0.4 page-builder architecture pass
 - [x] Add memory inventory foundation
-- [ ] Add Jobs / Tasks page
+- [x] Add Jobs / Tasks page foundation
 - [ ] Add Home Assistant integration
 - [ ] Add Telegram integration
 - [ ] Add backup and restore
