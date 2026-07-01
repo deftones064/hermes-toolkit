@@ -13,20 +13,20 @@
     <div class="health-header">
       <div>
         <div class="label">Backup / Restore Foundation</div>
-        <div class="value warning">Planned</div>
+        <div class="value {{ data.backup_page.status_class }}">{{ data.backup_page.status }}</div>
       </div>
-      <div class="health-badge warning">
+      <div class="health-badge {{ data.backup_page.status_class }}">
         <i data-lucide="archive-restore"></i>
       </div>
     </div>
 
     <div class="health-bar">
-      <div class="health-bar-fill warning" style="width: 25%;"></div>
+      <div class="health-bar-fill {{ data.backup_page.status_class }}" style="width: 25%;"></div>
     </div>
 
     <div class="health-footer">
-      <span class="warning">Read-only planning surface</span>
-      <span>{{ data.readiness_items | length }} readiness items</span>
+      <span class="{{ data.backup_page.status_class }}">{{ data.backup_page.detail }}</span>
+      <span>{{ data.backup_page.available_readiness_count }} of {{ data.backup_page.readiness_count }} ready</span>
     </div>
   </div>
 
@@ -48,7 +48,7 @@
     <div class="card-header-row">
       <div>
         <h2>Safety Guardrails</h2>
-        <p class="section-muted">{{ data.safety_note }}</p>
+        <p class="section-muted">{{ data.backup_page.note }}</p>
       </div>
       <span class="filter-count">Mutation disabled</span>
     </div>
@@ -62,7 +62,7 @@
         <h2>Backup / Restore Readiness</h2>
         <p class="section-muted">Read-only readiness placeholders for future backup and restore workflows.</p>
       </div>
-      <span class="filter-count">{{ data.readiness_items | length }} planned</span>
+      <span class="filter-count">{{ data.backup_page.available_readiness_count }} of {{ data.backup_page.readiness_count }} available</span>
     </div>
 
     <div class="skill-grid">
@@ -70,9 +70,10 @@
       <div class="skill-card planned">
         <div class="skill-card-header">
           <div class="skill-icon-title">
-            <i data-lucide="shield-check"></i>
+            <i data-lucide="{{ item.icon }}"></i>
             <div>
               <div class="skill-title">{{ item.name }}</div>
+              <div class="skill-subtitle">{{ item.summary }}</div>
               <div class="skill-subtitle">{{ item.detail }}</div>
             </div>
           </div>
@@ -98,13 +99,13 @@
       <div class="skill-card planned">
         <div class="skill-card-header">
           <div class="skill-icon-title">
-            <i data-lucide="archive"></i>
+            <i data-lucide="{{ area.icon }}"></i>
             <div>
               <div class="skill-title">{{ area.name }}</div>
               <div class="skill-subtitle">{{ area.description }}</div>
             </div>
           </div>
-          <span class="model-pill">planned</span>
+          <span class="model-pill">{{ area.status }}</span>
         </div>
       </div>
       {% endfor %}
