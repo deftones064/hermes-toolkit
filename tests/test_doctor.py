@@ -187,8 +187,26 @@ def test_build_doctor_data_warns_when_ollama_unreachable(monkeypatch):
     )
 
 
-def test_provider_connectivity_dispatcher_reports_configured_external_provider():
+def test_provider_connectivity_dispatcher_checks_openrouter_reachability(monkeypatch):
     from toolkit.doctor import _check_provider_connectivity
+
+    class FakeResponse:
+        status = 200
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, traceback):
+            return False
+
+    called = {}
+
+    def fake_urlopen(url, timeout):
+        called["url"] = url
+        called["timeout"] = timeout
+        return FakeResponse()
+
+    monkeypatch.setattr("toolkit.doctor.urlopen", fake_urlopen)
 
     result = _check_provider_connectivity(
         {"provider_label": "OpenRouter"},
@@ -198,13 +216,14 @@ def test_provider_connectivity_dispatcher_reports_configured_external_provider()
         },
     )
 
+    assert called["url"] == "https://openrouter.ai/api/v1/models"
     assert result == {
-        "name": "Provider Config",
-        "status": "Configured",
-        "value": "OpenRouter / qwen/qwen3-coder",
-        "detail": "Provider and default model are configured. Live external API checks are intentionally not performed yet.",
+        "name": "OpenRouter Reachability",
+        "status": "Reachable",
+        "value": "HTTP 200",
+        "detail": "OpenRouter models endpoint responded without sending a prompt.",
         "severity": "good",
-        "mode": "config",
+        "mode": "live",
     }
 
 
@@ -243,5 +262,54 @@ def test_provider_connectivity_dispatcher_reports_missing_provider():
         "value": "No provider",
         "detail": "Connectivity cannot be evaluated until a provider is selected.",
         "severity": "bad",
+        "mode": "config",
+    }
+
+
+def test_provider_connectivity_dispatcher_warns_when_openrouter_unreachable(monkeypatch):
+    from urllib.error import URLError
+
+    from toolkit.doctor import _check_provider_connectivity
+
+    def fake_urlopen(url, timeout):
+        raise URLError("connection refused")
+
+    monkeypatch.setattr("toolkit.doctor.urlopen", fake_urlopen)
+
+    result = _check_provider_connectivity(
+        {"provider_label": "OpenRouter"},
+        {
+            "provider": "openrouter",
+            "default_model": "qwen/qwen3-coder",
+        },
+    )
+
+    assert result == {
+        "name": "OpenRouter Reachability",
+        "status": "Not reachable",
+        "value": "Unavailable",
+        "detail": "OpenRouter models endpoint could not be reached: URLError.",
+        "severity": "warn",
+        "mode": "live",
+    }
+
+
+def test_provider_connectivity_dispatcher_keeps_unknown_external_provider_config_only():
+    from toolkit.doctor import _check_provider_connectivity
+
+    result = _check_provider_connectivity(
+        {"provider_label": "Anthropic"},
+        {
+            "provider": "anthropic",
+            "default_model": "claude-sonnet",
+        },
+    )
+
+    assert result == {
+        "name": "Provider Config",
+        "status": "Configured",
+        "value": "Anthropic / claude-sonnet",
+        "detail": "Provider and default model are configured. No safe unauthenticated live check is available for this provider yet.",
+        "severity": "good",
         "mode": "config",
     }

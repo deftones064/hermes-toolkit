@@ -362,6 +362,33 @@ def _check_ollama_reachability(base_url, timeout=1.5):
     }
 
 
+def _check_http_endpoint_reachability(url, label, timeout=1.5):
+    try:
+        with urlopen(url, timeout=timeout) as response:
+            status_code = getattr(response, "status", 200)
+    except HTTPError as exc:
+        return {
+            "reachable": False,
+            "url": url,
+            "status": f"HTTP {exc.code}",
+            "detail": f"{label} endpoint responded with an HTTP error.",
+        }
+    except (URLError, TimeoutError, OSError) as exc:
+        return {
+            "reachable": False,
+            "url": url,
+            "status": "Unavailable",
+            "detail": f"{label} endpoint could not be reached: {exc.__class__.__name__}.",
+        }
+
+    return {
+        "reachable": 200 <= status_code < 500,
+        "url": url,
+        "status": f"HTTP {status_code}",
+        "detail": f"{label} endpoint responded without sending a prompt.",
+    }
+
+
 def _check_provider_connectivity(data, context):
     provider = context["provider"]
 
@@ -391,22 +418,47 @@ def _check_provider_connectivity(data, context):
         provider_label = data.get("provider_label") or provider
         default_model = context.get("default_model")
 
-        if default_model:
+        if not default_model:
             return {
                 "name": "Provider Config",
-                "status": "Configured",
-                "value": f"{provider_label} / {default_model}",
-                "detail": "Provider and default model are configured. Live external API checks are intentionally not performed yet.",
-                "severity": "good",
+                "status": "Incomplete",
+                "value": f"{provider_label} / no default model",
+                "detail": "Provider is selected, but no default model is configured.",
+                "severity": "warn",
                 "mode": "config",
+            }
+
+        if provider == "openrouter":
+            result = _check_http_endpoint_reachability(
+                "https://openrouter.ai/api/v1/models",
+                "OpenRouter models",
+            )
+
+            if result["reachable"]:
+                return {
+                    "name": "OpenRouter Reachability",
+                    "status": "Reachable",
+                    "value": result["status"],
+                    "detail": result["detail"],
+                    "severity": "good",
+                    "mode": "live",
+                }
+
+            return {
+                "name": "OpenRouter Reachability",
+                "status": "Not reachable",
+                "value": result["status"],
+                "detail": result["detail"],
+                "severity": "warn",
+                "mode": "live",
             }
 
         return {
             "name": "Provider Config",
-            "status": "Incomplete",
-            "value": f"{provider_label} / no default model",
-            "detail": "Provider is selected, but no default model is configured.",
-            "severity": "warn",
+            "status": "Configured",
+            "value": f"{provider_label} / {default_model}",
+            "detail": "Provider and default model are configured. No safe unauthenticated live check is available for this provider yet.",
+            "severity": "good",
             "mode": "config",
         }
 
