@@ -318,7 +318,7 @@ v0.4 Alpha completed:
 - [x] Complete v0.4 page-builder architecture pass
 - [x] Add memory inventory foundation
 - [x] Add Jobs / Tasks page foundation
-- [ ] Add Home Assistant integration
+- [x] Add Home Assistant integration foundation
 - [ ] Add Telegram integration
 - [ ] Add backup and restore
 - [ ] Add update manager
