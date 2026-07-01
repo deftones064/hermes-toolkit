@@ -7,6 +7,41 @@ def _safe_int(value, default=0):
         return default
 
 
+def build_provider_activity_summaries(calls):
+    summaries = {}
+
+    for call in calls:
+        provider = (call.get("provider") or "unknown").strip() or "unknown"
+
+        if provider not in summaries:
+            summaries[provider] = {
+                "provider": provider,
+                "call_count": 0,
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "total_tokens": 0,
+                "cache_total": 0,
+                "avg_cache": 0,
+                "most_recent_model": "unknown",
+                "last_call_num": None,
+            }
+
+        summary = summaries[provider]
+        summary["call_count"] += 1
+        summary["input_tokens"] += call.get("in", 0)
+        summary["output_tokens"] += call.get("out", 0)
+        summary["total_tokens"] += call.get("total", 0)
+        summary["cache_total"] += call.get("pct", 0)
+        summary["avg_cache"] = summary["cache_total"] / summary["call_count"]
+        summary["most_recent_model"] = call.get("model") or "unknown"
+        summary["last_call_num"] = call.get("num")
+
+    return sorted(
+        summaries.values(),
+        key=lambda summary: (-summary["call_count"], summary["provider"]),
+    )
+
+
 def build_sessions_data(dashboard_data, cfg, calls, provider="all", query=""):
     # cfg is accepted for the public backend API and future session-browser work.
     # Current Sessions v1 behavior is dashboard/log-derived.
@@ -64,6 +99,7 @@ def build_sessions_data(dashboard_data, cfg, calls, provider="all", query=""):
         ]
 
     recent_calls = list(reversed(filtered_calls[-12:]))
+    provider_summaries = build_provider_activity_summaries(filtered_calls)
 
     cards = []
 
@@ -218,6 +254,8 @@ def build_sessions_data(dashboard_data, cfg, calls, provider="all", query=""):
         "recent_calls": recent_calls,
         "recent_call_count": len(recent_calls),
         "recent_total_count": len(calls),
+        "provider_summaries": provider_summaries,
+        "provider_summary_count": len(provider_summaries),
         "provider_options": provider_options,
         "selected_provider": selected_provider,
         "search_query": search_query,

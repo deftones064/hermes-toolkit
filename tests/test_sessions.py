@@ -1,4 +1,4 @@
-from toolkit.sessions import build_sessions_data
+from toolkit.sessions import build_provider_activity_summaries, build_sessions_data
 
 
 def _dashboard_data():
@@ -172,3 +172,82 @@ def test_build_sessions_data_rejects_unknown_provider_filter():
 
     assert sessions_page["selected_provider"] == "all"
     assert sessions_page["recent_call_count"] == 1
+
+
+def test_build_provider_activity_summaries_groups_by_provider():
+    calls = [
+        {
+            "num": 1,
+            "provider": "openrouter",
+            "model": "qwen/qwen3-coder",
+            "in": 1000,
+            "out": 100,
+            "total": 1100,
+            "pct": 90,
+        },
+        {
+            "num": 2,
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "in": 2000,
+            "out": 200,
+            "total": 2200,
+            "pct": 80,
+        },
+        {
+            "num": 3,
+            "provider": "openrouter",
+            "model": "anthropic/claude-sonnet",
+            "in": 3000,
+            "out": 300,
+            "total": 3300,
+            "pct": 70,
+        },
+    ]
+
+    summaries = build_provider_activity_summaries(calls)
+
+    assert [item["provider"] for item in summaries] == [
+        "openrouter",
+        "openai-codex",
+    ]
+
+    openrouter = summaries[0]
+    assert openrouter["call_count"] == 2
+    assert openrouter["input_tokens"] == 4000
+    assert openrouter["output_tokens"] == 400
+    assert openrouter["total_tokens"] == 4400
+    assert openrouter["avg_cache"] == 80
+    assert openrouter["most_recent_model"] == "anthropic/claude-sonnet"
+    assert openrouter["last_call_num"] == 3
+
+
+def test_build_sessions_data_includes_provider_activity_summaries():
+    calls = [
+        {
+            "num": 1,
+            "provider": "openrouter",
+            "model": "qwen/qwen3-coder",
+            "in": 1000,
+            "out": 100,
+            "total": 1100,
+            "pct": 90,
+        },
+        {
+            "num": 2,
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "in": 2000,
+            "out": 200,
+            "total": 2200,
+            "pct": 80,
+        },
+    ]
+
+    data = build_sessions_data(_dashboard_data(), {}, calls, provider="openrouter")
+    sessions_page = data["sessions_page"]
+
+    assert sessions_page["provider_summary_count"] == 1
+    assert sessions_page["provider_summaries"][0]["provider"] == "openrouter"
+    assert sessions_page["provider_summaries"][0]["call_count"] == 1
+
