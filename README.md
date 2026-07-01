@@ -291,20 +291,21 @@ Current release track:
 - [x] Memory
 - [x] About
 
-Future work:
+v0.4 development in progress:
 
-- Real diagnostic engine
-- Live provider connectivity checks
-- Ollama reachability checks
-- Session browser
-- Log filtering/search/export
-- Formal skill registry
-- Memory inventory
-- Jobs / Tasks page
-- Home Assistant integration
-- Telegram integration
-- Backup and restore
-- Update manager
+- [x] Extract Doctor diagnostics into backend module
+- [x] Split Doctor diagnostics into helper builders
+- [x] Add safe Ollama reachability diagnostics
+- [ ] Add broader live provider connectivity checks
+- [ ] Add session browser
+- [ ] Add log filtering/search/export
+- [ ] Add formal skill registry
+- [ ] Add memory inventory
+- [ ] Add Jobs / Tasks page
+- [ ] Add Home Assistant integration
+- [ ] Add Telegram integration
+- [ ] Add backup and restore
+- [ ] Add update manager
 
 ---
 
