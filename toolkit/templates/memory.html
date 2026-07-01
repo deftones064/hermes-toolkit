@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% set active_page = "memory" %}
+{% block title %}Hermes Toolkit - Memory{% endblock %}
+{% block page_title %}Memory{% endblock %}
+{% block page_subtitle %}Read-only memory, context, cache, and compression overview.{% endblock %}
+{% block header_actions %}
+<div class="live-pill"><span class="dot"></span><span><strong>Memory</strong><small>Read-only</small></span></div>
+{% endblock %}
+
+{% block content %}
+<div class="grid">
+  <div class="card health-card">
+    <div class="health-header">
+      <div>
+        <div class="label">Memory Health</div>
+        <div class="value {{ data.memory_page.status_class }}">{{ data.memory_page.status }}</div>
+      </div>
+      <div class="health-badge {{ data.memory_page.status_class }}">
+        <i data-lucide="brain"></i>
+      </div>
+    </div>
+
+    <div class="health-bar">
+      <div class="health-bar-fill {{ data.memory_page.status_class }}" style="width: {{ [100, data.memory_page.avg_cache] | min }}%;"></div>
+    </div>
+
+    <div class="health-footer">
+      <span class="{{ data.memory_page.status_class }}">{{ "%.1f"|format(data.memory_page.avg_cache) }}% cache</span>
+      <span>{{ data.memory_page.signal_count }} signals</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Mode</h2>
+    <p><span class="label">Access</span><br>Read-only</p>
+    <p><span class="label">Actions</span><br>No inspect/delete/export</p>
+  </div>
+
+  <div class="card">
+    <h2>Recent Context</h2>
+    <p><span class="label">Average input</span><br>{{ "{:,.0f}".format(data.memory_page.avg_input or 0) }} tokens</p>
+    <p><span class="label">Cached tokens</span><br>{{ "{:,.0f}".format(data.memory_page.total_cached_tokens or 0) }}</p>
+  </div>
+</div>
+
+<div class="grid">
+  {% for card in data.memory_page.cards %}
+  <div class="card">
+    <div class="session-card-header">
+      <div>
+        <h2>{{ card.title }}</h2>
+        <p><span class="label">Value</span><br><span class="{{ card.severity }}">{{ card.value }}</span></p>
+        <p class="section-muted">{{ card.detail }}</p>
+      </div>
+      <div class="session-card-icon {{ card.severity }}">
+        <i data-lucide="{{ card.icon }}"></i>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h2>Session Relationship</h2>
+    <p><span class="label">Reset mode</span><br><code>{{ data.memory_page.session_reset_mode }}</code></p>
+    <p><span class="label">Idle timeout</span><br>{{ data.memory_page.session_reset_idle }} minutes</p>
+  </div>
+
+  <div class="card">
+    <h2>Conversation Limits</h2>
+    <p><span class="label">Max turns</span><br>{{ data.memory_page.max_turns }}</p>
+    <p><span class="label">Max live sessions</span><br>{{ data.memory_page.max_live_sessions }}</p>
+  </div>
+
+  <div class="card">
+    <h2>File Context</h2>
+    <p><span class="label">Context file max</span><br>{% if data.memory_page.context_file_max_chars %}{{ "{:,.0f}".format(data.memory_page.context_file_max_chars) }} chars{% else %}Not set{% endif %}</p>
+    <p><span class="label">File read max</span><br>{% if data.memory_page.file_read_max_chars %}{{ "{:,.0f}".format(data.memory_page.file_read_max_chars) }} chars{% else %}Not set{% endif %}</p>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Memory Recommendations</h2>
+        <p class="section-muted">{{ data.memory_page.note }}</p>
+      </div>
+    </div>
+
+    <div class="recommendation-list">
+      {% for item in data.memory_page.recommendations %}
+      <div class="recommendation-item {{ item.severity }}">
+        {% if item.severity == "good" %}
+          <i data-lucide="check-circle"></i>
+        {% elif item.severity == "warn" %}
+          <i data-lucide="alert-triangle"></i>
+        {% else %}
+          <i data-lucide="x-circle"></i>
+        {% endif %}
+        <span>
+          <strong>{{ item.title }}</strong>
+          <small>{{ item.detail }}</small>
+        </span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Planned Memory Areas</h2>
+        <p class="section-muted">Roadmap placeholders for a future Memory engine.</p>
+      </div>
+    </div>
+
+    <div class="skill-grid">
+      {% for area in data.memory_page.planned_areas %}
+      <div class="skill-card planned">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="{{ area.icon }}"></i>
+            <div>
+              <div class="skill-title">{{ area.name }}</div>
+              <div class="skill-subtitle">{{ area.description }}</div>
+            </div>
+          </div>
+          <span class="model-pill">{{ area.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Recent Memory / Context Log Signals</h2>
+        <p class="section-muted">Read-only log-derived signals. This is not yet a formal memory inventory.</p>
+      </div>
+    </div>
+
+    {% if data.memory_page.signal_lines %}
+    <div class="log-viewer">
+      {% for entry in data.memory_page.signal_lines %}
+      <div class="log-line {{ entry.severity }}">
+        <span class="log-severity">{{ entry.severity }}</span>
+        <code>{{ entry.line }}</code>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i data-lucide="file-question"></i>
+      <strong>No recent memory/context log signals found</strong>
+      <span>Memory-related log lines will appear here when available.</span>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

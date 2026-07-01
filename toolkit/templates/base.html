@@ -37,7 +37,7 @@
       <a class="{% if active_page == 'sessions' %}active{% endif %}" href="/sessions"><i data-lucide="messages-square" class="nav-icon"></i><span>Sessions</span></a>
       <a class="{% if active_page == 'logs' %}active{% endif %}" href="/logs"><i data-lucide="scroll-text" class="nav-icon"></i><span>Logs</span></a>
       <a class="{% if active_page == 'skills' %}active{% endif %}" href="/skills"><i data-lucide="blocks" class="nav-icon"></i><span>Skills</span></a>
-      <a class="disabled" href="#"><i data-lucide="brain" class="nav-icon"></i><span>Memory</span></a>
+      <a class="{% if active_page == 'memory' %}active{% endif %}" href="/memory"><i data-lucide="brain" class="nav-icon"></i><span>Memory</span></a>
       <a class="disabled" href="#"><i data-lucide="info" class="nav-icon"></i><span>About</span></a>
     </nav>
 
