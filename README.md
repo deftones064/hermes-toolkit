@@ -117,7 +117,7 @@ Project identity, version, release status, product principles, page coverage, ru
 
 ## Screenshots
 
-Screenshots are planned before the v0.3 Alpha tag.
+Screenshots are planned as follow-up documentation for the v0.3 Alpha release.
 
 Recommended screenshots for this release:
 
