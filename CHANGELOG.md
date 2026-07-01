@@ -12,8 +12,10 @@ All notable changes to Hermes Toolkit will be documented in this file.
 - Split Doctor diagnostics into focused helper builders for environment, configuration, runtime, connectivity, usage, summary, and recommendations.
 - Added provider connectivity dispatcher so future provider checks do not clutter the Doctor page builder.
 - Extracted Sessions page data building into the `toolkit.sessions` backend module.
+- Extracted Cost page estimation logic into the `toolkit.cost` backend module.
 - Kept the public Doctor web data API stable through `build_doctor_data(dashboard_data, cfg)`.
 - Added a Sessions backend API through `build_sessions_data(dashboard_data, cfg, calls)`.
+- Added a Cost backend API through `build_cost_data(dashboard_data, recent_calls)`.
 
 ### Added
 
