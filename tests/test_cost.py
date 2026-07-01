@@ -79,3 +79,44 @@ def test_build_cost_data_handles_no_calls():
     assert cost["total_cost"] == 0
     assert cost["avg_cost"] == 0
     assert cost["cost_status"] == "Low"
+
+
+def test_build_cost_data_uses_configured_pricing_override():
+    calls = [
+        {
+            "num": 1,
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "in": 1_000_000,
+            "out": 0,
+            "total": 1_000_000,
+            "cache": 0,
+            "pct": 0,
+        },
+    ]
+
+    cfg = {
+        "toolkit": {
+            "estimated_pricing": {
+                "gpt-5.5": {
+                    "label": "GPT-5.5 Custom",
+                    "input_per_million": 2.0,
+                    "output_per_million": 10.0,
+                    "cached_input_per_million": 0.2,
+                }
+            }
+        }
+    }
+
+    data = build_cost_data({}, calls, cfg=cfg)
+    cost = data["cost"]
+
+    assert cost["calls"][0]["price_label"] == "GPT-5.5 Custom"
+    assert cost["total_cost"] == 2.0
+    assert cost["pricing_source"] == "Config override"
+
+
+def test_build_cost_data_reports_builtin_pricing_source():
+    data = build_cost_data({}, [], cfg={})
+
+    assert data["cost"]["pricing_source"] == "Built-in estimate table"

@@ -130,8 +130,9 @@ def build_doctor_data():
 
 def build_cost_data():
     data = build_dashboard_data()
+    cfg = load_config()
     calls = parse_recent_api_calls(120)
-    return build_cost_report(data, calls)
+    return build_cost_report(data, calls, cfg=cfg)
 
 def build_models_data():
     from toolkit.models import MODELS

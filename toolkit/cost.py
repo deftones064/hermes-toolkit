@@ -35,6 +35,43 @@ PRICING = {
 }
 
 
+def _pricing_from_config(cfg):
+    if not cfg:
+        return PRICING
+
+    toolkit_cfg = cfg.get("toolkit") or {}
+    overrides = toolkit_cfg.get("estimated_pricing") or {}
+
+    if not isinstance(overrides, dict):
+        return PRICING
+
+    pricing = {
+        key: dict(value)
+        for key, value in PRICING.items()
+    }
+
+    for key, value in overrides.items():
+        if not isinstance(value, dict):
+            continue
+
+        base = dict(pricing.get(key, pricing["default"]))
+        base.update(
+            {
+                field: value[field]
+                for field in (
+                    "label",
+                    "input_per_million",
+                    "output_per_million",
+                    "cached_input_per_million",
+                )
+                if field in value
+            }
+        )
+        pricing[str(key).lower()] = base
+
+    return pricing
+
+
 def price_for_model(model_name, pricing=None):
     pricing = pricing or PRICING
 
@@ -83,10 +120,14 @@ def estimate_call(call, pricing=None):
     }
 
 
-def build_cost_data(dashboard_data, recent_calls):
+def build_cost_data(dashboard_data, recent_calls, cfg=None):
     data = dict(dashboard_data)
+    pricing = _pricing_from_config(cfg or {})
 
-    estimated_calls = [estimate_call(call) for call in recent_calls]
+    estimated_calls = [
+        estimate_call(call, pricing=pricing)
+        for call in recent_calls
+    ]
 
     total_input_tokens = sum(call["in"] for call in estimated_calls)
     total_output_tokens = sum(call["out"] for call in estimated_calls)
@@ -137,6 +178,7 @@ def build_cost_data(dashboard_data, recent_calls):
         "savings_status": savings_status,
         "savings_class": savings_class,
         "pricing_note": "Estimated from recent Hermes API log entries. This is not a billing statement.",
+        "pricing_source": "Config override" if cfg and (cfg.get("toolkit") or {}).get("estimated_pricing") else "Built-in estimate table",
     }
 
     return data
