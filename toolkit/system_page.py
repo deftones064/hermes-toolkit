@@ -6,8 +6,21 @@ from dataclasses import dataclass
 import platform
 
 from toolkit import __version__
+from toolkit.config import CONFIG, LOG
 
 
+
+
+
+
+@dataclass(frozen=True)
+class SystemConfigFact:
+    """A read-only configuration path fact from existing module constants."""
+
+    name: str
+    value: str
+    summary: str
+    icon: str
 
 
 @dataclass(frozen=True)
@@ -60,6 +73,26 @@ SAFETY_NOTE = (
     "No Git operations are executed. No configuration is modified."
 )
 
+
+
+
+def build_system_config_facts() -> list[SystemConfigFact]:
+    """Return configuration path facts without reading or writing files."""
+
+    return [
+        SystemConfigFact(
+            name="Config Path",
+            value=str(CONFIG),
+            summary="Configured Hermes Toolkit config path from module constants.",
+            icon="file-cog",
+        ),
+        SystemConfigFact(
+            name="Log Path",
+            value=str(LOG),
+            summary="Configured Hermes Toolkit log path from module constants.",
+            icon="scroll-text",
+        ),
+    ]
 
 
 def build_system_runtime_facts() -> list[SystemRuntimeFact]:
@@ -230,6 +263,7 @@ def build_system_page_data() -> dict[str, object]:
     readiness_items = build_system_readiness_items()
     planned_areas = build_system_planned_areas()
     runtime_facts = build_system_runtime_facts()
+    config_facts = build_system_config_facts()
 
     return {
         "title": "System Inventory",
@@ -242,4 +276,5 @@ def build_system_page_data() -> dict[str, object]:
         "planned_areas": planned_areas,
         "readiness_items": readiness_items,
         "runtime_facts": runtime_facts,
+        "config_facts": config_facts,
     }

@@ -1,11 +1,14 @@
 import platform
 from toolkit import __version__
+from toolkit.config import CONFIG, LOG
 from toolkit.system_page import (
     SAFETY_NOTE,
+    SystemConfigFact,
     SystemPageSummary,
     SystemPlannedArea,
     SystemReadinessItem,
     SystemRuntimeFact,
+    build_system_config_facts,
     build_system_page_data,
     build_system_page_summary,
     build_system_planned_areas,
@@ -123,6 +126,26 @@ def test_system_readiness_items_are_read_only():
 
 
 
+
+def test_system_config_facts_are_module_constant_metadata():
+    facts = build_system_config_facts()
+
+    assert facts == [
+        SystemConfigFact(
+            name="Config Path",
+            value=str(CONFIG),
+            summary="Configured Hermes Toolkit config path from module constants.",
+            icon="file-cog",
+        ),
+        SystemConfigFact(
+            name="Log Path",
+            value=str(LOG),
+            summary="Configured Hermes Toolkit log path from module constants.",
+            icon="scroll-text",
+        ),
+    ]
+
+
 def test_system_runtime_facts_are_in_process_metadata():
     facts = build_system_runtime_facts()
 
@@ -203,6 +226,7 @@ def test_system_page_data_includes_safety_note_and_sections():
     assert data["planned_areas"] == build_system_planned_areas()
     assert data["readiness_items"] == build_system_readiness_items()
     assert data["runtime_facts"] == build_system_runtime_facts()
+    assert data["config_facts"] == build_system_config_facts()
 
 
 def test_safety_note_blocks_mutating_system_behavior():
