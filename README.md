@@ -320,8 +320,24 @@ v0.4 Alpha completed:
 - [x] Add Jobs / Tasks page foundation
 - [x] Add Home Assistant integration foundation
 - [x] Add Telegram integration foundation
+- [x] Add Backup / Restore read-only foundation
 - [ ] Add backup and restore
 - [ ] Add update manager
+
+### Backup / Restore foundation
+
+The Backup / Restore page is currently a read-only planning surface. It inventories planned areas for backup sources, backup destinations, restore points, and restore guardrails.
+
+This foundation is intentionally non-mutating:
+
+- No backups are created.
+- No restores are executed.
+- No files are deleted.
+- No files are overwritten.
+- No services are restarted.
+- No configuration is modified.
+
+The full backup and restore roadmap item remains open until explicit backup creation and restore workflows are intentionally designed, guarded, tested, and documented.
 
 ### Optional estimated pricing overrides
 

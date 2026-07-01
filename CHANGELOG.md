@@ -8,7 +8,11 @@ All notable changes to Hermes Toolkit will be documented in this file.
 
 ### Added
 
-- Nothing yet.
+- Added a read-only Backup / Restore backend foundation and dashboard page for backup source planning, destination inventory, restore point concepts, and restore guardrails.
+
+### Notes
+
+- The Backup / Restore foundation does not create backups, execute restores, delete files, overwrite files, restart services, or modify configuration.
 
 
 ## v0.5.0-alpha
