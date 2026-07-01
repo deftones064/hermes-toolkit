@@ -321,6 +321,7 @@ v0.4 Alpha completed:
 - [x] Add Home Assistant integration foundation
 - [x] Add Telegram integration foundation
 - [x] Add Backup / Restore read-only foundation
+- [x] Add Update Manager read-only foundation
 - [ ] Add backup and restore
 - [ ] Add update manager
 
@@ -340,6 +341,24 @@ This foundation is intentionally non-mutating:
 - No configuration is modified.
 
 The full backup and restore roadmap item remains open until explicit backup creation and restore workflows are intentionally designed, guarded, tested, and documented.
+
+### Update Manager foundation
+
+The Updates page is currently a read-only planning surface. It inventories planned areas for version sources, update channels, pending changes, and update guardrails.
+
+Its backend follows the shared foundation-page readiness shape used by the other read-only integration pages, including summary status, readiness counts, item summaries, statuses, and icons.
+
+This foundation is intentionally non-mutating:
+
+- No packages are installed.
+- No packages are updated.
+- No packages are removed.
+- No Git fetch, pull, reset, checkout, merge, or tag operation is executed.
+- No processes are restarted.
+- No services are restarted.
+- No configuration is modified.
+
+The full update manager roadmap item remains open until explicit update workflows are intentionally designed, guarded, tested, and documented.
 
 ### Optional estimated pricing overrides
 
