@@ -16,6 +16,7 @@ All notable changes to Hermes Toolkit will be documented in this file.
 - Added a Memory page inventory foundation section without inspecting memory contents or stores.
 - Added a read-only Jobs / Tasks backend foundation and dashboard page for planned schedulers, background tasks, maintenance actions, and automation hooks.
 - Added a read-only Home Assistant backend foundation and dashboard page for connection readiness, entity inventory planning, automation hooks, and notifications.
+- Added a read-only Telegram backend foundation and dashboard page for bot configuration readiness, chat targets, notification routing, and command hooks.
 
 
 ## v0.4.0-alpha

@@ -319,7 +319,7 @@ v0.4 Alpha completed:
 - [x] Add memory inventory foundation
 - [x] Add Jobs / Tasks page foundation
 - [x] Add Home Assistant integration foundation
-- [ ] Add Telegram integration
+- [x] Add Telegram integration foundation
 - [ ] Add backup and restore
 - [ ] Add update manager
 
