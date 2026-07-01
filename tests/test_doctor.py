@@ -1,0 +1,94 @@
+from toolkit.doctor import build_doctor_data
+
+
+def test_build_doctor_data_shape():
+    dashboard_data = {
+        "model": {
+            "provider": "openrouter",
+            "default": "qwen/qwen3-coder",
+        },
+        "provider_label": "OpenRouter",
+        "settings": {
+            "max_turns": 30,
+            "max_live_sessions": 4,
+            "context_file_max_chars": 60000,
+            "file_read_max_chars": 50000,
+            "protect_last_n": 8,
+            "resume_exchanges": 6,
+        },
+        "session_reset_mode": "idle",
+        "session_reset_idle": 30,
+        "avg_cache": 90.0,
+        "avg_in": 25000.0,
+    }
+
+    cfg = {
+        "model": {
+            "provider": "openrouter",
+            "default": "qwen/qwen3-coder",
+        }
+    }
+
+    data = build_doctor_data(dashboard_data, cfg)
+
+    assert data["doctor_checks"]
+    assert data["doctor_categories"]
+    assert data["doctor_summary"]
+    assert data["recommendations"]
+    assert data["diagnostic_generated_at"]
+
+    assert set(data["doctor_summary"]) == {"good", "warn", "bad"}
+
+    category_ids = [category["id"] for category in data["doctor_categories"]]
+    assert category_ids == [
+        "environment",
+        "configuration",
+        "runtime",
+        "connectivity",
+        "usage",
+    ]
+
+    check_count = len(data["doctor_checks"])
+    summary_count = (
+        data["doctor_summary"]["good"]
+        + data["doctor_summary"]["warn"]
+        + data["doctor_summary"]["bad"]
+    )
+
+    assert summary_count == check_count
+    assert 0 <= data["health_score"] <= 100
+    assert data["health_status"]
+    assert data["health_class"] in {"good", "warn", "bad"}
+
+
+def test_build_doctor_data_flags_missing_provider():
+    dashboard_data = {
+        "model": {},
+        "provider_label": None,
+        "settings": {
+            "max_turns": 75,
+            "max_live_sessions": 12,
+            "context_file_max_chars": None,
+            "file_read_max_chars": 120000,
+            "protect_last_n": 20,
+            "resume_exchanges": 0,
+        },
+        "session_reset_mode": "none",
+        "session_reset_idle": None,
+        "avg_cache": 20.0,
+        "avg_in": 125000.0,
+    }
+
+    cfg = {}
+
+    data = build_doctor_data(dashboard_data, cfg)
+
+    assert data["doctor_summary"]["bad"] >= 1
+    assert any(
+        check["name"] == "Active Provider" and check["severity"] == "bad"
+        for check in data["doctor_checks"]
+    )
+    assert any(
+        item["title"] == "Select an active provider"
+        for item in data["recommendations"]
+    )
