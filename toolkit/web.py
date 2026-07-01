@@ -22,6 +22,7 @@ from toolkit.home_assistant_page import build_home_assistant_data as build_home_
 from toolkit.jobs_page import build_jobs_data as build_jobs_report
 from toolkit.sessions import build_sessions_data as build_sessions_report
 from toolkit.skills_page import build_skills_data as build_skills_report
+from toolkit.system_page import build_system_page_data as build_system_report
 from toolkit.telegram_page import build_telegram_data as build_telegram_report
 from toolkit.update_page import build_update_page_data as build_update_report
 
@@ -98,6 +99,10 @@ def build_jobs_data():
 def build_backup_data():
     return build_backup_report()
 
+
+
+def build_system_data():
+    return build_system_report()
 
 def build_update_data():
     return build_update_report()
@@ -261,6 +266,18 @@ async def backup_page(request: Request):
         },
     )
 
+
+
+
+@app.get("/system", response_class=HTMLResponse)
+async def system_page(request: Request):
+    return templates.TemplateResponse(
+        "system.html",
+        {
+            "request": request,
+            "data": build_system_data(),
+        },
+    )
 
 
 @app.get("/updates", response_class=HTMLResponse)

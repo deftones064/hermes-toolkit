@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% set active_page = "system" %}
+{% block title %}Hermes Toolkit - System Inventory{% endblock %}
+{% block page_title %}System Inventory{% endblock %}
+{% block page_subtitle %}Read-only foundation for runtime, repository, configuration, and service inventory planning.{% endblock %}
+{% block header_actions %}
+<div class="live-pill"><span class="dot"></span><span><strong>System</strong><small>Read-only</small></span></div>
+{% endblock %}
+
+{% block content %}
+<div class="grid">
+  <div class="card health-card">
+    <div class="health-header">
+      <div>
+        <div class="label">System Inventory Foundation</div>
+        <div class="value {{ data.system_page.status_class }}">{{ data.system_page.status }}</div>
+      </div>
+      <div class="health-badge {{ data.system_page.status_class }}">
+        <i data-lucide="server-cog"></i>
+      </div>
+    </div>
+
+    <div class="health-bar">
+      <div class="health-bar-fill {{ data.system_page.status_class }}" style="width: 40%;"></div>
+    </div>
+
+    <div class="health-footer">
+      <span class="{{ data.system_page.status_class }}">{{ data.system_page.detail }}</span>
+      <span>{{ data.system_page.available_readiness_count }} of {{ data.system_page.readiness_count }} ready</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Mode</h2>
+    <p><span class="label">Access</span><br>Read-only</p>
+    <p><span class="label">Actions</span><br>No subprocess, Git, service, package, file, or config changes</p>
+  </div>
+
+  <div class="card">
+    <h2>Scope</h2>
+    <p><span class="label">Current source</span><br>In-process metadata and planning data</p>
+    <p><span class="label">Future source</span><br>Guarded runtime, repository, configuration, and service inventory</p>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Safety Guardrails</h2>
+        <p class="section-muted">{{ data.system_page.note }}</p>
+      </div>
+      <span class="filter-count">Mutation disabled</span>
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>System Readiness</h2>
+        <p class="section-muted">Read-only readiness placeholders for future guarded system inventory workflows.</p>
+      </div>
+      <span class="filter-count">{{ data.system_page.available_readiness_count }} of {{ data.system_page.readiness_count }} available</span>
+    </div>
+
+    <div class="skill-grid">
+      {% for item in data.readiness_items %}
+      <div class="skill-card planned">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="{{ item.icon }}"></i>
+            <div>
+              <div class="skill-title">{{ item.name }}</div>
+              <div class="skill-subtitle">{{ item.summary }}</div>
+              <div class="skill-subtitle">{{ item.detail }}</div>
+            </div>
+          </div>
+          <span class="model-pill {% if item.status == 'available' %}active{% endif %}">{{ item.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Planned System Areas</h2>
+        <p class="section-muted">Roadmap placeholders only. No system commands, service checks, or repository operations are executed from this page.</p>
+      </div>
+    </div>
+
+    <div class="skill-grid">
+      {% for area in data.planned_areas %}
+      <div class="skill-card planned">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="{{ area.icon }}"></i>
+            <div>
+              <div class="skill-title">{{ area.name }}</div>
+              <div class="skill-subtitle">{{ area.description }}</div>
+            </div>
+          </div>
+          <span class="model-pill">{{ area.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
