@@ -121,7 +121,60 @@ def _build_recommendations(detected_skills):
     return recommendations
 
 
-def build_skills_data(dashboard_data, log_path):
+def build_skill_registry_items(cfg=None):
+    cfg = cfg or {}
+    toolkit_cfg = cfg.get("toolkit") or {}
+    skills_cfg = toolkit_cfg.get("skills") or {}
+
+    has_registry = bool(
+        skills_cfg.get("registry")
+        or skills_cfg.get("registry_path")
+        or skills_cfg.get("registry_file")
+    )
+    has_skill_dirs = bool(
+        skills_cfg.get("directories")
+        or skills_cfg.get("skill_dirs")
+        or skills_cfg.get("paths")
+    )
+    has_manifest = bool(
+        skills_cfg.get("manifest")
+        or skills_cfg.get("manifest_path")
+        or skills_cfg.get("manifest_file")
+    )
+
+    return [
+        {
+            "name": "Registry Source",
+            "status": "available" if has_registry else "planned",
+            "summary": "Skill registry configuration detected." if has_registry else "No formal skill registry configured yet.",
+            "detail": "Future registry support can expose installed skills without installing, removing, or restarting anything.",
+            "icon": "database",
+        },
+        {
+            "name": "Skill Directories",
+            "status": "available" if has_skill_dirs else "planned",
+            "summary": "Skill directory configuration detected." if has_skill_dirs else "No skill directories configured yet.",
+            "detail": "Future directory scanning should remain read-only and avoid modifying plugin files.",
+            "icon": "folder-search",
+        },
+        {
+            "name": "Skill Manifest",
+            "status": "available" if has_manifest else "planned",
+            "summary": "Skill manifest configuration detected." if has_manifest else "No skill manifest configured yet.",
+            "detail": "Future manifest support can describe capabilities, docs, and metadata.",
+            "icon": "file-text",
+        },
+        {
+            "name": "Action Safety",
+            "status": "available",
+            "summary": "Skill registry foundation is read-only.",
+            "detail": "No skills are installed, removed, restarted, enabled, disabled, or modified by this foundation.",
+            "icon": "shield-check",
+        },
+    ]
+
+
+def build_skills_data(dashboard_data, log_path, cfg=None):
     data = dict(dashboard_data)
 
     raw_lines = []
@@ -147,6 +200,7 @@ def build_skills_data(dashboard_data, log_path):
         entry["line"] for entry in signal_lines
     )
     detected_skills = _build_detected_skills(detected_names)
+    registry_items = build_skill_registry_items(cfg)
 
     if detected_skills:
         skills_status = "Signals Detected"
@@ -163,6 +217,12 @@ def build_skills_data(dashboard_data, log_path):
         "detail": skills_detail,
         "detected_skills": detected_skills,
         "planned_skills": PLANNED_SKILLS,
+        "skill_registry_items": registry_items,
+        "skill_registry_count": len(registry_items),
+        "available_skill_registry_count": sum(
+            1 for item in registry_items
+            if item["status"] == "available"
+        ),
         "signal_lines": list(reversed(signal_lines[-40:])),
         "signal_count": len(signal_lines),
         "recommendations": _build_recommendations(detected_skills),
