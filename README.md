@@ -119,6 +119,10 @@ Project identity, version, release status, product principles, page coverage, ru
 
 Screenshots are planned as follow-up documentation for the v0.3 Alpha release.
 
+Screenshot assets should live under:
+
+    docs/assets/screenshots/
+
 Recommended screenshots for this release:
 
 - Dashboard
@@ -130,6 +134,10 @@ Recommended screenshots for this release:
 - Skills
 - Memory
 - About
+
+See:
+
+    docs/assets/screenshots/README.md
 
 ---
 
