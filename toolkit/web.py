@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
+from toolkit import __version__
 from toolkit.about_page import build_about_data as build_about_report
 from toolkit.backup_page import build_backup_page_data as build_backup_report
 from toolkit.config import load_config, save_config, set_path
@@ -26,6 +27,7 @@ from toolkit.update_page import build_update_page_data as build_update_report
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "toolkit" / "templates"))
+templates.env.globals["app_version"] = __version__
 
 app = FastAPI(title="Hermes Toolkit")
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "toolkit" / "static")), name="static")
