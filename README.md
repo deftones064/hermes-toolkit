@@ -303,7 +303,7 @@ v0.4 development in progress:
 - [x] Extract Sessions data builder
 - [x] Add Sessions activity filtering
 - [x] Extract Cost data builder
-- [ ] Add configurable estimated pricing
+- [x] Add configurable estimated pricing
 - [ ] Add session browser
 - [x] Add log filtering/search
 - [x] Add log export
@@ -314,6 +314,25 @@ v0.4 development in progress:
 - [ ] Add Telegram integration
 - [ ] Add backup and restore
 - [ ] Add update manager
+
+### Optional estimated pricing overrides
+
+The Cost page uses a built-in estimate table by default. You can override estimated pricing under the `toolkit` namespace without changing provider/model configuration.
+
+Example:
+
+```yaml
+toolkit:
+  estimated_pricing:
+    gpt-5.5:
+      label: GPT-5.5 Custom
+      input_per_million: 1.50
+      output_per_million: 12.00
+      cached_input_per_million: 0.15
+```
+
+Cost values are estimates from recent Hermes API log entries and are not billing statements.
+
 
 ---
 

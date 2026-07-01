@@ -27,6 +27,8 @@ All notable changes to Hermes Toolkit will be documented in this file.
 - Added read-only Logs export route for currently filtered raw log entries.
 - Added read-only Sessions activity filtering by provider.
 - Added read-only Sessions activity search over provider and model names.
+- Added optional `toolkit.estimated_pricing` config overrides for Cost estimates.
+- Added Cost page pricing-source display so built-in estimates and config overrides are visible.
 - Added Logs page tests for filter state, unknown severity fallback, and plain-text export.
 - Added Sessions backend tests for data shape, tuning recommendations, provider filtering, query filtering, and unknown provider fallback.
 - Added Doctor backend tests for diagnostic data shape, missing-provider warnings, provider validation, and Ollama reachability behavior.
