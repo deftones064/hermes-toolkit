@@ -311,6 +311,7 @@ v0.4 development in progress:
 - [x] Extract Logs page data builder
 - [x] Extract Skills page data builder
 - [ ] Add formal skill registry
+- [x] Extract Memory page data builder
 - [ ] Add memory inventory
 - [ ] Add Jobs / Tasks page
 - [ ] Add Home Assistant integration
