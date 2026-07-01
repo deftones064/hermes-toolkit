@@ -59,6 +59,36 @@
   <div class="card">
     <div class="card-header-row">
       <div>
+        <h2>Runtime Facts</h2>
+        <p class="section-muted">In-process runtime metadata only. No subprocess commands or system probes are executed.</p>
+      </div>
+      <span class="filter-count">{{ data.runtime_facts | length }} facts</span>
+    </div>
+
+    <div class="skill-grid">
+      {% for fact in data.runtime_facts %}
+      <div class="skill-card planned">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="{{ fact.icon }}"></i>
+            <div>
+              <div class="skill-title">{{ fact.name }}</div>
+              <div class="skill-subtitle">{{ fact.summary }}</div>
+              <div class="skill-subtitle">{{ fact.value }}</div>
+            </div>
+          </div>
+          <span class="model-pill">read-only</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
         <h2>System Readiness</h2>
         <p class="section-muted">Read-only readiness placeholders for future guarded system inventory workflows.</p>
       </div>
