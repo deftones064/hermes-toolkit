@@ -64,15 +64,26 @@ COMPLETED_PAGES = [
         "description": "Read-only memory, context, cache, and compression overview.",
         "icon": "brain",
     },
+    {
+        "name": "Backup / Restore",
+        "status": "Foundation",
+        "description": "Read-only planning surface for backup sources, destinations, restore points, and restore guardrails.",
+        "icon": "archive-restore",
+    },
+    {
+        "name": "Updates",
+        "status": "Foundation",
+        "description": "Read-only planning surface for version sources, update channels, pending changes, and update guardrails.",
+        "icon": "download-cloud",
+    },
 ]
 
 
 NEXT_STEPS = [
-    "Update README with the completed v0.4 Alpha architecture and diagnostics work.",
-    "Capture updated screenshots for Dashboard, Doctor, Cost, Models, Sessions, Logs, Skills, Memory, and About.",
-    "Verify changelog, version references, and release tag.",
-    "Review estimated pricing and provider diagnostics language before public release.",
-    "Tag Hermes Toolkit v0.4 Alpha.",
+    "Review README and CHANGELOG for the next alpha release.",
+    "Capture updated screenshots for Dashboard, Doctor, Backup / Restore, Updates, and other foundation pages.",
+    "Verify version references, release notes, and test status before tagging.",
+    "Keep backup, restore, and update execution disabled until guarded workflows are intentionally designed.",
 ]
 
 
@@ -105,7 +116,7 @@ def build_about_data(dashboard_data):
 
     data["about_page"] = {
         "version": __version__,
-        "release_label": "v0.4 Alpha",
+        "release_label": "v0.5 Alpha",
         "project_name": "Hermes Toolkit",
         "tagline": "Control. Optimize. Evolve.",
         "description": "Hermes Toolkit is an open-source administration dashboard and CLI companion for Hermes Agent.",

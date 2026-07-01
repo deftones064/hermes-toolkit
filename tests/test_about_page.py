@@ -7,7 +7,7 @@ def test_build_about_data_shape():
     about_page = data["about_page"]
 
     assert about_page["version"] == __version__
-    assert about_page["release_label"] == "v0.4 Alpha"
+    assert about_page["release_label"] == "v0.5 Alpha"
     assert about_page["project_name"] == "Hermes Toolkit"
     assert about_page["tagline"] == "Control. Optimize. Evolve."
     assert about_page["status"] == "Alpha"
@@ -40,6 +40,8 @@ def test_build_about_data_lists_expected_pages():
     assert "Logs" in page_names
     assert "Skills" in page_names
     assert "Memory" in page_names
+    assert "Backup / Restore" in page_names
+    assert "Updates" in page_names
 
 
 def test_build_about_data_is_informational_only():
@@ -52,3 +54,12 @@ def test_build_about_data_is_informational_only():
         principle["title"] == "Non-destructive by default"
         for principle in about_page["principles"]
     )
+
+
+def test_build_about_data_next_steps_are_current():
+    data = build_about_data({})
+    next_steps = data["about_page"]["next_steps"]
+
+    assert any("next alpha release" in step for step in next_steps)
+    assert any("backup, restore, and update execution disabled" in step for step in next_steps)
+    assert not any("v0.4 Alpha" in step for step in next_steps)
