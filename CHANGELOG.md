@@ -12,6 +12,8 @@ All notable changes to Hermes Toolkit will be documented in this file.
 - Added a read-only Sessions provider activity summary table using the existing dashboard table style.
 - Added normalized Sessions activity rows as a backend foundation for future session browser views.
 - Extracted shared dashboard data building into the `toolkit.dashboard` backend module.
+- Added a read-only Memory inventory foundation based on configuration and log-derived signal readiness.
+- Added a Memory page inventory foundation section without inspecting memory contents or stores.
 
 
 ## v0.4.0-alpha
