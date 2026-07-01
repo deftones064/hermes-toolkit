@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% set active_page = "logs" %}
+{% block title %}Hermes Toolkit - Logs{% endblock %}
+{% block page_title %}Logs{% endblock %}
+{% block page_subtitle %}Recent Hermes activity, parsed API calls, and raw log entries.{% endblock %}
+{% block header_actions %}
+<div class="live-pill"><span class="dot"></span><span><strong>Logs</strong><small>Read-only</small></span></div>
+{% endblock %}
+
+{% block content %}
+<div class="grid">
+  <div class="card health-card">
+    <div class="health-header">
+      <div>
+        <div class="label">Log Health</div>
+        <div class="value {{ data.logs_page.log_class }}">{{ data.logs_page.log_status }}</div>
+      </div>
+      <div class="health-badge {{ data.logs_page.log_class }}">
+        <i data-lucide="scroll-text"></i>
+      </div>
+    </div>
+
+    <div class="health-bar">
+      {% if data.logs_page.log_class == "good" %}
+        <div class="health-bar-fill good" style="width: 100%;"></div>
+      {% elif data.logs_page.log_class == "warn" %}
+        <div class="health-bar-fill warn" style="width: 66%;"></div>
+      {% else %}
+        <div class="health-bar-fill bad" style="width: 33%;"></div>
+      {% endif %}
+    </div>
+
+    <div class="health-footer">
+      <span class="{{ data.logs_page.log_class }}">{{ data.logs_page.log_detail }}</span>
+      <span>{{ data.logs_page.raw_entries | length }} lines</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Log File</h2>
+    <p><span class="label">Path</span><br><code>{{ data.logs_page.log_path }}</code></p>
+    <p><span class="label">Size</span><br>{{ "%.1f"|format(data.logs_page.log_size_kb) }} KB</p>
+  </div>
+
+  <div class="card">
+    <h2>Recent Counts</h2>
+    <p><span class="label">Parsed API calls</span><br>{{ data.logs_page.api_count }}</p>
+    <p><span class="label">Warnings</span><br><span class="{% if data.logs_page.warning_count %}warn{% else %}good{% endif %}">{{ data.logs_page.warning_count }}</span></p>
+    <p><span class="label">Errors</span><br><span class="{% if data.logs_page.error_count %}bad{% else %}good{% endif %}">{{ data.logs_page.error_count }}</span></p>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Parsed API Calls</h2>
+        <p class="section-muted">Structured model usage parsed from recent Hermes log entries.</p>
+      </div>
+    </div>
+
+    {% if data.logs_page.recent_calls %}
+    <div class="cost-table-wrap">
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Call</th>
+            <th>Provider</th>
+            <th>Model</th>
+            <th>Input</th>
+            <th>Output</th>
+            <th>Total</th>
+            <th>Cache</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for call in data.logs_page.recent_calls %}
+          <tr>
+            <td>#{{ call.num }}</td>
+            <td>{{ call.provider }}</td>
+            <td><code>{{ call.model }}</code></td>
+            <td>{{ "{:,.0f}".format(call["in"]) }}</td>
+            <td>{{ "{:,.0f}".format(call.out) }}</td>
+            <td>{{ "{:,.0f}".format(call.total) }}</td>
+            <td>{{ call.pct }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i data-lucide="scroll-text"></i>
+      <strong>No parsed API calls found</strong>
+      <span>Structured call data will appear after matching Hermes API log entries are available.</span>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Raw Recent Log Entries</h2>
+        <p class="section-muted">{{ data.logs_page.note }}</p>
+      </div>
+    </div>
+
+    {% if data.logs_page.raw_entries %}
+    <div class="log-viewer">
+      {% for entry in data.logs_page.raw_entries %}
+      <div class="log-line {{ entry.severity }}">
+        <span class="log-severity">{{ entry.severity }}</span>
+        <code>{{ entry.line }}</code>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i data-lucide="file-question"></i>
+      <strong>No recent log lines found</strong>
+      <span>The configured Hermes log file is missing or empty.</span>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
