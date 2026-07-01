@@ -13,6 +13,19 @@ from toolkit.config import CONFIG, LOG
 
 
 
+
+
+@dataclass(frozen=True)
+class SystemRepositoryFact:
+    """A read-only repository inventory placeholder that does not query Git."""
+
+    name: str
+    value: str
+    summary: str
+    status: str
+    icon: str
+
+
 @dataclass(frozen=True)
 class SystemConfigFact:
     """A read-only configuration path fact from existing module constants."""
@@ -74,6 +87,42 @@ SAFETY_NOTE = (
 )
 
 
+
+
+
+def build_system_repository_facts() -> list[SystemRepositoryFact]:
+    """Return repository inventory placeholders without running Git commands."""
+
+    return [
+        SystemRepositoryFact(
+            name="Repository Path",
+            value="planned",
+            summary="Repository path inventory is planned but not queried by this foundation slice.",
+            status="planned",
+            icon="folder-git-2",
+        ),
+        SystemRepositoryFact(
+            name="Branch",
+            value="planned",
+            summary="Git branch inventory is planned but no Git command is executed.",
+            status="planned",
+            icon="git-branch",
+        ),
+        SystemRepositoryFact(
+            name="Commit",
+            value="planned",
+            summary="Git commit inventory is planned but no repository metadata is read.",
+            status="planned",
+            icon="git-commit",
+        ),
+        SystemRepositoryFact(
+            name="Dirty State",
+            value="planned",
+            summary="Working tree status inventory is planned but not evaluated.",
+            status="planned",
+            icon="git-compare",
+        ),
+    ]
 
 
 def build_system_config_facts() -> list[SystemConfigFact]:
@@ -264,6 +313,7 @@ def build_system_page_data() -> dict[str, object]:
     planned_areas = build_system_planned_areas()
     runtime_facts = build_system_runtime_facts()
     config_facts = build_system_config_facts()
+    repository_facts = build_system_repository_facts()
 
     return {
         "title": "System Inventory",
@@ -277,4 +327,5 @@ def build_system_page_data() -> dict[str, object]:
         "readiness_items": readiness_items,
         "runtime_facts": runtime_facts,
         "config_facts": config_facts,
+        "repository_facts": repository_facts,
     }

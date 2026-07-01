@@ -7,12 +7,14 @@ from toolkit.system_page import (
     SystemPageSummary,
     SystemPlannedArea,
     SystemReadinessItem,
+    SystemRepositoryFact,
     SystemRuntimeFact,
     build_system_config_facts,
     build_system_page_data,
     build_system_page_summary,
     build_system_planned_areas,
     build_system_readiness_items,
+    build_system_repository_facts,
     build_system_runtime_facts,
 )
 
@@ -127,6 +129,42 @@ def test_system_readiness_items_are_read_only():
 
 
 
+
+def test_system_repository_facts_are_static_placeholders():
+    facts = build_system_repository_facts()
+
+    assert facts == [
+        SystemRepositoryFact(
+            name="Repository Path",
+            value="planned",
+            summary="Repository path inventory is planned but not queried by this foundation slice.",
+            status="planned",
+            icon="folder-git-2",
+        ),
+        SystemRepositoryFact(
+            name="Branch",
+            value="planned",
+            summary="Git branch inventory is planned but no Git command is executed.",
+            status="planned",
+            icon="git-branch",
+        ),
+        SystemRepositoryFact(
+            name="Commit",
+            value="planned",
+            summary="Git commit inventory is planned but no repository metadata is read.",
+            status="planned",
+            icon="git-commit",
+        ),
+        SystemRepositoryFact(
+            name="Dirty State",
+            value="planned",
+            summary="Working tree status inventory is planned but not evaluated.",
+            status="planned",
+            icon="git-compare",
+        ),
+    ]
+
+
 def test_system_config_facts_are_module_constant_metadata():
     facts = build_system_config_facts()
 
@@ -227,6 +265,7 @@ def test_system_page_data_includes_safety_note_and_sections():
     assert data["readiness_items"] == build_system_readiness_items()
     assert data["runtime_facts"] == build_system_runtime_facts()
     assert data["config_facts"] == build_system_config_facts()
+    assert data["repository_facts"] == build_system_repository_facts()
 
 
 def test_safety_note_blocks_mutating_system_behavior():
