@@ -34,7 +34,7 @@
       <a class="{% if active_page == 'doctor' %}active{% endif %}" href="/doctor"><i data-lucide="stethoscope" class="nav-icon"></i><span>Doctor</span></a>
       <a class="{% if active_page == 'configuration' %}active{% endif %}" href="/configuration"><i data-lucide="settings" class="nav-icon"></i><span>Configuration</span></a>
       <a class="{% if active_page == 'models' %}active{% endif %}" href="/models"><i data-lucide="bot" class="nav-icon"></i><span>Models</span></a>
-      <a class="disabled" href="#"><i data-lucide="messages-square" class="nav-icon"></i><span>Sessions</span></a>
+      <a class="{% if active_page == 'sessions' %}active{% endif %}" href="/sessions"><i data-lucide="messages-square" class="nav-icon"></i><span>Sessions</span></a>
       <a class="disabled" href="#"><i data-lucide="scroll-text" class="nav-icon"></i><span>Logs</span></a>
       <a class="disabled" href="#"><i data-lucide="blocks" class="nav-icon"></i><span>Skills</span></a>
       <a class="disabled" href="#"><i data-lucide="brain" class="nav-icon"></i><span>Memory</span></a>

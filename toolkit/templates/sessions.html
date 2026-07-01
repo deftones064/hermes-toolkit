@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% set active_page = "sessions" %}
+{% block title %}Hermes Toolkit - Sessions{% endblock %}
+{% block page_title %}Sessions{% endblock %}
+{% block page_subtitle %}Session limits, reset behavior, and recent activity context.{% endblock %}
+{% block header_actions %}
+<div class="live-pill"><span class="dot"></span><span><strong>Sessions</strong><small>Config + activity</small></span></div>
+{% endblock %}
+
+{% block content %}
+<div class="grid">
+  <div class="card health-card">
+    <div class="health-header">
+      <div>
+        <div class="label">Session Activity</div>
+        <div class="value {{ data.sessions_page.activity_class }}">{{ data.sessions_page.activity_status }}</div>
+      </div>
+      <div class="health-badge {{ data.sessions_page.activity_class }}">
+        <i data-lucide="messages-square"></i>
+      </div>
+    </div>
+
+    <div class="health-bar">
+      <div class="health-bar-fill {{ data.sessions_page.activity_class }}" style="width: {{ [100, data.sessions_page.avg_cache] | min }}%;"></div>
+    </div>
+
+    <div class="health-footer">
+      <span class="{{ data.sessions_page.activity_class }}">{{ "%.1f"|format(data.sessions_page.avg_cache) }}% cache</span>
+      <span>{{ data.sessions_page.total_calls }} recent calls</span>
+    </div>
+  </div>
+
+  {% for card in data.sessions_page.cards %}
+  <div class="card">
+    <div class="session-card-header">
+      <div>
+        <h2>{{ card.title }}</h2>
+        <p><span class="label">Value</span><br><span class="{{ card.severity }}">{{ card.value }}</span></p>
+        <p class="section-muted">{{ card.detail }}</p>
+      </div>
+      <div class="session-card-icon {{ card.severity }}">
+        <i data-lucide="{{ card.icon }}"></i>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h2>Context Protection</h2>
+    <p><span class="label">Protected recent messages</span><br>{{ data.sessions_page.protect_last_n }}</p>
+    <p><span class="label">Resume exchanges</span><br>{{ data.sessions_page.resume_exchanges }}</p>
+  </div>
+
+  <div class="card">
+    <h2>Reset Schedule</h2>
+    <p><span class="label">Mode</span><br><code>{{ data.sessions_page.session_reset_mode }}</code></p>
+    <p><span class="label">Idle timeout</span><br>{{ data.sessions_page.session_reset_idle }} minutes</p>
+    <p><span class="label">Daily hour</span><br>{{ data.sessions_page.session_reset_hour or "Not set" }}</p>
+  </div>
+
+  <div class="card">
+    <h2>Activity Totals</h2>
+    <p><span class="label">Input</span><br>{{ "{:,.0f}".format(data.sessions_page.total_input) }} tokens</p>
+    <p><span class="label">Output</span><br>{{ "{:,.0f}".format(data.sessions_page.total_output) }} tokens</p>
+    <p><span class="label">Total</span><br>{{ "{:,.0f}".format(data.sessions_page.total_tokens) }} tokens</p>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Session Recommendations</h2>
+        <p class="section-muted">{{ data.sessions_page.note }}</p>
+      </div>
+    </div>
+
+    <div class="recommendation-list">
+      {% for item in data.sessions_page.recommendations %}
+      <div class="recommendation-item {{ item.severity }}">
+        {% if item.severity == "good" %}
+          <i data-lucide="check-circle"></i>
+        {% elif item.severity == "warn" %}
+          <i data-lucide="alert-triangle"></i>
+        {% else %}
+          <i data-lucide="x-circle"></i>
+        {% endif %}
+        <span>
+          <strong>{{ item.title }}</strong>
+          <small>{{ item.detail }}</small>
+        </span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Recent Activity Proxy</h2>
+        <p class="section-muted">Recent API calls are shown as a temporary proxy until full session indexing is available.</p>
+      </div>
+    </div>
+
+    {% if data.sessions_page.recent_calls %}
+    <div class="cost-table-wrap">
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Call</th>
+            <th>Provider</th>
+            <th>Model</th>
+            <th>Input</th>
+            <th>Output</th>
+            <th>Total</th>
+            <th>Cache</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for call in data.sessions_page.recent_calls %}
+          <tr>
+            <td>#{{ call.num }}</td>
+            <td>{{ call.provider }}</td>
+            <td><code>{{ call.model }}</code></td>
+            <td>{{ "{:,.0f}".format(call["in"]) }}</td>
+            <td>{{ "{:,.0f}".format(call.out) }}</td>
+            <td>{{ "{:,.0f}".format(call.total) }}</td>
+            <td>{{ call.pct }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i data-lucide="messages-square"></i>
+      <strong>No recent session activity found</strong>
+      <span>Activity will appear after Hermes API calls are parsed from the log.</span>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
