@@ -328,6 +328,8 @@ v0.4 Alpha completed:
 
 The Backup / Restore page is currently a read-only planning surface. It inventories planned areas for backup sources, backup destinations, restore points, and restore guardrails.
 
+Its backend follows the shared foundation-page readiness shape used by the other read-only integration pages, including summary status, readiness counts, item summaries, statuses, and icons.
+
 This foundation is intentionally non-mutating:
 
 - No backups are created.

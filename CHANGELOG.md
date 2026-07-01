@@ -9,6 +9,7 @@ All notable changes to Hermes Toolkit will be documented in this file.
 ### Added
 
 - Added a read-only Backup / Restore backend foundation and dashboard page for backup source planning, destination inventory, restore point concepts, and restore guardrails.
+- Normalized the Backup / Restore page data shape with shared readiness summary fields, item summaries, statuses, and Lucide icons.
 
 ### Notes
 
