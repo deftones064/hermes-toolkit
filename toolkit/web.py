@@ -6,6 +6,7 @@ from pathlib import Path
 
 from toolkit.config import load_config, get_path
 from toolkit.logs import parse_recent_api_calls
+from toolkit.models_page import build_models_page_data as build_models_report
 from toolkit.cost import build_cost_data as build_cost_report
 from toolkit.doctor import doctor, build_doctor_data as build_doctor_report
 from toolkit.sessions import build_sessions_data as build_sessions_report
@@ -135,96 +136,8 @@ def build_cost_data():
     return build_cost_report(data, calls, cfg=cfg)
 
 def build_models_data():
-    from toolkit.models import MODELS
-
     data = build_dashboard_data()
-    active_provider = (data.get("model") or {}).get("provider")
-    active_model = (data.get("model") or {}).get("default")
-    active_base_url = (data.get("model") or {}).get("base_url")
-
-    provider_labels = {
-        "openai-codex": "OpenAI Codex",
-        "openrouter": "OpenRouter",
-        "anthropic": "Anthropic",
-        "ollama": "Ollama",
-        "google": "Google AI Studio",
-    }
-
-    model_labels = {
-        "qwen": {
-            "name": "Qwen Coder",
-            "description": "Coding-focused OpenRouter preset for software development and agentic engineering work.",
-            "tier": "Developer",
-            "status": "Available",
-        },
-        "gemini": {
-            "name": "Gemini 2.5 Pro",
-            "description": "Large-context OpenRouter preset for analysis, planning, and complex reasoning tasks.",
-            "tier": "Reasoning",
-            "status": "Available",
-        },
-        "gpt": {
-            "name": "GPT-5.5",
-            "description": "Primary OpenAI Codex preset for Hermes Toolkit development and high-quality coding sessions.",
-            "tier": "Primary",
-            "status": "Available",
-        },
-    }
-
-    presets = []
-
-    for key, value in MODELS.items():
-        provider, model, base_url = value
-        meta = model_labels.get(key, {})
-        is_active = provider == active_provider and model == active_model
-
-        presets.append({
-            "id": key,
-            "name": meta.get("name", key),
-            "description": meta.get("description", "Configured Hermes model preset."),
-            "tier": meta.get("tier", "Preset"),
-            "status": "Active" if is_active else meta.get("status", "Available"),
-            "provider": provider,
-            "provider_label": provider_labels.get(provider, provider),
-            "model": model,
-            "base_url": base_url,
-            "is_active": is_active,
-        })
-
-    providers = []
-    seen = set()
-
-    for preset in presets:
-        provider = preset["provider"]
-        if provider in seen:
-            continue
-
-        provider_presets = [item for item in presets if item["provider"] == provider]
-        seen.add(provider)
-
-        providers.append({
-            "id": provider,
-            "label": provider_labels.get(provider, provider),
-            "preset_count": len(provider_presets),
-            "is_active": provider == active_provider,
-            "models": [item["model"] for item in provider_presets],
-        })
-
-    data["models_page"] = {
-        "active_provider": active_provider,
-        "active_provider_label": provider_labels.get(active_provider, active_provider),
-        "active_model": active_model,
-        "active_base_url": active_base_url,
-        "presets": presets,
-        "providers": providers,
-        "preset_count": len(presets),
-        "provider_count": len(providers),
-        "mode": "Safe model switching",
-        "note": "Applying a model updates Hermes configuration only. It does not restart services.",
-    }
-
-    return data
-
+    return build_models_report(data)
 
 def build_sessions_data(provider="all", query=""):
     data = build_dashboard_data()
