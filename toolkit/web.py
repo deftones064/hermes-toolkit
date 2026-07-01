@@ -16,6 +16,7 @@ from toolkit.profiles import apply_profile
 from toolkit.cost import build_cost_data as build_cost_report
 from toolkit.dashboard import build_dashboard_data as build_dashboard_report
 from toolkit.doctor import doctor, build_doctor_data as build_doctor_report
+from toolkit.home_assistant_page import build_home_assistant_data as build_home_assistant_report
 from toolkit.jobs_page import build_jobs_data as build_jobs_report
 from toolkit.sessions import build_sessions_data as build_sessions_report
 from toolkit.skills_page import build_skills_data as build_skills_report
@@ -69,6 +70,12 @@ def build_skills_data():
 
     data = build_dashboard_data()
     return build_skills_report(data, LOG)
+
+def build_home_assistant_data():
+    data = build_dashboard_data()
+    cfg = load_config()
+    return build_home_assistant_report(data, cfg)
+
 
 def build_jobs_data():
     data = build_dashboard_data()
@@ -183,6 +190,18 @@ async def skills_page(request: Request):
         {
             "request": request,
             "data": build_skills_data(),
+        },
+    )
+
+
+
+@app.get("/home-assistant", response_class=HTMLResponse)
+async def home_assistant_page(request: Request):
+    return templates.TemplateResponse(
+        "home_assistant.html",
+        {
+            "request": request,
+            "data": build_home_assistant_data(),
         },
     )
 
