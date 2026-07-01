@@ -308,6 +308,7 @@ v0.4 development in progress:
 - [ ] Add session browser
 - [x] Add log filtering/search
 - [x] Add log export
+- [x] Extract Logs page data builder
 - [ ] Add formal skill registry
 - [ ] Add memory inventory
 - [ ] Add Jobs / Tasks page
