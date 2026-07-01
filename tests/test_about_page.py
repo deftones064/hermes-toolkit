@@ -1,0 +1,54 @@
+from toolkit import __version__
+from toolkit.about_page import build_about_data
+
+
+def test_build_about_data_shape():
+    data = build_about_data({})
+    about_page = data["about_page"]
+
+    assert about_page["version"] == __version__
+    assert about_page["release_label"] == "v0.3 Alpha"
+    assert about_page["project_name"] == "Hermes Toolkit"
+    assert about_page["tagline"] == "Control. Optimize. Evolve."
+    assert about_page["status"] == "Alpha"
+    assert about_page["status_class"] == "good"
+    assert about_page["page_count"] == len(about_page["completed_pages"])
+    assert about_page["runtime"]["python"]
+    assert about_page["runtime"]["system"]
+    assert about_page["runtime"]["machine"]
+
+
+def test_build_about_data_preserves_dashboard_data():
+    data = build_about_data({"health_score": 100})
+
+    assert data["health_score"] == 100
+    assert "about_page" in data
+
+
+def test_build_about_data_lists_expected_pages():
+    data = build_about_data({})
+    page_names = {
+        page["name"]
+        for page in data["about_page"]["completed_pages"]
+    }
+
+    assert "Dashboard" in page_names
+    assert "Doctor" in page_names
+    assert "Cost" in page_names
+    assert "Models" in page_names
+    assert "Sessions" in page_names
+    assert "Logs" in page_names
+    assert "Skills" in page_names
+    assert "Memory" in page_names
+
+
+def test_build_about_data_is_informational_only():
+    data = build_about_data({})
+    about_page = data["about_page"]
+
+    assert "informational only" in about_page["note"]
+    assert "does not modify" in about_page["note"]
+    assert any(
+        principle["title"] == "Non-destructive by default"
+        for principle in about_page["principles"]
+    )
