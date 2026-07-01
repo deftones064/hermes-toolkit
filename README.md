@@ -300,6 +300,7 @@ v0.4 development in progress:
 - [x] Add config-only provider validation
 - [x] Add Doctor diagnostic mode labels
 - [ ] Add broader live provider connectivity checks
+- [x] Extract Sessions data builder
 - [ ] Add session browser
 - [x] Add log filtering/search
 - [x] Add log export
