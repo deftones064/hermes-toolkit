@@ -11,6 +11,7 @@ All notable changes to Hermes Toolkit will be documented in this file.
 - Added a read-only System Inventory backend foundation and dashboard page for runtime, repository, configuration, and service inventory planning.
 - Added in-process System Inventory runtime facts for Python version, platform, system, machine architecture, and Hermes Toolkit package version.
 - Added read-only System Inventory configuration path facts for Hermes Toolkit config and log module constants.
+- Added static System Inventory repository placeholders for repository path, branch, commit, and dirty state planning.
 
 ### Notes
 

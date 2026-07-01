@@ -371,6 +371,8 @@ The System page also displays in-process runtime facts for Python version, platf
 
 It also displays module-constant configuration path facts for the Hermes Toolkit config and log paths without loading, reading, saving, or modifying configuration files.
 
+Repository inventory is currently represented by static planning placeholders for repository path, branch, commit, and dirty state without executing Git commands or reading repository metadata.
+
 This foundation is intentionally non-mutating:
 
 - No subprocess commands are executed.
