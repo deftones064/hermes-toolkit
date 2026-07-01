@@ -302,6 +302,7 @@ v0.4 Alpha completed:
 - [x] Add broader live provider connectivity checks
 - [x] Extract Sessions data builder
 - [x] Add Sessions activity filtering
+- [x] Add Sessions provider activity summary foundation
 - [x] Extract Cost data builder
 - [x] Add configurable estimated pricing
 - [x] Extract Models page data builder
