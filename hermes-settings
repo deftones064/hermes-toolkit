@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Hermes Toolkit CLI entrypoint for the v0.3 Alpha dashboard and command suite.
 import sys
 sys.path.insert(0, "/usr/local/lib/hermes-toolkit")
 
