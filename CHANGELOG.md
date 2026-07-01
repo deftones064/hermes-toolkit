@@ -8,7 +8,11 @@ All notable changes to Hermes Toolkit will be documented in this file.
 
 ### Added
 
-- Nothing yet.
+- Added a read-only System Inventory backend foundation and dashboard page for runtime, repository, configuration, and service inventory planning.
+
+### Notes
+
+- The System Inventory foundation does not execute subprocess commands, query service state, restart processes or services, install packages, execute Git operations, delete or overwrite files, or modify configuration.
 
 
 ## v0.6.0-alpha

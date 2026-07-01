@@ -322,6 +322,7 @@ v0.4 Alpha completed:
 - [x] Add Telegram integration foundation
 - [x] Add Backup / Restore read-only foundation
 - [x] Add Update Manager read-only foundation
+- [x] Add System Inventory read-only foundation
 - [ ] Add backup and restore
 - [ ] Add update manager
 
@@ -359,6 +360,25 @@ This foundation is intentionally non-mutating:
 - No configuration is modified.
 
 The full update manager roadmap item remains open until explicit update workflows are intentionally designed, guarded, tested, and documented.
+
+### System Inventory foundation
+
+The System page is currently a read-only planning surface. It inventories planned areas for runtime inventory, repository inventory, configuration inventory, service inventory, and action guardrails.
+
+Its backend follows the shared foundation-page readiness shape used by the other read-only integration pages, including summary status, readiness counts, item summaries, statuses, and icons.
+
+This foundation is intentionally non-mutating:
+
+- No subprocess commands are executed.
+- No service state is queried.
+- No processes are restarted.
+- No files are deleted.
+- No files are overwritten.
+- No packages are installed, updated, or removed.
+- No Git operations are executed.
+- No configuration is modified.
+
+The System Inventory foundation is intended to support future Backup / Restore and Update Manager workflows without jumping directly into mutating behavior.
 
 ### Optional estimated pricing overrides
 
