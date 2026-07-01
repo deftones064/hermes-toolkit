@@ -8,14 +8,25 @@ All notable changes to Hermes Toolkit will be documented in this file.
 
 ### Added
 
+- Nothing yet.
+
+
+## v0.6.0-alpha
+
+### Added
+
 - Added a read-only Backup / Restore backend foundation and dashboard page for backup source planning, destination inventory, restore point concepts, and restore guardrails.
 - Normalized the Backup / Restore page data shape with shared readiness summary fields, item summaries, statuses, and Lucide icons.
 - Added a read-only Update Manager backend foundation and dashboard page for version sources, update channels, pending changes, and update guardrails.
+- Refreshed the sidebar version display so it uses the package version instead of stale hardcoded text.
+- Refreshed About page release metadata, completed page inventory, and next-alpha release-prep guidance.
 
 ### Notes
 
+- Package version updated to `0.6.0-alpha`.
 - The Backup / Restore foundation does not create backups, execute restores, delete files, overwrite files, restart services, or modify configuration.
 - The Update Manager foundation does not install, update, or remove packages; execute Git operations; restart processes or services; or modify configuration.
+- No backup routines, restore routines, package updates, Git update operations, process restarts, service restarts, or configuration mutations are executed by this release.
 
 
 ## v0.5.0-alpha
