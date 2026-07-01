@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% set active_page = "about" %}
+{% block title %}Hermes Toolkit - About{% endblock %}
+{% block page_title %}About{% endblock %}
+{% block page_subtitle %}Project identity, release status, roadmap coverage, and runtime information.{% endblock %}
+{% block header_actions %}
+<div class="live-pill"><span class="dot"></span><span><strong>About</strong><small>{{ data.about_page.release_label }}</small></span></div>
+{% endblock %}
+
+{% block content %}
+<div class="grid">
+  <div class="card health-card">
+    <div class="health-header">
+      <div>
+        <div class="label">Hermes Toolkit</div>
+        <div class="value {{ data.about_page.status_class }}">{{ data.about_page.release_label }}</div>
+      </div>
+      <div class="health-badge {{ data.about_page.status_class }}">
+        <i data-lucide="info"></i>
+      </div>
+    </div>
+
+    <div class="health-bar">
+      <div class="health-bar-fill {{ data.about_page.status_class }}" style="width: 100%;"></div>
+    </div>
+
+    <div class="health-footer">
+      <span class="{{ data.about_page.status_class }}">{{ data.about_page.status }}</span>
+      <span>{{ data.about_page.page_count }} pages</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Project</h2>
+    <p><span class="label">Name</span><br>{{ data.about_page.project_name }}</p>
+    <p><span class="label">Tagline</span><br>{{ data.about_page.tagline }}</p>
+  </div>
+
+  <div class="card">
+    <h2>Version</h2>
+    <p><span class="label">Package</span><br><code>{{ data.about_page.version }}</code></p>
+    <p><span class="label">Release</span><br>{{ data.about_page.release_label }}</p>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card about-hero">
+    <div>
+      <h2>Open-source administration for Hermes Agent</h2>
+      <p>{{ data.about_page.description }}</p>
+      <p class="section-muted">{{ data.about_page.note }}</p>
+    </div>
+    <div class="about-hero-icon">
+      <i data-lucide="sparkles"></i>
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Product Principles</h2>
+        <p class="section-muted">The rules guiding Hermes Toolkit v0.3 Alpha development.</p>
+      </div>
+    </div>
+
+    <div class="skill-grid">
+      {% for principle in data.about_page.principles %}
+      <div class="skill-card">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="{{ principle.icon }}"></i>
+            <div>
+              <div class="skill-title">{{ principle.title }}</div>
+              <div class="skill-subtitle">{{ principle.description }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Page Coverage</h2>
+        <p class="section-muted">Current application surface for the v0.3 Alpha release track.</p>
+      </div>
+    </div>
+
+    <div class="about-page-grid">
+      {% for page in data.about_page.completed_pages %}
+      <div class="about-page-card">
+        <div class="about-page-icon">
+          <i data-lucide="{{ page.icon }}"></i>
+        </div>
+        <div class="about-page-main">
+          <div class="about-page-title">{{ page.name }}</div>
+          <div class="about-page-description">{{ page.description }}</div>
+        </div>
+        <span class="model-pill {% if page.status in ['Complete', 'v1.1'] %}active{% endif %}">{{ page.status }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h2>Runtime</h2>
+    <p><span class="label">Python</span><br>{{ data.about_page.runtime.python }}</p>
+    <p><span class="label">System</span><br>{{ data.about_page.runtime.system }}</p>
+  </div>
+
+  <div class="card">
+    <h2>Platform</h2>
+    <p><span class="label">Machine</span><br>{{ data.about_page.runtime.machine }}</p>
+    <p><span class="label">Platform</span><br><code>{{ data.about_page.runtime.platform }}</code></p>
+  </div>
+
+  <div class="card">
+    <h2>Release Prep</h2>
+    <p><span class="label">Current phase</span><br>Pre-release polish</p>
+    <p><span class="label">Target tag</span><br><code>Hermes Toolkit v0.3 Alpha</code></p>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Before Release</h2>
+        <p class="section-muted">Remaining non-code release tasks after About v1 lands.</p>
+      </div>
+    </div>
+
+    <div class="release-checklist">
+      {% for item in data.about_page.next_steps %}
+      <div class="release-check-item">
+        <i data-lucide="circle"></i>
+        <span>{{ item }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

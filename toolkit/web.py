@@ -1555,6 +1555,130 @@ def build_memory_data():
     return data
 
 
+def build_about_data():
+    import platform
+    from toolkit import __version__
+
+    data = build_dashboard_data()
+
+    completed_pages = [
+        {
+            "name": "Dashboard",
+            "status": "Complete",
+            "description": "Core operations overview with health, usage, provider, and recent activity.",
+            "icon": "layout-dashboard",
+        },
+        {
+            "name": "Analytics",
+            "status": "Complete",
+            "description": "Charts and usage visibility for parsed Hermes API activity.",
+            "icon": "chart-line",
+        },
+        {
+            "name": "Cost",
+            "status": "Foundation",
+            "description": "Estimated token cost, cache savings, and recent call cost context.",
+            "icon": "circle-dollar-sign",
+        },
+        {
+            "name": "Doctor",
+            "status": "v1.1",
+            "description": "Grouped diagnostics, recommendations, and non-destructive diagnostic action.",
+            "icon": "stethoscope",
+        },
+        {
+            "name": "Configuration",
+            "status": "Complete",
+            "description": "Profile, model, and core configuration editor.",
+            "icon": "settings",
+        },
+        {
+            "name": "Models",
+            "status": "Foundation",
+            "description": "Known-good model presets and safe config-only model switching.",
+            "icon": "bot",
+        },
+        {
+            "name": "Sessions",
+            "status": "Foundation",
+            "description": "Session limits, reset behavior, and recent activity proxy.",
+            "icon": "messages-square",
+        },
+        {
+            "name": "Logs",
+            "status": "Foundation",
+            "description": "Read-only raw logs, parsed API calls, warning counts, and error counts.",
+            "icon": "scroll-text",
+        },
+        {
+            "name": "Skills",
+            "status": "Foundation",
+            "description": "Read-only foundation for skills, plugins, tools, and adapters.",
+            "icon": "blocks",
+        },
+        {
+            "name": "Memory",
+            "status": "Foundation",
+            "description": "Read-only memory, context, cache, and compression overview.",
+            "icon": "brain",
+        },
+    ]
+
+    next_steps = [
+        "Update README with the completed v0.3 Alpha dashboard pages.",
+        "Capture updated screenshots for Dashboard, Doctor, Cost, Models, Sessions, Logs, Skills, and Memory.",
+        "Update changelog and version references.",
+        "Review estimated pricing language before public release.",
+        "Tag Hermes Toolkit v0.3 Alpha.",
+    ]
+
+    principles = [
+        {
+            "title": "Non-destructive by default",
+            "description": "Diagnostic and observability pages avoid restarts, deletes, installs, or hidden mutations.",
+            "icon": "shield-check",
+        },
+        {
+            "title": "Operational honesty",
+            "description": "Foundation pages clearly identify log-derived or estimated data instead of pretending full engines exist.",
+            "icon": "badge-check",
+        },
+        {
+            "title": "Frozen visual language",
+            "description": "Graphite, gold accent, rounded cards, Lucide icons, and engineering dashboard style remain consistent.",
+            "icon": "palette",
+        },
+        {
+            "title": "Open-source architecture",
+            "description": "Hermes Toolkit is being structured as a real public management product, not a one-off local script.",
+            "icon": "git-branch",
+        },
+    ]
+
+    data["about_page"] = {
+        "version": __version__,
+        "release_label": "v0.3 Alpha",
+        "project_name": "Hermes Toolkit",
+        "tagline": "Control. Optimize. Evolve.",
+        "description": "Hermes Toolkit is an open-source administration dashboard and CLI companion for Hermes Agent.",
+        "runtime": {
+            "python": platform.python_version(),
+            "platform": platform.platform(),
+            "system": platform.system(),
+            "machine": platform.machine(),
+        },
+        "completed_pages": completed_pages,
+        "next_steps": next_steps,
+        "principles": principles,
+        "page_count": len(completed_pages),
+        "status": "Alpha",
+        "status_class": "good",
+        "note": "About v1 is informational only. It does not modify Hermes Agent or Hermes Toolkit configuration.",
+    }
+
+    return data
+
+
 @app.get("/analytics", response_class=HTMLResponse)
 async def analytics(request: Request):
     data = build_dashboard_data()
@@ -1660,6 +1784,18 @@ async def memory_page(request: Request):
         {
             "request": request,
             "data": build_memory_data(),
+        },
+    )
+
+
+
+@app.get("/about", response_class=HTMLResponse)
+async def about_page(request: Request):
+    return templates.TemplateResponse(
+        "about.html",
+        {
+            "request": request,
+            "data": build_about_data(),
         },
     )
 
