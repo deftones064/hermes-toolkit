@@ -351,56 +351,60 @@ def _check_ollama_reachability(base_url, timeout=1.5):
     }
 
 
-def _build_connectivity_checks(data, context, checks, categories):
+def _check_provider_connectivity(data, context):
     provider = context["provider"]
 
     if provider == "ollama":
         result = _check_ollama_reachability(context.get("base_url"))
 
         if result["reachable"]:
-            _add_check(
-                checks,
-                categories,
-                "connectivity",
-                "Ollama Reachability",
-                "Reachable",
-                result["status"],
-                result["detail"],
-                "good",
-            )
-        else:
-            _add_check(
-                checks,
-                categories,
-                "connectivity",
-                "Ollama Reachability",
-                "Not reachable",
-                result["status"],
-                result["detail"],
-                "warn",
-            )
-    elif provider:
-        _add_check(
-            checks,
-            categories,
-            "connectivity",
-            "Provider Connectivity",
-            "Configured",
-            data.get("provider_label") or provider,
-            "Provider configuration exists. Live external API checks are intentionally not performed yet.",
-            "good",
-        )
-    else:
-        _add_check(
-            checks,
-            categories,
-            "connectivity",
-            "Provider Connectivity",
-            "Blocked",
-            "No provider",
-            "Connectivity cannot be evaluated until a provider is selected.",
-            "bad",
-        )
+            return {
+                "name": "Ollama Reachability",
+                "status": "Reachable",
+                "value": result["status"],
+                "detail": result["detail"],
+                "severity": "good",
+            }
+
+        return {
+            "name": "Ollama Reachability",
+            "status": "Not reachable",
+            "value": result["status"],
+            "detail": result["detail"],
+            "severity": "warn",
+        }
+
+    if provider:
+        return {
+            "name": "Provider Connectivity",
+            "status": "Configured",
+            "value": data.get("provider_label") or provider,
+            "detail": "Provider configuration exists. Live external API checks are intentionally not performed yet.",
+            "severity": "good",
+        }
+
+    return {
+        "name": "Provider Connectivity",
+        "status": "Blocked",
+        "value": "No provider",
+        "detail": "Connectivity cannot be evaluated until a provider is selected.",
+        "severity": "bad",
+    }
+
+
+def _build_connectivity_checks(data, context, checks, categories):
+    provider_check = _check_provider_connectivity(data, context)
+
+    _add_check(
+        checks,
+        categories,
+        "connectivity",
+        provider_check["name"],
+        provider_check["status"],
+        provider_check["value"],
+        provider_check["detail"],
+        provider_check["severity"],
+    )
 
     _add_check(
         checks,

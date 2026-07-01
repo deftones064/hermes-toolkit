@@ -182,3 +182,37 @@ def test_build_doctor_data_warns_when_ollama_unreachable(monkeypatch):
         and check["severity"] == "warn"
         for check in data["doctor_checks"]
     )
+
+
+def test_provider_connectivity_dispatcher_reports_configured_external_provider():
+    from toolkit.doctor import _check_provider_connectivity
+
+    result = _check_provider_connectivity(
+        {"provider_label": "OpenRouter"},
+        {"provider": "openrouter"},
+    )
+
+    assert result == {
+        "name": "Provider Connectivity",
+        "status": "Configured",
+        "value": "OpenRouter",
+        "detail": "Provider configuration exists. Live external API checks are intentionally not performed yet.",
+        "severity": "good",
+    }
+
+
+def test_provider_connectivity_dispatcher_reports_missing_provider():
+    from toolkit.doctor import _check_provider_connectivity
+
+    result = _check_provider_connectivity(
+        {"provider_label": None},
+        {"provider": None},
+    )
+
+    assert result == {
+        "name": "Provider Connectivity",
+        "status": "Blocked",
+        "value": "No provider",
+        "detail": "Connectivity cannot be evaluated until a provider is selected.",
+        "severity": "bad",
+    }
