@@ -369,6 +369,8 @@ Its backend follows the shared foundation-page readiness shape used by the other
 
 The System page also displays in-process runtime facts for Python version, platform, system, machine architecture, and Hermes Toolkit package version without executing subprocess commands or external probes.
 
+It also displays module-constant configuration path facts for the Hermes Toolkit config and log paths without loading, reading, saving, or modifying configuration files.
+
 This foundation is intentionally non-mutating:
 
 - No subprocess commands are executed.
