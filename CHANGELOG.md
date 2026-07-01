@@ -23,7 +23,10 @@ All notable changes to Hermes Toolkit will be documented in this file.
 - Added read-only Logs page filtering by severity.
 - Added read-only Logs page text search over recent raw log entries.
 - Added read-only Logs export route for currently filtered raw log entries.
+- Added read-only Sessions activity filtering by provider.
+- Added read-only Sessions activity search over provider and model names.
 - Added Logs page tests for filter state, unknown severity fallback, and plain-text export.
+- Added Sessions backend tests for data shape, tuning recommendations, provider filtering, query filtering, and unknown provider fallback.
 - Added Doctor backend tests for diagnostic data shape, missing-provider warnings, provider validation, and Ollama reachability behavior.
 
 ### Notes
