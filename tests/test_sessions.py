@@ -91,3 +91,84 @@ def test_build_sessions_data_flags_high_limits():
         item["title"] == "Review max turns"
         for item in sessions_page["recommendations"]
     )
+
+
+def test_build_sessions_data_filters_recent_calls_by_provider():
+    calls = [
+        {
+            "num": 1,
+            "provider": "openrouter",
+            "model": "qwen/qwen3-coder",
+            "in": 1000,
+            "out": 100,
+            "total": 1100,
+            "pct": 90,
+        },
+        {
+            "num": 2,
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "in": 2000,
+            "out": 200,
+            "total": 2200,
+            "pct": 80,
+        },
+    ]
+
+    data = build_sessions_data(_dashboard_data(), {}, calls, provider="openrouter")
+    sessions_page = data["sessions_page"]
+
+    assert sessions_page["selected_provider"] == "openrouter"
+    assert sessions_page["provider_options"] == ["openai-codex", "openrouter"]
+    assert sessions_page["recent_call_count"] == 1
+    assert sessions_page["recent_calls"][0]["provider"] == "openrouter"
+
+
+def test_build_sessions_data_filters_recent_calls_by_search_query():
+    calls = [
+        {
+            "num": 1,
+            "provider": "openrouter",
+            "model": "qwen/qwen3-coder",
+            "in": 1000,
+            "out": 100,
+            "total": 1100,
+            "pct": 90,
+        },
+        {
+            "num": 2,
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "in": 2000,
+            "out": 200,
+            "total": 2200,
+            "pct": 80,
+        },
+    ]
+
+    data = build_sessions_data(_dashboard_data(), {}, calls, query="gpt")
+    sessions_page = data["sessions_page"]
+
+    assert sessions_page["search_query"] == "gpt"
+    assert sessions_page["recent_call_count"] == 1
+    assert sessions_page["recent_calls"][0]["model"] == "gpt-5.5"
+
+
+def test_build_sessions_data_rejects_unknown_provider_filter():
+    calls = [
+        {
+            "num": 1,
+            "provider": "openrouter",
+            "model": "qwen/qwen3-coder",
+            "in": 1000,
+            "out": 100,
+            "total": 1100,
+            "pct": 90,
+        },
+    ]
+
+    data = build_sessions_data(_dashboard_data(), {}, calls, provider="missing")
+    sessions_page = data["sessions_page"]
+
+    assert sessions_page["selected_provider"] == "all"
+    assert sessions_page["recent_call_count"] == 1

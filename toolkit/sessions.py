@@ -7,10 +7,13 @@ def _safe_int(value, default=0):
         return default
 
 
-def build_sessions_data(dashboard_data, cfg, calls):
+def build_sessions_data(dashboard_data, cfg, calls, provider="all", query=""):
     # cfg is accepted for the public backend API and future session-browser work.
     # Current Sessions v1 behavior is dashboard/log-derived.
     _ = cfg
+
+    selected_provider = (provider or "all").strip() or "all"
+    search_query = (query or "").strip()
 
     data = dict(dashboard_data)
     settings = data.get("settings") or {}
@@ -33,7 +36,34 @@ def build_sessions_data(dashboard_data, cfg, calls):
     avg_total = total_tokens / total_calls if total_calls else 0
     avg_cache = sum(call.get("pct", 0) for call in calls) / total_calls if total_calls else 0
 
-    recent_calls = list(reversed(calls[-12:]))
+    provider_options = sorted(
+        {
+            call.get("provider")
+            for call in calls
+            if call.get("provider")
+        }
+    )
+
+    if selected_provider != "all" and selected_provider not in provider_options:
+        selected_provider = "all"
+
+    filtered_calls = calls
+
+    if selected_provider != "all":
+        filtered_calls = [
+            call for call in filtered_calls
+            if call.get("provider") == selected_provider
+        ]
+
+    if search_query:
+        lowered_query = search_query.lower()
+        filtered_calls = [
+            call for call in filtered_calls
+            if lowered_query in str(call.get("model", "")).lower()
+            or lowered_query in str(call.get("provider", "")).lower()
+        ]
+
+    recent_calls = list(reversed(filtered_calls[-12:]))
 
     cards = []
 
@@ -186,6 +216,11 @@ def build_sessions_data(dashboard_data, cfg, calls):
         "cards": cards,
         "recommendations": recommendations,
         "recent_calls": recent_calls,
+        "recent_call_count": len(recent_calls),
+        "recent_total_count": len(calls),
+        "provider_options": provider_options,
+        "selected_provider": selected_provider,
+        "search_query": search_query,
         "activity_status": activity_status,
         "activity_class": activity_class,
         "total_calls": total_calls,

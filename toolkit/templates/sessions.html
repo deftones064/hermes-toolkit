@@ -106,6 +106,34 @@
       </div>
     </div>
 
+    <form class="log-filter-form" method="get" action="/sessions">
+      <label>
+        Provider
+        <select name="provider">
+          <option value="all" {% if data.sessions_page.selected_provider == "all" %}selected{% endif %}>All</option>
+          {% for provider in data.sessions_page.provider_options %}
+          <option value="{{ provider }}" {% if data.sessions_page.selected_provider == provider %}selected{% endif %}>{{ provider }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label>
+        Search
+        <input type="search" name="q" value="{{ data.sessions_page.search_query }}" placeholder="Filter provider or model">
+      </label>
+
+      <button class="button secondary" type="submit">
+        <i data-lucide="search"></i>
+        Apply
+      </button>
+
+      <a class="button ghost" href="/sessions">Reset</a>
+
+      <span class="filter-count">
+        Showing {{ data.sessions_page.recent_call_count }} of {{ data.sessions_page.recent_total_count }} recent calls
+      </span>
+    </form>
+
     {% if data.sessions_page.recent_calls %}
     <div class="cost-table-wrap">
       <table class="cost-table">

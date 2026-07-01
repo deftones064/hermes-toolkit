@@ -359,11 +359,11 @@ def build_models_data():
     return data
 
 
-def build_sessions_data():
+def build_sessions_data(provider="all", query=""):
     data = build_dashboard_data()
     cfg = load_config()
     calls = parse_recent_api_calls(120)
-    return build_sessions_report(data, cfg, calls)
+    return build_sessions_report(data, cfg, calls, provider=provider, query=query)
 
 def build_logs_data(severity="all", query=""):
     from toolkit.config import LOG
@@ -1089,12 +1089,12 @@ async def models_apply(model: str = Form(...)):
 
 
 @app.get("/sessions", response_class=HTMLResponse)
-async def sessions_page(request: Request):
+async def sessions_page(request: Request, provider: str = "all", q: str = ""):
     return templates.TemplateResponse(
         "sessions.html",
         {
             "request": request,
-            "data": build_sessions_data(),
+            "data": build_sessions_data(provider=provider, query=q),
         },
     )
 
