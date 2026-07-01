@@ -296,6 +296,9 @@ v0.4 development in progress:
 - [x] Extract Doctor diagnostics into backend module
 - [x] Split Doctor diagnostics into helper builders
 - [x] Add safe Ollama reachability diagnostics
+- [x] Add provider connectivity dispatcher
+- [x] Add config-only provider validation
+- [x] Add Doctor diagnostic mode labels
 - [ ] Add broader live provider connectivity checks
 - [ ] Add session browser
 - [ ] Add log filtering/search/export

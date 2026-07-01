@@ -10,12 +10,15 @@ All notable changes to Hermes Toolkit will be documented in this file.
 
 - Extracted Doctor diagnostics into the `toolkit.doctor` backend module.
 - Split Doctor diagnostics into focused helper builders for environment, configuration, runtime, connectivity, usage, summary, and recommendations.
+- Added provider connectivity dispatcher so future provider checks do not clutter the Doctor page builder.
 - Kept the public Doctor web data API stable through `build_doctor_data(dashboard_data, cfg)`.
 
 ### Added
 
 - Added safe Ollama reachability diagnostics using the local `/api/tags` endpoint.
-- Added Doctor backend tests for diagnostic data shape, missing-provider warnings, and Ollama reachability behavior.
+- Added config-only validation for external providers without making outbound API calls.
+- Added Doctor diagnostic mode labels for static, config, live, and pending checks.
+- Added Doctor backend tests for diagnostic data shape, missing-provider warnings, provider validation, and Ollama reachability behavior.
 
 ### Notes
 
