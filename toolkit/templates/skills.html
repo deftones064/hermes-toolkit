@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% set active_page = "skills" %}
+{% block title %}Hermes Toolkit - Skills{% endblock %}
+{% block page_title %}Skills{% endblock %}
+{% block page_subtitle %}Read-only foundation for Hermes skills, plugins, tools, and adapters.{% endblock %}
+{% block header_actions %}
+<div class="live-pill"><span class="dot"></span><span><strong>Skills</strong><small>Read-only</small></span></div>
+{% endblock %}
+
+{% block content %}
+<div class="grid">
+  <div class="card health-card">
+    <div class="health-header">
+      <div>
+        <div class="label">Skill Inventory</div>
+        <div class="value {{ data.skills_page.status_class }}">{{ data.skills_page.status }}</div>
+      </div>
+      <div class="health-badge {{ data.skills_page.status_class }}">
+        <i data-lucide="blocks"></i>
+      </div>
+    </div>
+
+    <div class="health-bar">
+      {% if data.skills_page.status_class == "good" %}
+        <div class="health-bar-fill good" style="width: 100%;"></div>
+      {% else %}
+        <div class="health-bar-fill warn" style="width: 50%;"></div>
+      {% endif %}
+    </div>
+
+    <div class="health-footer">
+      <span class="{{ data.skills_page.status_class }}">{{ data.skills_page.detail }}</span>
+      <span>{{ data.skills_page.signal_count }} signals</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Mode</h2>
+    <p><span class="label">Access</span><br>Read-only</p>
+    <p><span class="label">Actions</span><br>No install/remove/restart</p>
+  </div>
+
+  <div class="card">
+    <h2>Source</h2>
+    <p><span class="label">Current signal</span><br>Recent Hermes logs</p>
+    <p><span class="label">Future source</span><br>Formal skill registry</p>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Detected Plugin Signals</h2>
+        <p class="section-muted">{{ data.skills_page.note }}</p>
+      </div>
+    </div>
+
+    {% if data.skills_page.detected_skills %}
+    <div class="skill-grid">
+      {% for skill in data.skills_page.detected_skills %}
+      <div class="skill-card {{ skill.severity }}">
+        <div class="skill-card-header">
+          <div>
+            <div class="skill-title">{{ skill.name }}</div>
+            <div class="skill-subtitle">{{ skill.description }}</div>
+          </div>
+          <span class="model-pill active">{{ skill.status }}</span>
+        </div>
+        <div class="skill-meta">
+          <span class="label">Signals</span>
+          <strong>{{ skill.count }}</strong>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i data-lucide="blocks"></i>
+      <strong>No plugin signals detected</strong>
+      <span>Skills will appear here once Hermes exposes a formal registry or plugin activity is detected in logs.</span>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Planned Skill Areas</h2>
+        <p class="section-muted">Roadmap placeholders for the future Skills engine.</p>
+      </div>
+    </div>
+
+    <div class="skill-grid">
+      {% for skill in data.skills_page.planned_skills %}
+      <div class="skill-card planned">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="{{ skill.icon }}"></i>
+            <div>
+              <div class="skill-title">{{ skill.name }}</div>
+              <div class="skill-subtitle">{{ skill.description }}</div>
+            </div>
+          </div>
+          <span class="model-pill">{{ skill.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Recommendations</h2>
+        <p class="section-muted">Conservative guidance for Skills v1.</p>
+      </div>
+    </div>
+
+    <div class="recommendation-list">
+      {% for item in data.skills_page.recommendations %}
+      <div class="recommendation-item {{ item.severity }}">
+        {% if item.severity == "good" %}
+          <i data-lucide="check-circle"></i>
+        {% elif item.severity == "warn" %}
+          <i data-lucide="alert-triangle"></i>
+        {% else %}
+          <i data-lucide="info"></i>
+        {% endif %}
+        <span>
+          <strong>{{ item.title }}</strong>
+          <small>{{ item.detail }}</small>
+        </span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Recent Skill / Plugin Log Signals</h2>
+        <p class="section-muted">Read-only log-derived signals. This is not yet a formal installed-skill list.</p>
+      </div>
+    </div>
+
+    {% if data.skills_page.signal_lines %}
+    <div class="log-viewer">
+      {% for entry in data.skills_page.signal_lines %}
+      <div class="log-line {{ entry.severity }}">
+        <span class="log-severity">{{ entry.severity }}</span>
+        <code>{{ entry.line }}</code>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i data-lucide="file-question"></i>
+      <strong>No recent skill/plugin log signals found</strong>
+      <span>Plugin-related log lines will appear here when available.</span>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
