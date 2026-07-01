@@ -7,7 +7,7 @@ def test_build_about_data_shape():
     about_page = data["about_page"]
 
     assert about_page["version"] == __version__
-    assert about_page["release_label"] == "v0.3 Alpha"
+    assert about_page["release_label"] == "v0.4 Alpha"
     assert about_page["project_name"] == "Hermes Toolkit"
     assert about_page["tagline"] == "Control. Optimize. Evolve."
     assert about_page["status"] == "Alpha"

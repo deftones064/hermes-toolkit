@@ -4,7 +4,7 @@ All notable changes to Hermes Toolkit will be documented in this file.
 
 ---
 
-## Unreleased
+## v0.4.0-alpha
 
 ### Changed
 
@@ -51,7 +51,7 @@ All notable changes to Hermes Toolkit will be documented in this file.
 ### Notes
 
 - Ollama reachability diagnostics do not send prompts, start models, install models, restart services, or modify configuration.
-- Package version remains `0.3.0-alpha` until the next release is intentionally cut.
+- Package version updated to `0.4.0-alpha`.
 
 ---
 

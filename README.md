@@ -10,9 +10,9 @@ Instead of manually editing `~/.hermes/config.yaml`, digging through log files, 
 
 ## Current Version
 
-**v0.3.0-alpha**
+**v0.4.0-alpha**
 
-Hermes Toolkit v0.3 Alpha establishes the first broad dashboard foundation.
+Hermes Toolkit v0.4 Alpha builds on the dashboard foundation with extracted page backends, safer provider diagnostics, configurable estimated pricing, and stronger tests.
 
 This release includes:
 
@@ -117,7 +117,7 @@ Project identity, version, release status, product principles, page coverage, ru
 
 ## Screenshots
 
-Screenshots are planned as follow-up documentation for the v0.3 Alpha release.
+Screenshots are planned as follow-up documentation for the v0.4 Alpha release.
 
 Screenshot assets should live under:
 
@@ -255,7 +255,7 @@ journalctl -u hermes-toolkit-web -n 100 --no-pager
 
 ## Safety Model
 
-Hermes Toolkit v0.3 Alpha is conservative by design.
+Hermes Toolkit v0.4 Alpha is conservative by design.
 
 Read-only or non-destructive pages:
 
@@ -291,7 +291,7 @@ Current release track:
 - [x] Memory
 - [x] About
 
-v0.4 development in progress:
+v0.4 Alpha completed:
 
 - [x] Extract Doctor diagnostics into backend module
 - [x] Split Doctor diagnostics into helper builders

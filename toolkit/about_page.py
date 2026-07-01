@@ -68,11 +68,11 @@ COMPLETED_PAGES = [
 
 
 NEXT_STEPS = [
-    "Update README with the completed v0.3 Alpha dashboard pages.",
-    "Capture updated screenshots for Dashboard, Doctor, Cost, Models, Sessions, Logs, Skills, and Memory.",
-    "Update changelog and version references.",
-    "Review estimated pricing language before public release.",
-    "Tag Hermes Toolkit v0.3 Alpha.",
+    "Update README with the completed v0.4 Alpha architecture and diagnostics work.",
+    "Capture updated screenshots for Dashboard, Doctor, Cost, Models, Sessions, Logs, Skills, Memory, and About.",
+    "Verify changelog, version references, and release tag.",
+    "Review estimated pricing and provider diagnostics language before public release.",
+    "Tag Hermes Toolkit v0.4 Alpha.",
 ]
 
 
@@ -105,7 +105,7 @@ def build_about_data(dashboard_data):
 
     data["about_page"] = {
         "version": __version__,
-        "release_label": "v0.3 Alpha",
+        "release_label": "v0.4 Alpha",
         "project_name": "Hermes Toolkit",
         "tagline": "Control. Optimize. Evolve.",
         "description": "Hermes Toolkit is an open-source administration dashboard and CLI companion for Hermes Agent.",
