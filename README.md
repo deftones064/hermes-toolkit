@@ -299,7 +299,7 @@ v0.4 development in progress:
 - [x] Add provider connectivity dispatcher
 - [x] Add config-only provider validation
 - [x] Add Doctor diagnostic mode labels
-- [ ] Add broader live provider connectivity checks
+- [x] Add broader live provider connectivity checks
 - [x] Extract Sessions data builder
 - [x] Add Sessions activity filtering
 - [x] Extract Cost data builder
