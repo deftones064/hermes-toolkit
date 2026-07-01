@@ -18,6 +18,9 @@ All notable changes to Hermes Toolkit will be documented in this file.
 - Added safe Ollama reachability diagnostics using the local `/api/tags` endpoint.
 - Added config-only validation for external providers without making outbound API calls.
 - Added Doctor diagnostic mode labels for static, config, live, and pending checks.
+- Added read-only Logs page filtering by severity.
+- Added read-only Logs page text search over recent raw log entries.
+- Added Logs page tests for filter state and unknown severity fallback.
 - Added Doctor backend tests for diagnostic data shape, missing-provider warnings, provider validation, and Ollama reachability behavior.
 
 ### Notes

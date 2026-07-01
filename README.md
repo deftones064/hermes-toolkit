@@ -301,7 +301,8 @@ v0.4 development in progress:
 - [x] Add Doctor diagnostic mode labels
 - [ ] Add broader live provider connectivity checks
 - [ ] Add session browser
-- [ ] Add log filtering/search/export
+- [x] Add log filtering/search
+- [ ] Add log export
 - [ ] Add formal skill registry
 - [ ] Add memory inventory
 - [ ] Add Jobs / Tasks page
