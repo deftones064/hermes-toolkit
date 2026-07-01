@@ -101,6 +101,52 @@
   <div class="card">
     <div class="card-header-row">
       <div>
+        <h2>Session Browser Foundation</h2>
+        <p class="section-muted">{{ data.sessions_page.session_browser_summary.detail }}</p>
+      </div>
+      <span class="filter-count">
+        {{ data.sessions_page.available_session_browser_item_count }} of {{ data.sessions_page.session_browser_item_count }} available
+      </span>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Browser Status</h2>
+        <p><span class="label">Status</span><br><span class="{{ data.sessions_page.session_browser_summary.status_class }}">{{ data.sessions_page.session_browser_summary.status }}</span></p>
+        <p><span class="label">Rows</span><br>{{ data.sessions_page.session_browser_summary.row_count }}</p>
+      </div>
+
+      <div class="card">
+        <h2>Provider Buckets</h2>
+        <p><span class="label">Providers</span><br>{{ data.sessions_page.session_browser_summary.provider_count }}</p>
+        <p><span class="label">Models</span><br>{{ data.sessions_page.session_browser_summary.model_count }}</p>
+      </div>
+    </div>
+
+    <div class="skill-grid">
+      {% for item in data.sessions_page.session_browser_items %}
+      <div class="skill-card planned">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="{{ item.icon }}"></i>
+            <div>
+              <div class="skill-title">{{ item.name }}</div>
+              <div class="skill-subtitle">{{ item.summary }}</div>
+              <div class="skill-subtitle">{{ item.detail }}</div>
+            </div>
+          </div>
+          <span class="model-pill {% if item.status == 'available' %}active{% endif %}">{{ item.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
         <h2>Provider Activity Summary</h2>
         <p class="section-muted">Grouped read-only activity summary from the current Sessions filters.</p>
       </div>
