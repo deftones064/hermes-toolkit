@@ -131,6 +131,11 @@
 
       <a class="button ghost" href="/logs">Reset</a>
 
+      <a class="button ghost" href="/logs/export?severity={{ data.logs_page.selected_severity }}&q={{ data.logs_page.search_query }}">
+        <i data-lucide="download"></i>
+        Export
+      </a>
+
       <span class="filter-count">
         Showing {{ data.logs_page.raw_entry_count }} of {{ data.logs_page.raw_total_count }} recent lines
       </span>

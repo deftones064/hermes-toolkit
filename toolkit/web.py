@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
@@ -655,10 +655,28 @@ def build_logs_data(severity="all", query=""):
         "selected_severity": selected_severity,
         "search_query": search_query,
         "recent_calls": recent_calls,
-        "note": "Logs v1 is read-only. Filtering and search are local display filters. Export and live tailing can be added later.",
+        "note": "Logs v1 is read-only. Filtering, search, and export are local display/export helpers. Live tailing can be added later.",
     }
 
     return data
+
+
+def build_logs_export_text(severity="all", query=""):
+    data = build_logs_data(severity=severity, query=query)
+    logs_page = data["logs_page"]
+
+    lines = [
+        "Hermes Toolkit log export",
+        f"Severity: {logs_page['selected_severity']}",
+        f"Search: {logs_page['search_query'] or '(none)'}",
+        f"Showing: {logs_page['raw_entry_count']} of {logs_page['raw_total_count']} recent lines",
+        "",
+    ]
+
+    for entry in logs_page["raw_entries"]:
+        lines.append(f"[{entry['severity']}] {entry['line']}")
+
+    return "\n".join(lines) + "\n"
 
 
 def build_skills_data():
@@ -1287,6 +1305,15 @@ async def logs_page(request: Request, severity: str = "all", q: str = ""):
             "request": request,
             "data": build_logs_data(severity=severity, query=q),
         },
+    )
+
+
+@app.get("/logs/export", response_class=PlainTextResponse)
+async def logs_export(severity: str = "all", q: str = ""):
+    return PlainTextResponse(
+        build_logs_export_text(severity=severity, query=q),
+        media_type="text/plain",
+        headers={"Content-Disposition": "attachment; filename=hermes-toolkit-logs.txt"},
     )
 
 
