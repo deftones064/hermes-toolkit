@@ -18,6 +18,7 @@ All notable changes to Hermes Toolkit will be documented in this file.
 - Added a read-only Home Assistant backend foundation and dashboard page for connection readiness, entity inventory planning, automation hooks, and notifications.
 - Added a read-only Telegram backend foundation and dashboard page for bot configuration readiness, chat targets, notification routing, and command hooks.
 - Added a read-only Skills registry foundation and page section for future registry sources, skill directories, manifests, and action safety.
+- Added a read-only Sessions browser foundation and page section using normalized activity rows, provider buckets, model buckets, and browser safety status.
 
 
 ## v0.4.0-alpha

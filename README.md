@@ -306,7 +306,7 @@ v0.4 Alpha completed:
 - [x] Extract Cost data builder
 - [x] Add configurable estimated pricing
 - [x] Extract Models page data builder
-- [ ] Add session browser
+- [x] Add session browser foundation
 - [x] Add log filtering/search
 - [x] Add log export
 - [x] Extract Logs page data builder
