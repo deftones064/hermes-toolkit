@@ -5,12 +5,14 @@ from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
 from toolkit.about_page import build_about_data as build_about_report
-from toolkit.config import load_config, get_path
+from toolkit.config import load_config, get_path, save_config, set_path
 from toolkit.logs import parse_recent_api_calls
 from toolkit.logs_page import build_logs_data as build_logs_report
 from toolkit.logs_page import build_logs_export_text as build_logs_export_report
 from toolkit.memory_page import build_memory_data as build_memory_report
+from toolkit.models import apply_model
 from toolkit.models_page import build_models_page_data as build_models_report
+from toolkit.profiles import apply_profile
 from toolkit.cost import build_cost_data as build_cost_report
 from toolkit.doctor import doctor, build_doctor_data as build_doctor_report
 from toolkit.sessions import build_sessions_data as build_sessions_report
@@ -204,9 +206,6 @@ async def dashboard(request: Request):
 
 from fastapi import Form
 from fastapi.responses import RedirectResponse
-from toolkit.config import save_config, set_path
-from toolkit.profiles import apply_profile
-from toolkit.models import apply_model
 
 
 
