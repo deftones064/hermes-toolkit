@@ -61,6 +61,71 @@ def build_provider_activity_summaries(calls):
     )
 
 
+def build_session_browser_summary(activity_rows):
+    provider_names = sorted(
+        {
+            row["provider"]
+            for row in activity_rows
+            if row.get("provider")
+        }
+    )
+    model_names = sorted(
+        {
+            row["model"]
+            for row in activity_rows
+            if row.get("model")
+        }
+    )
+
+    return {
+        "status": "Activity Proxy" if activity_rows else "No Activity",
+        "status_class": "warn" if activity_rows else "neutral",
+        "row_count": len(activity_rows),
+        "provider_count": len(provider_names),
+        "model_count": len(model_names),
+        "provider_names": provider_names,
+        "model_names": model_names,
+        "detail": (
+            "Session browser foundation is using normalized API activity rows."
+            if activity_rows
+            else "Session browser foundation is ready, but no activity rows are available yet."
+        ),
+    }
+
+
+def build_session_browser_items(activity_rows):
+    return [
+        {
+            "name": "Normalized Activity Rows",
+            "status": "available" if activity_rows else "planned",
+            "summary": f"{len(activity_rows)} browser rows available." if activity_rows else "No browser rows available yet.",
+            "detail": "Read-only rows derived from recent API activity until full session indexing exists.",
+            "icon": "table",
+        },
+        {
+            "name": "Provider Buckets",
+            "status": "available" if build_session_browser_summary(activity_rows)["provider_count"] else "planned",
+            "summary": f"{build_session_browser_summary(activity_rows)['provider_count']} providers detected.",
+            "detail": "Read-only provider grouping for session browsing and filtering.",
+            "icon": "network",
+        },
+        {
+            "name": "Model Buckets",
+            "status": "available" if build_session_browser_summary(activity_rows)["model_count"] else "planned",
+            "summary": f"{build_session_browser_summary(activity_rows)['model_count']} models detected.",
+            "detail": "Read-only model grouping for session browsing and filtering.",
+            "icon": "bot",
+        },
+        {
+            "name": "Browser Safety",
+            "status": "available",
+            "summary": "Session browser foundation is read-only.",
+            "detail": "No sessions are opened, resumed, deleted, reset, exported, or modified by this foundation.",
+            "icon": "shield-check",
+        },
+    ]
+
+
 def build_sessions_data(dashboard_data, cfg, calls, provider="all", query=""):
     # cfg is accepted for the public backend API and future session-browser work.
     # Current Sessions v1 behavior is dashboard/log-derived.
@@ -120,6 +185,8 @@ def build_sessions_data(dashboard_data, cfg, calls, provider="all", query=""):
     recent_calls = list(reversed(filtered_calls[-12:]))
     activity_rows = list(reversed(build_session_activity_rows(filtered_calls)[-12:]))
     provider_summaries = build_provider_activity_summaries(filtered_calls)
+    browser_summary = build_session_browser_summary(activity_rows)
+    browser_items = build_session_browser_items(activity_rows)
 
     cards = []
 
@@ -277,6 +344,13 @@ def build_sessions_data(dashboard_data, cfg, calls, provider="all", query=""):
         "activity_rows": activity_rows,
         "activity_row_count": len(activity_rows),
         "provider_summaries": provider_summaries,
+        "session_browser_summary": browser_summary,
+        "session_browser_items": browser_items,
+        "session_browser_item_count": len(browser_items),
+        "available_session_browser_item_count": sum(
+            1 for item in browser_items
+            if item["status"] == "available"
+        ),
         "provider_summary_count": len(provider_summaries),
         "provider_options": provider_options,
         "selected_provider": selected_provider,

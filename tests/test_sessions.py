@@ -1,4 +1,4 @@
-from toolkit.sessions import build_provider_activity_summaries, build_session_activity_rows, build_sessions_data
+from toolkit.sessions import build_provider_activity_summaries, build_session_activity_rows, build_session_browser_items, build_session_browser_summary, build_sessions_data
 
 
 def _dashboard_data():
@@ -326,3 +326,90 @@ def test_build_sessions_data_includes_normalized_activity_rows():
     assert sessions_page["activity_rows"][0]["provider"] == "openai-codex"
     assert sessions_page["activity_rows"][0]["input_tokens"] == 2000
 
+
+
+def test_build_session_browser_summary_counts_rows_providers_and_models():
+    rows = [
+        {
+            "call_num": 1,
+            "provider": "openrouter",
+            "model": "qwen/qwen3-coder",
+            "input_tokens": 1000,
+            "output_tokens": 100,
+            "total_tokens": 1100,
+            "cache_percent": 90,
+        },
+        {
+            "call_num": 2,
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "input_tokens": 2000,
+            "output_tokens": 200,
+            "total_tokens": 2200,
+            "cache_percent": 80,
+        },
+    ]
+
+    summary = build_session_browser_summary(rows)
+
+    assert summary["status"] == "Activity Proxy"
+    assert summary["status_class"] == "warn"
+    assert summary["row_count"] == 2
+    assert summary["provider_count"] == 2
+    assert summary["model_count"] == 2
+    assert summary["provider_names"] == ["openai-codex", "openrouter"]
+
+
+def test_build_session_browser_summary_handles_empty_rows():
+    summary = build_session_browser_summary([])
+
+    assert summary["status"] == "No Activity"
+    assert summary["status_class"] == "neutral"
+    assert summary["row_count"] == 0
+    assert summary["provider_count"] == 0
+    assert summary["model_count"] == 0
+
+
+def test_build_session_browser_items_are_read_only():
+    rows = [
+        {
+            "call_num": 1,
+            "provider": "openrouter",
+            "model": "qwen/qwen3-coder",
+            "input_tokens": 1000,
+            "output_tokens": 100,
+            "total_tokens": 1100,
+            "cache_percent": 90,
+        },
+    ]
+
+    items = build_session_browser_items(rows)
+    by_name = {item["name"]: item for item in items}
+
+    assert by_name["Normalized Activity Rows"]["status"] == "available"
+    assert by_name["Provider Buckets"]["status"] == "available"
+    assert by_name["Model Buckets"]["status"] == "available"
+    assert by_name["Browser Safety"]["status"] == "available"
+    assert "No sessions are opened" in by_name["Browser Safety"]["detail"]
+
+
+def test_build_sessions_data_includes_session_browser_foundation():
+    calls = [
+        {
+            "num": 1,
+            "provider": "openrouter",
+            "model": "qwen/qwen3-coder",
+            "in": 1000,
+            "out": 100,
+            "total": 1100,
+            "pct": 90,
+        },
+    ]
+
+    data = build_sessions_data(_dashboard_data(), {}, calls)
+    sessions_page = data["sessions_page"]
+
+    assert sessions_page["session_browser_summary"]["row_count"] == 1
+    assert sessions_page["session_browser_item_count"] == 4
+    assert sessions_page["available_session_browser_item_count"] == 4
+    assert sessions_page["session_browser_items"]
