@@ -1,39 +1,139 @@
 # Hermes Toolkit
 
-> Administrative toolkit and web dashboard for Hermes Agent.
+> Open-source administration dashboard and CLI companion for Hermes Agent.
 
-Hermes Toolkit is an open-source companion application for **Nous Research Hermes Agent** that makes it easier to manage, monitor, and optimize your local Hermes installation.
+Hermes Toolkit is an open-source management platform for **Nous Research Hermes Agent**. It provides a unified CLI and web dashboard for monitoring, configuring, diagnosing, and optimizing a local Hermes installation.
 
-Instead of manually editing `~/.hermes/config.yaml`, digging through log files, or remembering CLI commands, Hermes Toolkit provides a unified command-line interface and a growing web dashboard for day-to-day administration.
+Instead of manually editing `~/.hermes/config.yaml`, digging through log files, or remembering CLI commands, Hermes Toolkit gives Hermes operators a clean control surface for day-to-day administration.
 
 ---
 
-# Current Version
+## Current Version
 
 **v0.3.0-alpha**
 
-Current features include:
+Hermes Toolkit v0.3 Alpha establishes the first broad dashboard foundation.
 
-- Configuration management
-- Model switching
-- Profile management
-- Configuration health checks
-- Recent API usage analysis
-- Token usage statistics
-- Web dashboard
-- Installation utility
-- GitHub project structure
-- Automated configuration backups
+This release includes:
+
+- Dark/light theme with Auto/System mode
+- Persistent theme selection
+- Responsive sidebar with independent scrolling
+- Hermes branding and logo
+- Lucide icon system
+- Dashboard
+- Analytics
+- Cost foundation
+- Doctor v1.1
+- Configuration editor
+- Models foundation
+- Sessions foundation
+- Logs foundation
+- Skills foundation
+- Memory foundation
+- About page
+- Systemd web service
+- Install script
+- Static assets and CSS architecture
+
+The visual design language is locked for this release track:
+
+- Dark graphite
+- Gold accent
+- White/light mode equivalent
+- Rounded cards
+- Engineering / DevOps aesthetic
+- Enterprise dashboard feel
 
 ---
 
-# Screenshots
+## Dashboard Pages
 
-> *(Coming soon)*
+### Dashboard
+
+Core operations overview with provider, active model, health score, token usage, cache status, configuration summary, and recent API activity.
+
+### Analytics
+
+Charts and usage visibility for parsed Hermes API activity.
+
+### Cost
+
+Estimated token cost, cache savings, and recent call cost context.
+
+Cost values are estimates derived from recent Hermes logs and an internal pricing table. They are not billing statements.
+
+### Doctor
+
+Doctor v1.1 provides grouped, compact diagnostics across:
+
+- Environment
+- Configuration
+- Runtime
+- Connectivity
+- Usage
+
+Doctor also includes intelligent recommendations and a non-destructive **Run Full Diagnostic** action.
+
+### Configuration
+
+Web-based configuration editor for profiles, model selection, conversation limits, performance settings, file limits, compression, and session reset behavior.
+
+### Models
+
+Known-good model presets and safe config-only model switching.
+
+Current presets:
+
+- GPT-5.5 via OpenAI Codex
+- Gemini 2.5 Pro via OpenRouter
+- Qwen Coder via OpenRouter
+
+### Sessions
+
+Read-only session foundation showing reset behavior, live session limits, max turns, context protection, activity totals, and recent API activity as a temporary session proxy.
+
+### Logs
+
+Read-only log viewer with log health, parsed API calls, warning/error counts, and raw recent log entries.
+
+### Skills
+
+Read-only foundation for Hermes skills, plugins, tools, and adapters.
+
+Skills v1 is log-derived and does not install, remove, restart, or modify plugins.
+
+### Memory
+
+Read-only memory, context, cache, and compression overview.
+
+Memory v1 is config/log-derived and does not inspect, delete, export, or modify memory stores.
+
+### About
+
+Project identity, version, release status, product principles, page coverage, runtime information, and release-prep checklist.
 
 ---
 
-# Installation
+## Screenshots
+
+Screenshots are planned before the v0.3 Alpha tag.
+
+Recommended screenshots for this release:
+
+- Dashboard
+- Doctor
+- Cost
+- Models
+- Sessions
+- Logs
+- Skills
+- Memory
+- About
+
+---
+
+## Installation
 
 Clone the repository:
 
@@ -49,35 +149,49 @@ chmod +x install.sh
 sudo ./install.sh
 ```
 
+The installer copies the toolkit to:
+
+```text
+/usr/local/lib/hermes-toolkit
+```
+
+It also installs the `hermes-toolkit` command and enables the web dashboard service when systemd is available.
+
+Default dashboard URL:
+
+```text
+http://<host-ip>:8088
+```
+
 ---
 
-# CLI
+## CLI Usage
 
-View current status
+View current status:
 
 ```bash
 hermes-toolkit status
 ```
 
-Configuration overview
+Configuration overview:
 
 ```bash
 hermes-toolkit show
 ```
 
-Health check
+Health check:
 
 ```bash
 hermes-toolkit doctor
 ```
 
-View recent API activity
+View recent API activity:
 
 ```bash
 hermes-toolkit logs
 ```
 
-Switch profiles
+Switch profiles:
 
 ```bash
 hermes-toolkit profile low-cost
@@ -85,7 +199,7 @@ hermes-toolkit profile balanced
 hermes-toolkit profile premium
 ```
 
-Switch models
+Switch models:
 
 ```bash
 hermes-toolkit model gpt
@@ -93,69 +207,100 @@ hermes-toolkit model gemini
 hermes-toolkit model qwen
 ```
 
-Modify any configuration value
+Modify a configuration value:
 
 ```bash
 hermes-toolkit set agent.max_turns 30
 ```
 
+Show version:
+
+```bash
+hermes-toolkit --version
+```
+
 ---
 
-# Web Dashboard
+## Web Dashboard
 
-Launch the built-in dashboard:
+Launch manually:
 
 ```bash
 hermes-toolkit web --host 0.0.0.0 --port 8088
 ```
 
-Current dashboard includes:
+When installed with `install.sh`, the dashboard runs as:
 
-- Active provider
-- Active model
-- Prompt usage summary
-- Cache health
-- Token statistics
-- Configuration overview
-- Recent API calls
+```text
+hermes-toolkit-web.service
+```
+
+Useful service commands:
+
+```bash
+systemctl status hermes-toolkit-web --no-pager
+systemctl restart hermes-toolkit-web
+journalctl -u hermes-toolkit-web -n 100 --no-pager
+```
 
 ---
 
-# Roadmap
+## Safety Model
 
-## v0.3
+Hermes Toolkit v0.3 Alpha is conservative by design.
 
-- Improved dashboard
-- Charts
-- Cost analytics
-- Live API activity
-- Configuration editor
+Read-only or non-destructive pages:
 
-## v0.4
+- Doctor diagnostics
+- Cost estimates
+- Sessions
+- Logs
+- Skills
+- Memory
+- About
 
-- Web-based configuration management
-- Interactive model switching
-- Profile management
-- Health scoring
-- Recommendations engine
+Configuration-changing actions are explicit and limited to:
 
-## v0.5
+- Configuration editor saves
+- Profile application
+- Model preset application
+- CLI configuration commands
 
+Hermes Toolkit does not silently restart Hermes Agent, delete logs, remove memories, install plugins, or mutate runtime state from observational pages.
+
+---
+
+## Roadmap
+
+Current release track:
+
+- [x] Doctor
+- [x] Cost
+- [x] Models
+- [x] Sessions
+- [x] Logs
+- [x] Skills
+- [x] Memory
+- [x] About
+
+Future work:
+
+- Real diagnostic engine
+- Live provider connectivity checks
+- Ollama reachability checks
+- Session browser
+- Log filtering/search/export
+- Formal skill registry
+- Memory inventory
+- Jobs / Tasks page
 - Home Assistant integration
 - Telegram integration
-- Session management
-- Backup & restore
+- Backup and restore
 - Update manager
-
-## v1.0
-
-Hermes Control Center
-
-A complete administrative interface for Hermes Agent.
 
 ---
 
-# Project Goals
+## Project Goals
 
 Hermes Toolkit aims to become the primary administration utility for Hermes Agent by providing:
 
@@ -165,17 +310,19 @@ Hermes Toolkit aims to become the primary administration utility for Hermes Agen
 - Usage analytics
 - Cost optimization
 - Health monitoring
+- Safe diagnostics
+- Operational visibility
 - Automation tools
 
 ---
 
-# License
+## License
 
 MIT
 
 ---
 
-# Contributing
+## Contributing
 
 Issues, ideas, and pull requests are welcome.
 
