@@ -20,6 +20,7 @@ from toolkit.home_assistant_page import build_home_assistant_data as build_home_
 from toolkit.jobs_page import build_jobs_data as build_jobs_report
 from toolkit.sessions import build_sessions_data as build_sessions_report
 from toolkit.skills_page import build_skills_data as build_skills_report
+from toolkit.telegram_page import build_telegram_data as build_telegram_report
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "toolkit" / "templates"))
@@ -70,6 +71,12 @@ def build_skills_data():
 
     data = build_dashboard_data()
     return build_skills_report(data, LOG)
+
+def build_telegram_data():
+    data = build_dashboard_data()
+    cfg = load_config()
+    return build_telegram_report(data, cfg)
+
 
 def build_home_assistant_data():
     data = build_dashboard_data()
@@ -190,6 +197,18 @@ async def skills_page(request: Request):
         {
             "request": request,
             "data": build_skills_data(),
+        },
+    )
+
+
+
+@app.get("/telegram", response_class=HTMLResponse)
+async def telegram_page(request: Request):
+    return templates.TemplateResponse(
+        "telegram.html",
+        {
+            "request": request,
+            "data": build_telegram_data(),
         },
     )
 
