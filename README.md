@@ -313,6 +313,7 @@ v0.4 development in progress:
 - [ ] Add formal skill registry
 - [x] Extract Memory page data builder
 - [x] Extract About page data builder
+- [x] Complete v0.4 page-builder architecture pass
 - [ ] Add memory inventory
 - [ ] Add Jobs / Tasks page
 - [ ] Add Home Assistant integration

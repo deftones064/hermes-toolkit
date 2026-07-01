@@ -18,6 +18,8 @@ All notable changes to Hermes Toolkit will be documented in this file.
 - Extracted Skills page log-signal and read-only inventory logic into the `toolkit.skills_page` backend module.
 - Extracted Memory page context, cache, recommendation, and log-signal logic into the `toolkit.memory_page` backend module.
 - Extracted About page informational release/status logic into the `toolkit.about_page` backend module.
+- Completed the v0.4 page-builder architecture pass so `web.py` is primarily route wrappers plus shared dashboard context.
+- Cleaned `web.py` import layout after backend extraction work.
 - Kept the public Doctor web data API stable through `build_doctor_data(dashboard_data, cfg)`.
 - Added a Sessions backend API through `build_sessions_data(dashboard_data, cfg, calls)`.
 - Added a Cost backend API through `build_cost_data(dashboard_data, recent_calls)`.
