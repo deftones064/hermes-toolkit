@@ -1,4 +1,4 @@
-from toolkit.memory_page import build_memory_data, classify_memory_signal
+from toolkit.memory_page import build_memory_data, build_memory_inventory_items, classify_memory_signal
 
 
 def _dashboard_data():
@@ -128,3 +128,61 @@ def test_build_memory_data_handles_no_calls_or_log(tmp_path):
     assert memory_page["signal_lines"] == []
     assert memory_page["signal_count"] == 0
     assert "read-only" in memory_page["note"]
+
+def test_build_memory_inventory_items_marks_available_sources():
+    items = build_memory_inventory_items(
+        context_file_max_chars=50000,
+        file_read_max_chars=80000,
+        protect_last_n=10,
+        resume_exchanges=4,
+        signal_count=3,
+        total_calls=2,
+    )
+
+    by_name = {item["name"]: item for item in items}
+
+    assert by_name["Configuration Snapshot"]["status"] == "available"
+    assert by_name["Cache Signals"]["status"] == "available"
+    assert by_name["Context Log Signals"]["status"] == "available"
+    assert by_name["Memory Store Inventory"]["status"] == "planned"
+
+
+def test_build_memory_inventory_items_marks_limited_sources():
+    items = build_memory_inventory_items(
+        context_file_max_chars=0,
+        file_read_max_chars=0,
+        protect_last_n=0,
+        resume_exchanges=0,
+        signal_count=0,
+        total_calls=0,
+    )
+
+    by_name = {item["name"]: item for item in items}
+
+    assert by_name["Configuration Snapshot"]["status"] == "limited"
+    assert by_name["Cache Signals"]["status"] == "limited"
+    assert by_name["Context Log Signals"]["status"] == "limited"
+    assert by_name["Memory Store Inventory"]["status"] == "planned"
+
+
+def test_build_memory_data_includes_inventory_foundation(tmp_path):
+    log_path = tmp_path / "hermes.log"
+    log_path.write_text("INFO memory cache session context")
+
+    calls = [
+        {
+            "in": 1000,
+            "out": 100,
+            "total": 1100,
+            "cache": 900,
+            "pct": 90,
+        },
+    ]
+
+    data = build_memory_data(_dashboard_data(), calls, log_path)
+    memory_page = data["memory_page"]
+
+    assert memory_page["inventory_count"] == 4
+    assert memory_page["available_inventory_count"] == 3
+    assert memory_page["inventory_items"][0]["name"] == "Configuration Snapshot"
+

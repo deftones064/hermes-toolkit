@@ -199,6 +199,56 @@ def _memory_status(avg_cache):
     )
 
 
+def build_memory_inventory_items(
+    context_file_max_chars,
+    file_read_max_chars,
+    protect_last_n,
+    resume_exchanges,
+    signal_count,
+    total_calls,
+):
+    config_values = [
+        context_file_max_chars,
+        file_read_max_chars,
+        protect_last_n,
+        resume_exchanges,
+    ]
+    configured_count = sum(1 for value in config_values if value)
+
+    items = [
+        {
+            "name": "Configuration Snapshot",
+            "status": "available" if configured_count else "limited",
+            "summary": f"{configured_count} memory/context settings detected.",
+            "detail": "Read-only inventory of configured context, file, compression, and resume limits.",
+            "icon": "settings",
+        },
+        {
+            "name": "Cache Signals",
+            "status": "available" if total_calls else "limited",
+            "summary": f"{total_calls} recent API calls analyzed.",
+            "detail": "Read-only cache behavior inferred from parsed API call logs.",
+            "icon": "activity",
+        },
+        {
+            "name": "Context Log Signals",
+            "status": "available" if signal_count else "limited",
+            "summary": f"{signal_count} memory/context log signals detected.",
+            "detail": "Read-only memory and context signals matched from recent Hermes logs.",
+            "icon": "file-search",
+        },
+        {
+            "name": "Memory Store Inventory",
+            "status": "planned",
+            "summary": "Not connected yet.",
+            "detail": "Future read-only inventory if Hermes exposes memory stores, vector indexes, or persistent memory metadata.",
+            "icon": "database",
+        },
+    ]
+
+    return items
+
+
 def _build_recommendations(
     avg_cache,
     avg_input,
@@ -291,6 +341,14 @@ def build_memory_data(dashboard_data, calls, log_path):
 
     signal_lines = _read_memory_signal_lines(log_path)
     memory_status, memory_class, memory_detail = _memory_status(avg_cache)
+    inventory_items = build_memory_inventory_items(
+        context_file_max_chars,
+        file_read_max_chars,
+        protect_last_n,
+        resume_exchanges,
+        len(signal_lines),
+        total_calls,
+    )
 
     data["memory_page"] = {
         "status": memory_status,
@@ -309,6 +367,12 @@ def build_memory_data(dashboard_data, calls, log_path):
             resume_exchanges,
         ),
         "planned_areas": PLANNED_AREAS,
+        "inventory_items": inventory_items,
+        "inventory_count": len(inventory_items),
+        "available_inventory_count": sum(
+            1 for item in inventory_items
+            if item["status"] == "available"
+        ),
         "signal_lines": list(reversed(signal_lines[-50:])),
         "signal_count": len(signal_lines),
         "avg_input": avg_input,
