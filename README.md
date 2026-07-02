@@ -390,6 +390,8 @@ This foundation is intentionally non-mutating:
 
 The System Inventory foundation is intended to support future Backup / Restore and Update Manager workflows without jumping directly into mutating behavior.
 
+The System Inventory page also surfaces read-only Release Status metadata from package metadata and About release metadata. Repository state and service state remain explicit `Not probed` placeholders, and Git probing, subprocess execution, service mutation, config mutation, and release/tag mutation remain disabled.
+
 ### Optional estimated pricing overrides
 
 The Cost page uses a built-in estimate table by default. You can override estimated pricing under the `toolkit` namespace without changing provider/model configuration.

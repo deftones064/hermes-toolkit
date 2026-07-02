@@ -9,6 +9,8 @@ All notable changes to Hermes Toolkit will be documented in this file.
 ### Added
 
 - Added About page release metadata helpers and regression coverage for stale release labels.
+- Added a read-only Release Status backend foundation using package metadata and About release metadata.
+- Added Release Status visibility to the System Inventory page.
 
 ### Changed
 
@@ -16,7 +18,7 @@ All notable changes to Hermes Toolkit will be documented in this file.
 
 ### Notes
 
-- About release metadata remains informational only and does not perform Git probing, service mutation, subprocess execution, or release/tag changes.
+- About and Release Status metadata remain informational only and do not perform Git probing, service mutation, subprocess execution, config mutation, or release/tag changes.
 
 
 ## v0.7.0-alpha
