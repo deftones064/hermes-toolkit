@@ -19,6 +19,7 @@ All notable changes to Hermes Toolkit will be documented in this file.
 ### Notes
 
 - About and Release Status metadata remain informational only and do not perform Git probing, service mutation, subprocess execution, config mutation, or release/tag changes.
+- System Inventory release status coverage now explicitly guards the no-probe and no-mutation boundary.
 
 
 ## v0.7.0-alpha
