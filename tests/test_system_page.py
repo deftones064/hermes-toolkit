@@ -370,12 +370,13 @@ def test_system_template_includes_release_status_section():
     template = Path("toolkit/templates/system.html").read_text()
 
     assert "Release Status" in template
-    assert "Package Version" in template
-    assert "Release Artifact" in template
-    assert "Repository State" in template
-    assert "Service State" in template
     assert "Git probing disabled" in template
-    assert "Service mutation disabled" in template
+    assert "data.release_status.cards" in template
+    assert "{{ card.title }}" in template
+    assert "{{ card.description }}" in template
+    assert "{{ card.value }}" in template
+    assert "{{ card.badge }}" in template
+    assert "{{ card.icon }}" in template
 
 
 def test_safety_note_blocks_mutating_system_behavior():

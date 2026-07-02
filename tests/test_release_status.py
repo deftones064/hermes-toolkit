@@ -37,3 +37,31 @@ def test_build_release_status_data_has_no_live_probe_claims():
     assert data["repository_commit"] == "Not probed"
     assert data["repository_dirty_state"] == "Not probed"
     assert data["service_state"] == "Not probed"
+
+
+def test_build_release_status_data_includes_display_cards():
+    data = build_release_status_data()
+    cards = data["cards"]
+
+    assert [card["title"] for card in cards] == [
+        "Package Version",
+        "Release Artifact",
+        "Repository State",
+        "Service State",
+    ]
+
+    assert cards[0]["value"] == __version__
+    assert cards[0]["badge"] == "read-only"
+    assert cards[0]["state"] == "available"
+
+    assert cards[1]["value"] == RELEASE_ARTIFACT
+    assert cards[1]["badge"] == RELEASE_PHASE
+    assert cards[1]["state"] == "available"
+
+    assert cards[2]["value"] == "Not probed / Not probed / Not probed"
+    assert cards[2]["badge"] == "planned"
+    assert cards[2]["state"] == "planned"
+
+    assert cards[3]["value"] == "Not probed"
+    assert cards[3]["badge"] == "read-only"
+    assert cards[3]["state"] == "planned"

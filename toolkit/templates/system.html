@@ -67,61 +67,21 @@
     </div>
 
     <div class="skill-grid">
-      <div class="skill-card available">
+      {% for card in data.release_status.cards %}
+      <div class="skill-card {{ card.state }}">
         <div class="skill-card-header">
           <div class="skill-icon-title">
-            <i data-lucide="badge-info"></i>
+            <i data-lucide="{{ card.icon }}"></i>
             <div>
-              <div class="skill-title">Package Version</div>
-              <div class="skill-subtitle">In-process package version metadata.</div>
-              <div class="skill-subtitle">{{ data.release_status.package_version }}</div>
+              <div class="skill-title">{{ card.title }}</div>
+              <div class="skill-subtitle">{{ card.description }}</div>
+              <div class="skill-subtitle">{{ card.value }}</div>
             </div>
           </div>
-          <span class="model-pill active">read-only</span>
+          <span class="model-pill {% if card.state == 'available' %}active{% endif %}">{{ card.badge }}</span>
         </div>
       </div>
-
-      <div class="skill-card available">
-        <div class="skill-card-header">
-          <div class="skill-icon-title">
-            <i data-lucide="tag"></i>
-            <div>
-              <div class="skill-title">Release Artifact</div>
-              <div class="skill-subtitle">{{ data.release_status.release_summary }}</div>
-              <div class="skill-subtitle">{{ data.release_status.release_artifact }}</div>
-            </div>
-          </div>
-          <span class="model-pill active">{{ data.release_status.release_phase }}</span>
-        </div>
-      </div>
-
-      <div class="skill-card planned">
-        <div class="skill-card-header">
-          <div class="skill-icon-title">
-            <i data-lucide="git-branch"></i>
-            <div>
-              <div class="skill-title">Repository State</div>
-              <div class="skill-subtitle">Branch, commit, and dirty-state awareness are intentionally not probed.</div>
-              <div class="skill-subtitle">{{ data.release_status.repository_branch }} / {{ data.release_status.repository_commit }} / {{ data.release_status.repository_dirty_state }}</div>
-            </div>
-          </div>
-          <span class="model-pill">planned</span>
-        </div>
-      </div>
-
-      <div class="skill-card planned">
-        <div class="skill-card-header">
-          <div class="skill-icon-title">
-            <i data-lucide="shield-x"></i>
-            <div>
-              <div class="skill-title">Service State</div>
-              <div class="skill-subtitle">Service mutation disabled. Service state is intentionally not probed.</div>
-              <div class="skill-subtitle">{{ data.release_status.service_state }}</div>
-            </div>
-          </div>
-          <span class="model-pill">read-only</span>
-        </div>
-      </div>
+      {% endfor %}
     </div>
   </div>
 </div>
