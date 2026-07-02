@@ -12,6 +12,7 @@ All notable changes to Hermes Toolkit will be documented in this file.
 - Added in-process System Inventory runtime facts for Python version, platform, system, machine architecture, and Hermes Toolkit package version.
 - Added read-only System Inventory configuration path facts for Hermes Toolkit config and log module constants.
 - Added static System Inventory repository placeholders for repository path, branch, commit, and dirty state planning.
+- Added static System Inventory service placeholders for web app process, scheduler or worker, local model runtime, and notification channel planning.
 
 ### Notes
 

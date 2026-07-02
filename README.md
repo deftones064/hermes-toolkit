@@ -373,6 +373,8 @@ It also displays module-constant configuration path facts for the Hermes Toolkit
 
 Repository inventory is currently represented by static planning placeholders for repository path, branch, commit, and dirty state without executing Git commands or reading repository metadata.
 
+Service inventory is currently represented by static planning placeholders for web app process, scheduler or worker, local model runtime, and notification channel without querying service state, process lists, container runtimes, or endpoints.
+
 This foundation is intentionally non-mutating:
 
 - No subprocess commands are executed.
