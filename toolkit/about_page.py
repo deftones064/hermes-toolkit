@@ -9,6 +9,15 @@ RELEASE_ARTIFACT = "Hermes Toolkit v0.7 Alpha"
 RELEASE_SUMMARY = "Post-release cleanup is being carried forward into the next alpha."
 
 
+def build_release_metadata():
+    return {
+        "label": RELEASE_LABEL,
+        "phase": RELEASE_PHASE,
+        "artifact": RELEASE_ARTIFACT,
+        "summary": RELEASE_SUMMARY,
+    }
+
+
 COMPLETED_PAGES = [
     {
         "name": "Dashboard",
@@ -125,13 +134,14 @@ PRINCIPLES = [
 
 def build_about_data(dashboard_data):
     data = dict(dashboard_data)
+    release = build_release_metadata()
 
     data["about_page"] = {
         "version": __version__,
-        "release_label": RELEASE_LABEL,
-        "release_phase": RELEASE_PHASE,
-        "release_artifact": RELEASE_ARTIFACT,
-        "release_summary": RELEASE_SUMMARY,
+        "release_label": release["label"],
+        "release_phase": release["phase"],
+        "release_artifact": release["artifact"],
+        "release_summary": release["summary"],
         "project_name": "Hermes Toolkit",
         "tagline": "Control. Optimize. Evolve.",
         "description": "Hermes Toolkit is an open-source administration dashboard and CLI companion for Hermes Agent.",

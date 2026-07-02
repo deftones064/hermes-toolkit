@@ -7,7 +7,19 @@ from toolkit.about_page import (
     RELEASE_PHASE,
     RELEASE_SUMMARY,
     build_about_data,
+    build_release_metadata,
 )
+
+
+def test_build_release_metadata_uses_release_constants():
+    metadata = build_release_metadata()
+
+    assert metadata == {
+        "label": RELEASE_LABEL,
+        "phase": RELEASE_PHASE,
+        "artifact": RELEASE_ARTIFACT,
+        "summary": RELEASE_SUMMARY,
+    }
 
 
 def test_build_about_data_shape():
