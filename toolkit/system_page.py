@@ -17,6 +17,19 @@ from toolkit.config import CONFIG, LOG
 
 
 
+
+
+@dataclass(frozen=True)
+class SystemGuardrailFact:
+    """A static action guardrail fact for the System Inventory foundation."""
+
+    name: str
+    value: str
+    summary: str
+    status: str
+    icon: str
+
+
 @dataclass(frozen=True)
 class SystemServiceFact:
     """A read-only service inventory placeholder that does not query services."""
@@ -102,6 +115,42 @@ SAFETY_NOTE = (
 
 
 
+
+
+
+def build_system_guardrail_facts() -> list[SystemGuardrailFact]:
+    """Return static action guardrails for the System Inventory foundation."""
+
+    return [
+        SystemGuardrailFact(
+            name="Read-only Mode",
+            value="enforced",
+            summary="System Inventory is a read-only planning surface in this foundation slice.",
+            status="ready",
+            icon="shield-check",
+        ),
+        SystemGuardrailFact(
+            name="No Subprocess Execution",
+            value="enforced",
+            summary="System Inventory does not execute shell commands or spawn subprocesses.",
+            status="ready",
+            icon="terminal-x",
+        ),
+        SystemGuardrailFact(
+            name="No Service Mutation",
+            value="enforced",
+            summary="System Inventory does not start, stop, restart, enable, disable, or reload services.",
+            status="ready",
+            icon="shield-x",
+        ),
+        SystemGuardrailFact(
+            name="No Config Mutation",
+            value="enforced",
+            summary="System Inventory does not load, save, overwrite, or modify configuration files.",
+            status="ready",
+            icon="file-lock-2",
+        ),
+    ]
 
 
 def build_system_service_facts() -> list[SystemServiceFact]:
@@ -364,6 +413,7 @@ def build_system_page_data() -> dict[str, object]:
     config_facts = build_system_config_facts()
     repository_facts = build_system_repository_facts()
     service_facts = build_system_service_facts()
+    guardrail_facts = build_system_guardrail_facts()
 
     return {
         "title": "System Inventory",
@@ -379,4 +429,5 @@ def build_system_page_data() -> dict[str, object]:
         "config_facts": config_facts,
         "repository_facts": repository_facts,
         "service_facts": service_facts,
+        "guardrail_facts": guardrail_facts,
     }

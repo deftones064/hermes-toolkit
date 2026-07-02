@@ -4,6 +4,7 @@ from toolkit.config import CONFIG, LOG
 from toolkit.system_page import (
     SAFETY_NOTE,
     SystemConfigFact,
+    SystemGuardrailFact,
     SystemPageSummary,
     SystemPlannedArea,
     SystemReadinessItem,
@@ -11,6 +12,7 @@ from toolkit.system_page import (
     SystemRuntimeFact,
     SystemServiceFact,
     build_system_config_facts,
+    build_system_guardrail_facts,
     build_system_page_data,
     build_system_page_summary,
     build_system_planned_areas,
@@ -131,6 +133,42 @@ def test_system_readiness_items_are_read_only():
 
 
 
+
+
+
+def test_system_guardrail_facts_are_static_enforced_boundaries():
+    facts = build_system_guardrail_facts()
+
+    assert facts == [
+        SystemGuardrailFact(
+            name="Read-only Mode",
+            value="enforced",
+            summary="System Inventory is a read-only planning surface in this foundation slice.",
+            status="ready",
+            icon="shield-check",
+        ),
+        SystemGuardrailFact(
+            name="No Subprocess Execution",
+            value="enforced",
+            summary="System Inventory does not execute shell commands or spawn subprocesses.",
+            status="ready",
+            icon="terminal-x",
+        ),
+        SystemGuardrailFact(
+            name="No Service Mutation",
+            value="enforced",
+            summary="System Inventory does not start, stop, restart, enable, disable, or reload services.",
+            status="ready",
+            icon="shield-x",
+        ),
+        SystemGuardrailFact(
+            name="No Config Mutation",
+            value="enforced",
+            summary="System Inventory does not load, save, overwrite, or modify configuration files.",
+            status="ready",
+            icon="file-lock-2",
+        ),
+    ]
 
 
 def test_system_service_facts_are_static_placeholders():
@@ -305,6 +343,7 @@ def test_system_page_data_includes_safety_note_and_sections():
     assert data["config_facts"] == build_system_config_facts()
     assert data["repository_facts"] == build_system_repository_facts()
     assert data["service_facts"] == build_system_service_facts()
+    assert data["guardrail_facts"] == build_system_guardrail_facts()
 
 
 def test_safety_note_blocks_mutating_system_behavior():
