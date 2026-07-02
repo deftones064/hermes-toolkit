@@ -1,6 +1,6 @@
 [project]
 name = "hermes-toolkit"
-version = "0.6.0-alpha"
+version = "0.7.0-alpha"
 description = "Administrative toolkit for Hermes Agent configuration, model switching, and usage monitoring."
 readme = "README.md"
 requires-python = ">=3.10"

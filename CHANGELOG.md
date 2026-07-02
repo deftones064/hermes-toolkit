@@ -8,6 +8,17 @@ All notable changes to Hermes Toolkit will be documented in this file.
 
 ### Added
 
+- Nothing yet.
+
+### Notes
+
+- Nothing yet.
+
+
+## v0.7.0-alpha
+
+### Added
+
 - Added a read-only System Inventory backend foundation and dashboard page for runtime, repository, configuration, and service inventory planning.
 - Added in-process System Inventory runtime facts for Python version, platform, system, machine architecture, and Hermes Toolkit package version.
 - Added read-only System Inventory configuration path facts for Hermes Toolkit config and log module constants.
@@ -17,6 +28,7 @@ All notable changes to Hermes Toolkit will be documented in this file.
 
 ### Notes
 
+- Package version updated to `0.7.0-alpha`.
 - The System Inventory foundation does not execute subprocess commands, query service state, restart processes or services, install packages, execute Git operations, delete or overwrite files, or modify configuration.
 
 
