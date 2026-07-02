@@ -97,6 +97,28 @@ def test_build_about_data_release_status_is_post_release():
     assert "post-release" in about_page["release_summary"].lower()
 
 
+def test_about_sources_do_not_contain_stale_release_labels():
+    stale_terms = [
+        "v0.3 Alpha",
+        "v0.4 Alpha",
+        "v0.5 Alpha",
+        "v0.6 Alpha",
+        "Pre-release polish",
+        "About v1",
+        "Before Release",
+    ]
+
+    source_paths = [
+        Path("toolkit/about_page.py"),
+        Path("toolkit/templates/about.html"),
+    ]
+
+    for source_path in source_paths:
+        source_text = source_path.read_text()
+        for stale_term in stale_terms:
+            assert stale_term not in source_text
+
+
 def test_about_template_uses_post_release_wording():
     template = Path("toolkit/templates/about.html").read_text()
 
