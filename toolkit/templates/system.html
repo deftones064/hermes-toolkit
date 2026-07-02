@@ -55,6 +55,77 @@
   </div>
 </div>
 
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <h2>Release Status</h2>
+        <p class="section-muted">Read-only build and release metadata from package metadata and About release metadata. No Git commands, service checks, or subprocess probes are executed.</p>
+      </div>
+      <span class="filter-count">Git probing disabled</span>
+    </div>
+
+    <div class="skill-grid">
+      <div class="skill-card available">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="badge-info"></i>
+            <div>
+              <div class="skill-title">Package Version</div>
+              <div class="skill-subtitle">In-process package version metadata.</div>
+              <div class="skill-subtitle">{{ data.release_status.package_version }}</div>
+            </div>
+          </div>
+          <span class="model-pill active">read-only</span>
+        </div>
+      </div>
+
+      <div class="skill-card available">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="tag"></i>
+            <div>
+              <div class="skill-title">Release Artifact</div>
+              <div class="skill-subtitle">{{ data.release_status.release_summary }}</div>
+              <div class="skill-subtitle">{{ data.release_status.release_artifact }}</div>
+            </div>
+          </div>
+          <span class="model-pill active">{{ data.release_status.release_phase }}</span>
+        </div>
+      </div>
+
+      <div class="skill-card planned">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="git-branch"></i>
+            <div>
+              <div class="skill-title">Repository State</div>
+              <div class="skill-subtitle">Branch, commit, and dirty-state awareness are intentionally not probed.</div>
+              <div class="skill-subtitle">{{ data.release_status.repository_branch }} / {{ data.release_status.repository_commit }} / {{ data.release_status.repository_dirty_state }}</div>
+            </div>
+          </div>
+          <span class="model-pill">planned</span>
+        </div>
+      </div>
+
+      <div class="skill-card planned">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="shield-x"></i>
+            <div>
+              <div class="skill-title">Service State</div>
+              <div class="skill-subtitle">Service mutation disabled. Service state is intentionally not probed.</div>
+              <div class="skill-subtitle">{{ data.release_status.service_state }}</div>
+            </div>
+          </div>
+          <span class="model-pill">read-only</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="grid-wide section">
   <div class="card">
     <div class="card-header-row">

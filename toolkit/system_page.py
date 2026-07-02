@@ -7,6 +7,7 @@ import platform
 
 from toolkit import __version__
 from toolkit.config import CONFIG, LOG
+from toolkit.release_status import build_release_status_data
 
 
 
@@ -414,6 +415,7 @@ def build_system_page_data() -> dict[str, object]:
     repository_facts = build_system_repository_facts()
     service_facts = build_system_service_facts()
     guardrail_facts = build_system_guardrail_facts()
+    release_status = build_release_status_data()
 
     return {
         "title": "System Inventory",
@@ -430,4 +432,5 @@ def build_system_page_data() -> dict[str, object]:
         "repository_facts": repository_facts,
         "service_facts": service_facts,
         "guardrail_facts": guardrail_facts,
+        "release_status": release_status,
     }

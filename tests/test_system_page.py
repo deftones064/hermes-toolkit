@@ -1,6 +1,8 @@
+from pathlib import Path
 import platform
 from toolkit import __version__
 from toolkit.config import CONFIG, LOG
+from toolkit.release_status import build_release_status_data
 from toolkit.system_page import (
     SAFETY_NOTE,
     SystemConfigFact,
@@ -344,6 +346,19 @@ def test_system_page_data_includes_safety_note_and_sections():
     assert data["repository_facts"] == build_system_repository_facts()
     assert data["service_facts"] == build_system_service_facts()
     assert data["guardrail_facts"] == build_system_guardrail_facts()
+    assert data["release_status"] == build_release_status_data()
+
+
+def test_system_template_includes_release_status_section():
+    template = Path("toolkit/templates/system.html").read_text()
+
+    assert "Release Status" in template
+    assert "Package Version" in template
+    assert "Release Artifact" in template
+    assert "Repository State" in template
+    assert "Service State" in template
+    assert "Git probing disabled" in template
+    assert "Service mutation disabled" in template
 
 
 def test_safety_note_blocks_mutating_system_behavior():
