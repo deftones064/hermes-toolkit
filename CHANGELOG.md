@@ -8,11 +8,15 @@ All notable changes to Hermes Toolkit will be documented in this file.
 
 ### Added
 
-- Nothing yet.
+- Added About page release metadata helpers and regression coverage for stale release labels.
+
+### Changed
+
+- Refreshed About page and README wording for post-v0.7 release status and next-alpha preparation.
 
 ### Notes
 
-- Nothing yet.
+- About release metadata remains informational only and does not perform Git probing, service mutation, subprocess execution, or release/tag changes.
 
 
 ## v0.7.0-alpha
