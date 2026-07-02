@@ -1,7 +1,13 @@
 from pathlib import Path
 
 from toolkit import __version__
-from toolkit.about_page import build_about_data
+from toolkit.about_page import (
+    RELEASE_ARTIFACT,
+    RELEASE_LABEL,
+    RELEASE_PHASE,
+    RELEASE_SUMMARY,
+    build_about_data,
+)
 
 
 def test_build_about_data_shape():
@@ -9,7 +15,7 @@ def test_build_about_data_shape():
     about_page = data["about_page"]
 
     assert about_page["version"] == __version__
-    assert about_page["release_label"] == "v0.7 Alpha"
+    assert about_page["release_label"] == RELEASE_LABEL
     assert about_page["project_name"] == "Hermes Toolkit"
     assert about_page["tagline"] == "Control. Optimize. Evolve."
     assert about_page["status"] == "Alpha"
@@ -72,9 +78,10 @@ def test_build_about_data_release_status_is_post_release():
     data = build_about_data({})
     about_page = data["about_page"]
 
-    assert about_page["release_label"] == "v0.7 Alpha"
-    assert about_page["release_phase"] == "Released"
-    assert about_page["release_artifact"] == "Hermes Toolkit v0.7 Alpha"
+    assert about_page["release_label"] == RELEASE_LABEL
+    assert about_page["release_phase"] == RELEASE_PHASE
+    assert about_page["release_artifact"] == RELEASE_ARTIFACT
+    assert about_page["release_summary"] == RELEASE_SUMMARY
     assert "post-release" in about_page["release_summary"].lower()
 
 

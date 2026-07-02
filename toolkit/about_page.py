@@ -3,6 +3,12 @@ import platform
 from toolkit import __version__
 
 
+RELEASE_LABEL = "v0.7 Alpha"
+RELEASE_PHASE = "Released"
+RELEASE_ARTIFACT = "Hermes Toolkit v0.7 Alpha"
+RELEASE_SUMMARY = "Post-release cleanup is being carried forward into the next alpha."
+
+
 COMPLETED_PAGES = [
     {
         "name": "Dashboard",
@@ -122,10 +128,10 @@ def build_about_data(dashboard_data):
 
     data["about_page"] = {
         "version": __version__,
-        "release_label": "v0.7 Alpha",
-        "release_phase": "Released",
-        "release_artifact": "Hermes Toolkit v0.7 Alpha",
-        "release_summary": "Post-release cleanup is being carried forward into the next alpha.",
+        "release_label": RELEASE_LABEL,
+        "release_phase": RELEASE_PHASE,
+        "release_artifact": RELEASE_ARTIFACT,
+        "release_summary": RELEASE_SUMMARY,
         "project_name": "Hermes Toolkit",
         "tagline": "Control. Optimize. Evolve.",
         "description": "Hermes Toolkit is an open-source administration dashboard and CLI companion for Hermes Agent.",
