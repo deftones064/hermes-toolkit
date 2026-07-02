@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from toolkit import __version__
 from toolkit.about_page import build_about_data
 
@@ -64,3 +66,26 @@ def test_build_about_data_next_steps_are_current():
     assert any("next alpha release" in step for step in next_steps)
     assert any("backup, restore, and update execution disabled" in step for step in next_steps)
     assert not any("v0.4 Alpha" in step for step in next_steps)
+
+
+def test_build_about_data_release_status_is_post_release():
+    data = build_about_data({})
+    about_page = data["about_page"]
+
+    assert about_page["release_label"] == "v0.7 Alpha"
+    assert about_page["release_phase"] == "Released"
+    assert about_page["release_artifact"] == "Hermes Toolkit v0.7 Alpha"
+    assert "post-release" in about_page["release_summary"].lower()
+
+
+def test_about_template_uses_post_release_wording():
+    template = Path("toolkit/templates/about.html").read_text()
+
+    assert "Release Status" in template
+    assert "Current phase" in template
+    assert "Release artifact" in template
+    assert "Next Alpha Prep" in template
+    assert "post-release" in template.lower()
+    assert "Pre-release polish" not in template
+    assert "Before Release" not in template
+    assert "after About v1 lands" not in template

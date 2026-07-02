@@ -123,6 +123,9 @@ def build_about_data(dashboard_data):
     data["about_page"] = {
         "version": __version__,
         "release_label": "v0.7 Alpha",
+        "release_phase": "Released",
+        "release_artifact": "Hermes Toolkit v0.7 Alpha",
+        "release_summary": "Post-release cleanup is being carried forward into the next alpha.",
         "project_name": "Hermes Toolkit",
         "tagline": "Control. Optimize. Evolve.",
         "description": "Hermes Toolkit is an open-source administration dashboard and CLI companion for Hermes Agent.",
