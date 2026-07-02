@@ -375,6 +375,8 @@ Repository inventory is currently represented by static planning placeholders fo
 
 Service inventory is currently represented by static planning placeholders for web app process, scheduler or worker, local model runtime, and notification channel without querying service state, process lists, container runtimes, or endpoints.
 
+Action guardrails are displayed as enforced facts for read-only mode, subprocess safety, service mutation safety, and config mutation safety without exposing buttons, forms, actions, or mutating controls.
+
 This foundation is intentionally non-mutating:
 
 - No subprocess commands are executed.

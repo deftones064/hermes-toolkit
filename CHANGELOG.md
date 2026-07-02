@@ -13,6 +13,7 @@ All notable changes to Hermes Toolkit will be documented in this file.
 - Added read-only System Inventory configuration path facts for Hermes Toolkit config and log module constants.
 - Added static System Inventory repository placeholders for repository path, branch, commit, and dirty state planning.
 - Added static System Inventory service placeholders for web app process, scheduler or worker, local model runtime, and notification channel planning.
+- Added enforced System Inventory action guardrail facts for read-only mode, subprocess safety, service mutation safety, and config mutation safety.
 
 ### Notes
 
