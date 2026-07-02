@@ -111,7 +111,7 @@ Memory v1 is config/log-derived and does not inspect, delete, export, or modify 
 
 ### About
 
-Project identity, version, release status, product principles, page coverage, runtime information, and release-prep checklist.
+Project identity, version, release status, product principles, page coverage, runtime information, and next-alpha preparation guidance.
 
 ---
 
