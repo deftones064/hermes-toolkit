@@ -349,6 +349,23 @@ def test_system_page_data_includes_safety_note_and_sections():
     assert data["release_status"] == build_release_status_data()
 
 
+def test_system_page_release_status_keeps_no_probe_guardrails():
+    data = build_system_page_data()
+    release_status = data["release_status"]
+
+    assert release_status["repository_branch"] == "Not probed"
+    assert release_status["repository_commit"] == "Not probed"
+    assert release_status["repository_dirty_state"] == "Not probed"
+    assert release_status["service_state"] == "Not probed"
+
+    guardrails = release_status["guardrails"]
+    assert guardrails["git_probing"] == "Disabled"
+    assert guardrails["subprocess_execution"] == "Disabled"
+    assert guardrails["service_mutation"] == "Disabled"
+    assert guardrails["tag_mutation"] == "Disabled"
+    assert guardrails["config_mutation"] == "Disabled"
+
+
 def test_system_template_includes_release_status_section():
     template = Path("toolkit/templates/system.html").read_text()
 
