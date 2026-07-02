@@ -59,6 +59,36 @@
   <div class="card">
     <div class="card-header-row">
       <div>
+        <h2>Action Guardrails</h2>
+        <p class="section-muted">Static enforced guardrails for the System Inventory foundation. No buttons, forms, actions, or mutating controls are exposed.</p>
+      </div>
+      <span class="filter-count">{{ data.guardrail_facts | length }} enforced</span>
+    </div>
+
+    <div class="skill-grid">
+      {% for fact in data.guardrail_facts %}
+      <div class="skill-card available">
+        <div class="skill-card-header">
+          <div class="skill-icon-title">
+            <i data-lucide="{{ fact.icon }}"></i>
+            <div>
+              <div class="skill-title">{{ fact.name }}</div>
+              <div class="skill-subtitle">{{ fact.summary }}</div>
+              <div class="skill-subtitle">{{ fact.value }}</div>
+            </div>
+          </div>
+          <span class="model-pill">{{ fact.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid-wide section">
+  <div class="card">
+    <div class="card-header-row">
+      <div>
         <h2>Service Inventory</h2>
         <p class="section-muted">Static planning placeholders only. No service state, process list, container runtime, or endpoint is queried.</p>
       </div>
