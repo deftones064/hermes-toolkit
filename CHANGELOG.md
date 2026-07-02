@@ -15,6 +15,7 @@ All notable changes to Hermes Toolkit will be documented in this file.
 ### Changed
 
 - Refreshed About page and README wording for post-v0.7 release status and next-alpha preparation.
+- Moved System Inventory Release Status card definitions into the read-only Release Status backend.
 
 ### Notes
 
